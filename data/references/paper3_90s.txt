@@ -1,0 +1,9 @@
+Think of insects: many have a larval form built for eating and an adult form built for travelling and reproducing. Machine learning models could work the same way.
+
+The most accurate models are often large neural networks or ensembles of multiple models, but they are too expensive to run for millions of users.
+
+Hinton and colleagues trained a small model to copy the big model's output probabilities, not just the correct labels. These "soft targets" contain extra information: for example, a picture of a BMW is rarely mistaken for a garbage truck, but that mistake is still far more likely than mistaking it for a carrot. A setting called temperature makes these differences easier for the small model to learn by producing softer probability distributions.
+
+On the MNIST handwritten-digit dataset, a small network trained normally made 146 errors, but trained with soft targets it made only 74, close to the large network's 67.
+
+This idea, now called knowledge distillation, lets us transfer knowledge from a large model to a smaller one, and it is used today to build faster, more efficient AI models that are easier to deploy.

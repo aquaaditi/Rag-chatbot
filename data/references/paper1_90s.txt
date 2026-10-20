@@ -1,34 +1,10 @@
-1. PROBLEM (Introduction, p.1)
-   - Task: sentence classification = give each sentence a label
-     (positive/negative review, type of question, subjective/objective...).
-   - Deep learning for language often relied on large, heavily engineered models.
-   - Open question: can a very SIMPLE model do well if it starts from good
-     pre-trained word vectors?
+Every day, huge numbers of sentences need to be sorted into categories, like deciding whether a movie review is positive or negative. This process is called text classification, and it helps computers understand what people are saying.
 
-2. MAIN IDEA (Abstract + Figure 1, p.1–2)
-   - Each word → a word vector from word2vec (pre-trained on Google News).
-   - Sentence = a stack of word vectors (one row per word).
-   - ONE convolution layer: small filters slide over windows of a few words
-     (3, 4, 5 words) and detect useful phrase patterns.
-   - Max-over-time pooling: keep only the strongest signal from each filter
-     → works for any sentence length.
-   - Then a final layer (with dropout) picks the label.
-   - Variants: static (word vectors frozen) vs non-static (fine-tuned for the
-     task); multichannel = both at once.
+Before this paper, people thought you needed complex models with many carefully designed features to understand language. But the question was whether a simple neural network could perform just as well.
 
-3. RESULT (Abstract, last sentence + Table 2)
-   - Beats the previous best on 4 of 7 benchmarks, including sentiment
-     analysis and question classification.
-   - Even the static version, with little tuning, does very well.
-   - Fine-tuning the vectors gives extra gains.
-   - [YOU ADD: one accuracy number from Table 2 + its page number]
+Yoon Kim's idea was simple: turn each word into a vector, then use a convolutional neural network, or CNN, that slides over groups of neighboring words to find useful patterns. Finally, combine these patterns to predict the sentence's meaning or category.
 
-4. WHY IT MATTERS (Conclusion, Section 5)
-   - A simple one-layer CNN works remarkably well with little tuning.
-   - Shows that pre-trained word vectors are a key ingredient in deep
-     learning for NLP.
+This simple model beat the previous best on four out of seven benchmark tasks, including sentiment analysis and question classification. For example, on the MR movie review dataset, it achieved 81.0% accuracy using static word vectors. This showed that CNNs could recognize meaningful language patterns without requiring an overly complicated architecture.
 
-5. HOOK IDEA (my own)
-   - Every day millions of reviews and messages need sorting: is this
-     complaint angry? Is this review positive? Doing it well usually sounds
-     like it needs a big, complicated model. This paper shows it doesn't.
+The lesson is that simple models can achieve impressive results in natural language processing, as long as they learn useful patterns from the data. Kim's paper showed that CNNs, originally popular in image processing, could also work effectively with text.
+

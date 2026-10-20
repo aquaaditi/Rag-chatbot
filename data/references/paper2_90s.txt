@@ -1,0 +1,9 @@
+Imagine you need to sort thousands of customer reviews into categories, and you need the answer in seconds, not minutes.
+
+Neural network models like deep learning networks classify text well, but they are slow to train, which makes them hard to use on very large datasets. Simple linear classifiers, on the other hand, are fast but may miss useful information about words and their relationships.
+
+The fastText approach takes each word and turns it into a numerical vector, then averages them into one vector for the whole text. A simple linear classifier then picks the label. Two tricks make it fast and accurate: hierarchical softmax for when there are many classes, and word n-grams to capture some word order.
+
+On sentiment tasks, it was about as accurate as more complex deep learning models. But it was far faster: on the AG News dataset, one training epoch took 1 second, compared with at least 24 minutes for the convolutional models.
+
+The lesson is that simple models can deliver strong results with much less computational effort, which raises the question of whether complexity is always necessary to achieve good performance.
