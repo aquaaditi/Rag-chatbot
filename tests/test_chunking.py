@@ -1,5 +1,5 @@
 """
-Day 2 tests: does ingestion clean text, and does chunking keep math intact?
+Tests for the chunking stage (src/chunking/): does chunking keep math intact?
 
 Run:  pytest -v
 """
@@ -8,38 +8,18 @@ from pathlib import Path
 
 import pytest
 
-from src.chunker import chunk_blocks, split_sentences
-from src.ingest import Block, clean_text, is_heading, load_paper, load_tex
+from src.chunking import chunk_blocks, load_chunks, save_chunks
+from src.chunking.sentences import split_sentences
+from src.ingestion import Block, load_paper, load_tex
 
 PAPERS = Path("data/papers")
 
 
-# ---------------------------------------------------------------- cleaning
+def make_block(kind, text, loc="p1", section="1 Intro"):
+    return Block("T", 1, loc, section, kind, text)
 
 
-def test_ligatures_are_fixed():
-    assert clean_text("Classiﬁcation") == "Classification"
-
-
-def test_words_broken_across_lines_are_joined():
-    assert clean_text("a linear classi-\nfier") == "a linear classifier"
-
-
-@pytest.mark.parametrize(
-    "text, expected",
-    [
-        ("2 Distillation", True),
-        ("2.1 Hierarchical softmax", True),
-        ("4.1 Multichannel vs. Single Channel Models", True),
-        ("2 20 10662 18765", False),  # a table row
-        ("3 It was a good result.", False),  # a sentence, not a heading
-    ],
-)
-def test_heading_detection(text, expected):
-    assert is_heading(text) == expected
-
-
-# ---------------------------------------------------------------- sentences
+# ---------------------------------------------------------------- sentences.py
 
 
 def test_sentence_split_never_cuts_inline_math():
@@ -47,11 +27,7 @@ def test_sentence_split_never_cuts_inline_math():
     assert split_sentences(text) == ["We use $x. Y$ here.", "Then we stop."]
 
 
-# ---------------------------------------------------------------- chunking
-
-
-def make_block(kind, text, loc="p1", section="1 Intro"):
-    return Block("T", 1, loc, section, kind, text)
+# ---------------------------------------------------------------- chunker.py
 
 
 def test_math_block_stays_with_its_lead_in_sentence():
@@ -90,6 +66,15 @@ q_i = \frac{\exp(z_i / T)}{\sum_j \exp(z_j / T)}.
     assert all(c.chunk_id.startswith("T_s1_") for c in chunks)
 
 
+# ---------------------------------------------------------------- storage.py
+
+
+def test_save_and_load_give_back_the_same_chunks(tmp_path):
+    chunks = chunk_blocks([make_block("prose", "Some text about softmax.")])
+    save_chunks(chunks, tmp_path / "c.json")
+    assert load_chunks(tmp_path / "c.json") == chunks
+
+
 # ---------------------------------------------------------------- real papers
 
 
@@ -103,11 +88,8 @@ def test_real_pdf_equation_1_is_in_one_chunk():
 
 
 @pytest.mark.skipif(not (PAPERS / "paper2.pdf").exists(), reason="paper2.pdf not present")
-def test_real_pdf_chunks_are_clean():
+def test_real_pdf_chunk_ids_and_sizes():
     chunks = chunk_blocks(load_paper(PAPERS / "paper2.pdf", "P2"))
     ids = [c.chunk_id for c in chunks]
     assert len(ids) == len(set(ids))  # IDs are unique
-    full_text = " ".join(c.text for c in chunks)
-    assert "ﬁ" not in full_text  # ligatures fixed
-    assert "[Agarwal et al.2014]" not in full_text  # reference list dropped
     assert all(c.n_words <= 250 or c.has_math for c in chunks)

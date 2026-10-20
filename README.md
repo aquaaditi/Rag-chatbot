@@ -19,15 +19,39 @@ source citations and conversational editing.
 
 ## Project Structure
 
+The code is organised as a pipeline. Each folder in `src/` is one stage, and each file in a stage
+has one job:
+
 ```
-saral-chatbot/
-├── data/papers/        # input papers
-├── data/references/    # human-written reference scripts
-├── src/                # pipeline modules (ingest, chunk, embed, retrieve, generate, ...)
-├── eval/               # evaluation scripts
-├── logs/               # conversation logs
-├── app.py              # chat UI
-└── README.md
+paper.pdf ──► ingestion ──► chunking ──► retrieval ──► generation ──► answer + citations
+              (blocks)      (chunks)     (Day 3)       (Day 4+)
+```
+
+```
+Rag-chatbot/
+├── src/
+│   ├── config.py              # ALL settings: paths, model, chunk size...
+│   ├── llm.py                 # the only file that calls the LLM (Gemini)
+│   ├── ingestion/             # STAGE 1: paper file -> Blocks
+│   │   ├── block.py           #   Block data type (prose / math + page + section)
+│   │   ├── text_cleaning.py   #   fix ligatures, broken words, whitespace
+│   │   ├── block_rules.py     #   is it noise / a heading / references / math?
+│   │   ├── latex_math.py      #   protect LaTeX math from being split
+│   │   ├── pdf_loader.py      #   PDF  -> Blocks
+│   │   └── tex_loader.py      #   .tex -> Blocks
+│   └── chunking/              # STAGE 2: Blocks -> Chunks
+│       ├── chunk.py           #   Chunk data type (ID like P3_p2_c06)
+│       ├── sentences.py       #   math-safe sentence splitting
+│       ├── chunker.py         #   size limit, page boundaries, overlap, IDs
+│       └── storage.py         #   save / load chunks as JSON
+├── tests/                     # one test file per stage (pytest)
+├── data/
+│   ├── papers/                # input papers
+│   ├── chunks/                # output of chunking (JSON)
+│   └── references/            # human-written reference scripts (for evaluation)
+├── hello_llm.py               # Day 1 check: can we call the LLM?
+├── chunk_papers.py            # Day 2: run ingestion + chunking on all papers
+└── NOTES.md                   # learning journal
 ```
 
 ## Setup
