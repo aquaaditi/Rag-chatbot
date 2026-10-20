@@ -1,4 +1,4 @@
-# SARAL Chatbot — Audience-Adaptive Script & Bullet Generator
+# "RAG Chatbot: Research Paper to Slides, Scripts & Summaries" 
 
 A RAG (Retrieval-Augmented Generation) chatbot that takes a research paper (PDF/LaTeX) and generates
 audience-adaptive slide bullets, speaker scripts, speaker notes, and tweet-sized abstracts — with
