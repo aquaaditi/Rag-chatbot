@@ -1,2 +1,4 @@
 google-genai>=2.31.0
 python-dotenv>=1.0.0
+pymupdf>=2.0
+pytest>=9.0

@@ -82,3 +82,52 @@ In simple words, RAG connects AI models with external knowledge to provide more 
 - [x] 3 papers in data/papers/ (text extracts correctly with PyMuPDF)
 - [x] Study notes for all 3 papers (data/references/*_notes.md)
 - [x] 3 human-written 90-second reference scripts (data/references/*_90s.txt)
+
+## Day 2 — Ingestion & chunking
+
+**What is a chunk, and why ~250 words? (my own words):**
+-A chunk is a small piece of a paper that the system can search for and cite on its own, saved with its location (paper and page).
+
+About 250 words is a balance:
+
+Too small (one sentence): the chunk loses context. “It improved accuracy by 4%” means nothing if you don’t know what “it” is.
+Too big (a whole page): the chunk mixes many topics, so search becomes less precise, citations become vague (“somewhere on page 3”), and fewer chunks fit into Gemini’s prompt.
+There’s also a technical limit: the embedding model you’ll use (bge-base-en-v1.5) only reads about 512 tokens. 250 words is roughly 330 tokens, which fits comfortably. Text beyond the limit is cut off and ignored.
+
+One-line version: a chunk is a citable piece of a document; ~250 words is big enough to hold a complete idea and small enough for precise search, clear citations, and the embedding model’s limit.
+
+**Why must an equation never be split?**
+-Half an equation is meaningless, or worse, misleading. If the softmax-with-temperature formula from paper3 is cut in the middle, one chunk has the top part of the fraction and the next has the bottom.
+
+That breaks things in several ways:
+
+Search: a question about “temperature in softmax” won’t match either half properly.
+Generation: Gemini may receive half an equation and write wrong math in the speaker notes.
+Citations and checking: the citation points to a broken formula, so neither a human nor your Checker can verify the claim.
+The assignment explicitly requires it: speaker notes must preserve math in LaTeX, and Part B asks for a chunking strategy that keeps LaTeX math blocks intact.
+
+**What surprised me about PDF text?** (looked at data/chunks/*.json)
+- Ligatures: "ﬁ" is stored as one special character, so "classification" didn't match until we cleaned it.
+- Words split across lines with a hyphen: "vec-" + "tors" in paper 1.
+- In two-column papers, some lines have only one word.
+- Equations come out as a jumble: in paper 3, Σ became the letter "P" and the fraction line disappeared
+  (qi = exp(zi/T ) P j exp(zj/T ) (1)). The chunker keeps the pieces together, but can't rebuild LaTeX.
+- The equation (page 2) and its explanation "where T is a temperature" (page 3) ended up in different
+  chunks, because chunks never cross pages.
+- Page numbers, the vertical arXiv stamp (e.g. "arXiv:1408.5882" in paper 1) and the reference list
+  were mixed into the text, so the code removes them.
+
+**What do the chunk IDs mean? (e.g. P3_p2_c06)**
+- P3_p2_c06 = paper 3, page 2, chunk 6 on that page.
+- The chunk number restarts on every page: P3_p2_c06 is followed by P3_p3_c01
+  (the counter is kept per page in src/chunker.py, `count_per_loc`).
+
+Why IDs matter:
+- Citations: when Gemini writes a claim, it cites P3_p2_c06, and the code can turn that into
+  "Paper 3, page 2" and show the exact text.
+- Checking: the evaluation can look up the chunk by its ID to verify a claim.
+- Stability: the same file always produces the same IDs, so old citations keep pointing to the right text.
+- Zero padding (c06, not c6) makes IDs sort correctly: c06 comes before c10.
+
+One-line version: the ID says which paper, page and chunk a piece of text came from; stable IDs let
+every claim be traced, displayed and verified.
