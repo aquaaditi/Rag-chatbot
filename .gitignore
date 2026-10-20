@@ -1,0 +1,10 @@
+# Secrets
+.env
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Generated data (vector index etc.)
+index/
