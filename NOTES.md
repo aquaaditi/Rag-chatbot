@@ -131,3 +131,21 @@ Why IDs matter:
 
 One-line version: the ID says which paper, page and chunk a piece of text came from; stable IDs let
 every claim be traced, displayed and verified.
+
+## Day 3 — Embeddings & retrieval
+
+**What is an embedding, and what does cosine similarity measure? (my own words):**
+-
+
+**Dense vs BM25 — what does each one find that the other misses?** (try: python search.py "..." --compare)
+-
+
+**How does Reciprocal Rank Fusion combine them, and why not just add the scores?**
+-
+
+**Why did "softmax with temperature" NOT return the Equation 1 chunk?**
+-
+
+**What broke & how I fixed it:**
+- Search took ~1 minute to start: the venv (1.24 GB, 44k files) was inside OneDrive, so every import
+  was slowed by sync/scanning. Fix: moved the venv to C:\Users\aditi\venvs\rag-chatbot.

@@ -2,3 +2,6 @@ google-genai>=2.31.0
 python-dotenv>=1.0.0
 pymupdf>=2.0
 pytest>=9.0
+sentence-transformers>=6.0
+faiss-cpu>=1.15
+rank-bm25>=0.2.2

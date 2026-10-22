@@ -16,6 +16,7 @@ load_dotenv()  # read GEMINI_API_KEY and LLM_MODEL from .env
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PAPERS_DIR = PROJECT_ROOT / "data" / "papers"
 CHUNKS_DIR = PROJECT_ROOT / "data" / "chunks"
+INDEX_DIR = PROJECT_ROOT / "index"  # built by build_index.py (git-ignored, can be rebuilt)
 
 # ---------------------------------------------------------------- LLM (src/llm.py)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -32,3 +33,10 @@ MIN_FRAGMENT_WORDS = 4  # non-math fragment groups shorter than this are dropped
 MAX_CHUNK_WORDS = 250  # about 330 tokens
 OVERLAP_SENTENCES = 1  # sentences repeated at the start of the next chunk
 MAX_OVERLAP_WORDS = 40  # a "sentence" longer than this (e.g. a table) is not repeated
+
+# ---------------------------------------------------------------- retrieval (src/retrieval/)
+EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"  # free, runs on CPU, reads up to 512 tokens
+# bge models work best when a search QUESTION starts with this instruction (passages don't need it)
+EMBEDDING_QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
+TOP_K = 5  # how many chunks to return per search
+RRF_K = 60  # constant in Reciprocal Rank Fusion (standard value from the RRF paper)

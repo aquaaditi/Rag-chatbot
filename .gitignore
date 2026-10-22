@@ -8,3 +8,6 @@ __pycache__/
 
 # Generated data (vector index etc.)
 index/
+
+# Editor settings (personal)
+.vscode/
