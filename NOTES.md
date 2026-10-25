@@ -135,17 +135,64 @@ every claim be traced, displayed and verified.
 ## Day 3 — Embeddings & retrieval
 
 **What is an embedding, and what does cosine similarity measure? (my own words):**
--
+-An embedding turns text into a list of numbers (384 for bge-small) that
+  represents its meaning. Texts with similar meanings get similar vectors,
+  even if they use different words.
+- Cosine similarity measures how close two vectors point in the same
+  direction: near 1 = similar meaning, near 0 = unrelated. I normalise the
+  vectors to length 1, so cosine similarity becomes a simple dot product.
 
 **Dense vs BM25 — what does each one find that the other misses?** (try: python search.py "..." --compare)
--
+- Dense (embeddings) finds chunks with the same MEANING, even with different
+  words, e.g. "making a big model smaller" finds the distillation chunks.
+- BM25 finds chunks with the same EXACT WORDS. It's better for specific names
+  and codes like "MNIST" or "SST-2", which embeddings can blur.
+- Each misses what the other catches, so hybrid search combines both.
+- My own --compare example:  (fill in a real query + what each mode returned)
 
 **How does Reciprocal Rank Fusion combine them, and why not just add the scores?**
--
+- BM25 scores and cosine scores are on different scales (e.g. 12.4 vs 0.82),
+  so adding them would let one method dominate.
+- RRF ignores the scores and uses each chunk's RANK in each list:
+  score = 1/(60 + rank), added across both lists, then sorted.
+- A chunk ranked well in BOTH lists ends up on top.
+- Example: rank 1 dense + rank 3 BM25 → 1/61 + 1/63 ≈ 0.032,
+  beats rank 2 dense only → 1/62 ≈ 0.016.
 
 **Why did "softmax with temperature" NOT return the Equation 1 chunk?**
--
+-The chunk containing Equation 1 never uses the word "temperature".
+  The explanation of T is on the next page, and my chunks never cross pages.
+- So BM25 had no matching word, and the equation itself is extracted from the
+  PDF as jumbled symbols, so its embedding carries little meaning either.
+- Lesson: page-bounded chunks can separate an equation from its explanation.
+- Possible fix: also return neighbouring chunks (good Part B improvement idea).
+
 
 **What broke & how I fixed it:**
 - Search took ~1 minute to start: the venv (1.24 GB, 44k files) was inside OneDrive, so every import
   was slowed by sync/scanning. Fix: moved the venv to C:\Users\aditi\venvs\rag-chatbot.
+  Result: tests went from 74 s to 19 s.
+- The model did a slow online check at startup. Fix: load it from the local copy.
+- A Windows path with single backslashes in VS Code's JSON settings broke,
+  because \ is an escape character in JSON. Fix: use forward slashes.
+- Deprecation warning: renamed the call to get_embedding_dimension().
+- A test assumed the Equation 1 chunk contains "temperature". It doesn't, so
+  the test's assumption was wrong. I corrected the test and noted the weakness.
+
+## Day 4 — First end-to-end RAG answer (generation)
+
+**What are the 4 template parameters, and what does each change in the prompt?**
+-
+
+**Why is there a separate SYSTEM prompt? What rules are in it, and which rule fights hallucination?**
+-
+
+**Why does the generator take `llm` and `retriever` as parameters? (hint: tests/test_generation.py)**
+-
+
+**Errors I found by checking the output against the paper:**
+- The script dropped the 1/N from fastText's loss: the PDF text was "−1 N N X n=1". Fix: a prompt
+  rule explaining scrambled PDF equations -> it then wrote $-\frac{1}{N}\sum_{n=1}^{N}$ correctly.
+- "for a document with N n-gram features" — wrong: in the paper N = number of documents.
+  The citation was VALID, but the sentence was wrong -> a citation check alone is not enough (Day 6).
+- The policymaker script ended with an UNCITED conclusion of its own -> citation coverage (Day 6).

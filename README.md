@@ -44,13 +44,21 @@ Rag-chatbot/
 │   │   ├── sentences.py       #   math-safe sentence splitting
 │   │   ├── chunker.py         #   size limit, page boundaries, overlap, IDs
 │   │   └── storage.py         #   save / load chunks as JSON
-│   └── retrieval/             # STAGE 3: question -> most relevant Chunks
-│       ├── retrieved_chunk.py #   RetrievedChunk data type (chunk + score + rank)
-│       ├── embedder.py        #   text -> vectors (sentence-transformers, bge-small-en-v1.5)
-│       ├── vector_store.py    #   DENSE search (FAISS, cosine similarity)
-│       ├── bm25_index.py      #   SPARSE keyword search (BM25)
-│       ├── hybrid.py          #   merge both rankings (Reciprocal Rank Fusion)
-│       └── retriever.py       #   build / save / load index, retrieve()
+│   ├── retrieval/             # STAGE 3: question -> most relevant Chunks
+│   │   ├── retrieved_chunk.py #   RetrievedChunk data type (chunk + score + rank)
+│   │   ├── embedder.py        #   text -> vectors (sentence-transformers, bge-small-en-v1.5)
+│   │   ├── vector_store.py    #   DENSE search (FAISS, cosine similarity)
+│   │   ├── bm25_index.py      #   SPARSE keyword search (BM25)
+│   │   ├── hybrid.py          #   merge both rankings (Reciprocal Rank Fusion)
+│   │   └── retriever.py       #   build / save / load index, retrieve()
+│   └── generation/            # STAGE 4: request + chunks -> script with [chunk ID] citations
+│       ├── options.py         #   audience / length / style choices, ScriptRequest
+│       ├── context.py         #   format chunks as the SOURCES block of the prompt
+│       ├── prompts.py         #   prompt template family + grounding rules (system prompt)
+│       ├── citations.py       #   find + check the [chunk IDs] in the answer
+│       ├── script_result.py   #   GeneratedScript data type
+│       ├── generator.py       #   ScriptGenerator: retrieve -> prompt -> LLM -> check
+│       └── export.py          #   save a run as Markdown (examples/)
 ├── tests/                     # one test file per stage (pytest)
 ├── data/
 │   ├── papers/                # input papers
@@ -60,6 +68,8 @@ Rag-chatbot/
 ├── chunk_papers.py            # Day 2: run ingestion + chunking on all papers
 ├── build_index.py             # Day 3: embed all chunks, save index/ (git-ignored)
 ├── search.py                  # Day 3: python search.py "question" [--paper P3] [--compare]
+├── generate.py                # Day 4: python generate.py --paper P3 --audience policymakers --length 90s
+├── examples/                  # saved example runs (input -> script -> sources -> checks)
 └── NOTES.md                   # learning journal
 ```
 

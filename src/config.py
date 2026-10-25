@@ -40,3 +40,7 @@ EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"  # free, runs on CPU, reads up to 512
 EMBEDDING_QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
 TOP_K = 5  # how many chunks to return per search
 RRF_K = 60  # constant in Reciprocal Rank Fusion (standard value from the RRF paper)
+
+# ---------------------------------------------------------------- generation (src/generation/)
+SPEAKING_WORDS_PER_MINUTE = 150  # average talk speed; turns "90s" into a word target
+EXAMPLES_DIR = PROJECT_ROOT / "examples"  # saved example runs (inputs -> outputs)

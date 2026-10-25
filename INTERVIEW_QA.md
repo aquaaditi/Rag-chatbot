@@ -323,4 +323,45 @@ You **don't** yet. You'd measure it: build a small set of questions with known a
 
 ### How to practise
 - Cover the answers and say them aloud. **Q33, Q36 and Q43** are the ones interviewers love most, because they test real experience and honesty.
-- Mark anything you can't explain with ❌. Tell me which ones, and I'll explain them differently, with an example from your own chunks.      
+- Mark anything you can't explain with ❌. Tell me which ones, and I'll explain them differently, with an example from your own chunks.     
+
+# Day 3 — Lessons from my own retrieval results
+**Q. Is hybrid search always better than dense or BM25 alone?**
+No. For "making a big model smaller", dense search found the right Introduction
+chunks by meaning. BM25 matched the word "big" and found a less relevant chunk
+("ensembles ... on very big datasets"), and hybrid ranked that noisy chunk #1.
+RRF can mix one method's noise into the final ranking. That's why I don't assume
+hybrid wins; I measure each mode.
+
+**Q. Tell me about a retrieval failure you found.**
+For "SST-2 accuracy", the right answer is in paper 1 (Kim's sentiment
+benchmarks), but BM25 and hybrid returned mostly paper 3 chunks. I expected BM25
+to win on an exact dataset name, so the result surprised me. I checked the cause
+instead of guessing: (fill in after your checks, e.g. "BM25 split 'SST-2' into
+'sst' and '2', and '2' appears everywhere").
+
+**Q. Why can names like "SST-2" be hard for BM25?**
+BM25 depends on how text is split into words. If "SST-2" is split into "sst" and
+"2", the "2" matches page numbers, section numbers and tables everywhere, adding
+noise. A fix is to keep hyphenated names together as one token, and split the
+question and the chunks the same way.
+
+**Q. How do tables affect retrieval?**
+Tables come out of PDFs as jumbled words and numbers, so a results table may not
+read clearly as "SST-2 accuracy 87%". Both BM25 and embeddings struggle with that
+text. Better table extraction, or adding a short description of each table, would
+help.
+
+**Q. Your hybrid scores were 0.030–0.033. What does that tell you?**
+The top results are almost tied, so the ranking is fragile: a small change could
+reorder them. That's another reason to judge retrieval over many questions, not
+one.
+
+**Q. How do you know your retrieval is good?**
+Not by looking at a few examples. One of my test queries worked well, one failed,
+and hybrid wasn't always best. The right way is a small labelled set (about 20
+questions, each with its correct chunk ID) and recall@5 for each mode. That turns
+"it looks good" into a number.
+
+**Q. What did you learn from comparing the modes?** (short version)
+My assumptions were wrong twice: BM25 didn't win on "SST-2", and hybrid didn't win on "making a big model smaller". So I test with real queries and measure, instead of trusting what should happen in theory.
