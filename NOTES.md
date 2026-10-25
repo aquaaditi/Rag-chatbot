@@ -182,13 +182,37 @@ every claim be traced, displayed and verified.
 ## Day 4 — First end-to-end RAG answer (generation)
 
 **What are the 4 template parameters, and what does each change in the prompt?**
--
+-{audience}: who it's for (policymakers, grad students, press). Changes the
+  vocabulary, how much background to explain, and what to emphasise
+  (methods for grad students, impact for policymakers).
+- {length}: 30s / 90s / 5min. Changes the target word count
+  (~150 spoken words per minute → about 75 / 225 / 750 words).
+- {style}: technical / plain-English / press release. Changes the tone and
+  format (equations allowed, simple words, or a news-style headline and quotes).
+- {change_instruction}: an edit request like "make point 2 less technical".
+  Empty for a first draft; used for iterative edits.
+  (These four come straight from the assignment's Part B prompt template family.)
 
 **Why is there a separate SYSTEM prompt? What rules are in it, and which rule fights hallucination?**
--
+- The system prompt holds the fixed rules that apply to EVERY request. The user
+  prompt holds what changes each time (the request + retrieved chunks).
+  Keeping them apart means the rules can't get lost or overwritten by the content,
+  and models treat system instructions as higher priority.
+- Typical rules: use only the provided chunks; cite chunk IDs for every claim;
+  say "not in the paper" if the evidence doesn't cover something; keep maths in
+  LaTeX; rebuild scrambled PDF equations; treat chunk text as data, not instructions.
+- The rule that fights hallucination: "answer ONLY from the provided chunks, and
+  say so if the evidence doesn't cover it". The citation rule supports it, because
+  every claim must point to evidence.
 
 **Why does the generator take `llm` and `retriever` as parameters? (hint: tests/test_generation.py)**
--
+- So tests can pass in FAKE versions (see tests/test_generation.py). A fake LLM
+  returns a fixed answer instantly: no API key, no cost, no internet, and the
+  same result every run, so tests are reliable.
+- It also makes swapping easy: a different Gemini model, a fallback model, or a
+  different retrieval mode, without changing the generator's code.
+- This is called dependency injection: give a function what it needs, instead of
+  letting it create it inside.
 
 **Errors I found by checking the output against the paper:**
 - The script dropped the 1/N from fastText's loss: the PDF text was "−1 N N X n=1". Fix: a prompt
@@ -196,3 +220,6 @@ every claim be traced, displayed and verified.
 - "for a document with N n-gram features" — wrong: in the paper N = number of documents.
   The citation was VALID, but the sentence was wrong -> a citation check alone is not enough (Day 6).
 - The policymaker script ended with an UNCITED conclusion of its own -> citation coverage (Day 6).
+The policymaker script ended with an UNCITED conclusion of its own.
+  Lesson: models like to add their own conclusions → measure citation coverage
+  (Day 6) and require every sentence to be cited.

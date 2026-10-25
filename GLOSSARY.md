@@ -156,3 +156,31 @@
 | **Prompt injection** | Hidden instructions inside a document that try to trick the LLM. |
 
 ---
+
+## Day 4 — Generation
+
+| Word | Simple meaning |
+|---|---|
+| **Generation** | The LLM writing the output (script, bullets) from the retrieved chunks. The "G" in RAG. |
+| **Prompt template** | A fixed prompt with blanks ({audience}, {length}...) filled in for each request. |
+| **Template parameter** | One blank in the template, e.g. {style}. |
+| **Instantiated example** | A template with its blanks filled in with real values. Part B asks for two. |
+| **System prompt** | Fixed rules sent with every request (use only the sources, cite everything). |
+| **User prompt** | The part that changes each time: the task plus the chunks. |
+| **Grounding** | Making the model answer only from the given evidence. |
+| **Grounding rules** | The instructions that enforce grounding, e.g. "use ONLY the sources". |
+| **Context** | The chunks given to the LLM inside the prompt. |
+| **Context formatting** | How chunks are shown to the LLM, e.g. `[P3_p2_c06] (paper, page, section)` + text. |
+| **Context selection** | Choosing which chunks go in the prompt (abstract first, top-k by length). |
+| **Word target** | The length goal in words, from time at 150 words per minute (90s ≈ 225 words). |
+| **Citation check** | Code that finds cited IDs and checks they exist. |
+| **Invented citation** | A chunk ID the model made up that doesn't exist. |
+| **Citation coverage** | The share of sentences that have a citation. |
+| **Uncited claim** | A sentence with no source, often the model's own conclusion. |
+| **Faithfulness** | Whether each claim is actually supported by its cited evidence. |
+| **Dependency injection** | Passing what a function needs (like `llm`) as a parameter instead of creating it inside. |
+| **Fake / stub** | A simple pretend version of something (like an LLM) used in tests. |
+| **Systematic error** | An error that happens the same way every time, e.g. dropping 1/N from scrambled equations. Often fixable with a prompt rule. |
+| **Scrambled equation** | An equation that comes out of a PDF as jumbled symbols, e.g. "−1 N N X n=1". |
+| **Export / run log** | A saved record of one run: input, prompt, sources and output. |
+| **Token budget** | How many tokens you can spend on the prompt and output; more chunks use more of it. |

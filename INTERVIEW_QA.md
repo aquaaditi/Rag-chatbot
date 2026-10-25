@@ -365,3 +365,148 @@ questions, each with its correct chunk ID) and recall@5 for each mode. That turn
 
 **Q. What did you learn from comparing the modes?** (short version)
 My assumptions were wrong twice: BM25 didn't win on "SST-2", and hybrid didn't win on "making a big model smaller". So I test with real queries and measure, instead of trusting what should happen in theory.
+
+       #DAY - 4 generation (the first complete RAG answer)
+
+# Day 4 — Generation (the first complete RAG answer)
+
+## The pipeline
+
+**Q1. Walk me through what happens when a user asks for a script.**
+"The request comes with an audience, length and style. I retrieve relevant
+chunks, always putting the abstract first, then format each chunk with its ID
+and location. I fill the prompt template with the parameters and the chunks, and
+send it to Gemini with a system prompt of grounding rules. Gemini returns a script
+with chunk IDs in brackets, and my code checks that every cited ID really exists."
+One line: retrieve → format → prompt → Gemini → check citations.
+
+**Q2. What is the 'G' in RAG doing in your system?**
+"Gemini writes the script, but only from the retrieved chunks. Retrieval decides
+what evidence it sees; generation decides how to explain it for the audience."
+One line: retrieval finds the evidence; generation explains it.
+
+## Prompts
+
+**Q3. Why use a prompt template instead of writing a new prompt each time?**
+"The pipeline stays the same and only the parameters change. That makes outputs
+consistent, easy to test and easy to compare across audiences."
+One line: one template, many requests, consistent results.
+
+**Q4. What are your four template parameters?**
+"{audience}: policymakers, grad students or press. {length}: 30s, 90s or 5 min,
+turned into a word target at 150 words per minute. {style}: technical, plain
+English or press release. {change_instruction}: an edit request for iterative
+changes, empty for a first draft."
+One line: who, how long, what tone, and what to change.
+
+**Q5. Why separate the system prompt from the user prompt?**
+"The system prompt holds fixed rules for every request: use only the sources,
+cite every fact, keep numbers exact, use LaTeX for maths, use safe and accessible
+language. The user prompt holds what changes: the task and the chunks. Keeping
+them apart stops the rules getting lost in the content, and models give system
+instructions higher priority."
+One line: fixed rules in the system prompt; the changing task in the user prompt.
+
+**Q6. Which rule fights hallucination most?**
+"'Use ONLY the provided sources', combined with 'cite every sentence'. The first
+limits what the model can say; the second makes every claim checkable."
+One line: only-the-sources plus cite-everything.
+
+**Q7. Does grounding eliminate hallucination?**
+"No, it reduces it. In my own output, one sentence cited a valid chunk but
+misstated what N meant. Grounding limits the evidence; it doesn't guarantee the
+model reads it correctly. That's why I need claim-level checking."
+One line: grounding reduces hallucination but doesn't remove it.
+
+## Context and citations
+
+**Q8. How do you format chunks for the LLM, and why?**
+"Each chunk is shown as [P3_p2_c06] with its paper, page and section, then its
+text. The model sees exactly which ID to cite, and the location helps it
+understand where the text came from."
+One line: every chunk carries its ID so the model can cite it.
+
+**Q9. Why does the abstract always come first?**
+"The abstract is the authors' own reliable summary, so it gives the model the big
+picture before the details. It also guarantees the main claims are always
+available, even if retrieval misses something."
+One line: the abstract gives a reliable overview every time.
+
+**Q10. Why do longer scripts get more chunks?**
+"A 30-second script needs a few facts; a 5-minute script needs many. So I use 4,
+6 or 10 chunks. More chunks give more coverage but cost more tokens and can add
+less relevant text."
+One line: more length needs more evidence, at the cost of tokens and noise.
+
+**Q11. What does your citation check do, and what can't it do?**
+"It finds every cited ID and flags any that don't exist among the provided
+chunks, so it catches invented citations. It can't tell whether the sentence is
+actually supported by the chunk; my N-meaning error had a valid citation."
+One line: it checks citations exist, not that they're correct.
+
+**Q12. What's an invented citation, and why does it matter?**
+"An ID the model made up, like P3_p9_c04 when that chunk doesn't exist. It looks
+trustworthy but points nowhere, which is worse than no citation."
+One line: a fake citation creates false trust.
+
+## Length, audience, style
+
+**Q13. How do you control length?**
+"I convert time into a word target at about 150 spoken words per minute, so 90
+seconds is about 225 words, and put it in the prompt. My scripts came out at 199
+and 219, close but not exact, because LLMs don't count words precisely. So I
+measure the length after generation."
+One line: a word target in the prompt, then measure.
+
+**Q14. How does the output change for different audiences?**
+"For policymakers: plain words, impact and why it matters, few technical terms.
+For grad students: methods, equations in LaTeX, precise terms. For press: a news
+style with a strong opening."
+One line: same evidence, different emphasis and vocabulary.
+
+## Design and testing
+
+**Q15. Why does the generator take `llm` and `retriever` as parameters?**
+"Dependency injection. Tests pass in a fake LLM and a fake retriever, so they run
+fast, offline, free and give the same result every time. It also lets me swap in
+a different model or retrieval mode without changing the generator."
+One line: inject dependencies so they can be faked or swapped.
+
+**Q16. What can tests with a fake LLM NOT tell you?**
+"Whether the real model follows the prompt well. Fakes test my code: parsing,
+citation checking, saving. Output quality needs real runs checked against the
+paper, and later an evaluation set."
+One line: fakes test the code, not the model's quality.
+
+**Q17. Why save every run with its prompt, sources and output?**
+"It's evidence. I can reproduce and debug any output, compare prompt versions,
+and the assignment asks for example runs and conversation logs."
+One line: saved runs make outputs reproducible and checkable.
+
+## Your error stories (most important)
+
+**Q18. Tell me about an error you found in the generated output.**
+"The fastText loss lost its 1/N, because the PDF extracted the equation as
+'−1 N N X n=1'. I added a prompt rule explaining scrambled PDF equations, and it
+then wrote −\frac{1}{N}\sum_{n=1}^{N} correctly. Prompt engineering can fix a
+systematic error, but I still check the result."
+One line: a prompt rule fixed a scrambled equation.
+
+**Q19. Is it risky to ask the model to rebuild equations?**
+"Yes. Rebuilding means the model fills in structure the PDF lost, and it could
+build a wrong equation that looks right. So rebuilt maths must be checked
+against the paper, and the LaTeX source is better when available."
+One line: rebuilding maths helps but can invent errors.
+
+**Q20. Why doesn't a valid citation guarantee a true sentence?**
+"I had a sentence saying 'a document with N n-gram features', citing the right
+chunk, but in the paper N is the number of documents. The citation proves where
+the model looked, not that it understood correctly. That's why SARAL needs a
+separate Checker that verifies each claim against its cited chunk."
+One line: a citation shows where the model looked, not that it's right.
+
+**Q21. What did the uncited conclusion teach you?**
+"The policymaker script added its own conclusion without a citation. Models
+like to add a nice ending. I need to measure citation coverage, the share of
+sentences with a source, and flag uncited ones."
+One line: models add uncited conclusions, so measure coverage.
