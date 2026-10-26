@@ -223,3 +223,53 @@ every claim be traced, displayed and verified.
 The policymaker script ended with an UNCITED conclusion of its own.
   Lesson: models like to add their own conclusions → measure citation coverage
   (Day 6) and require every sentence to be cited.
+## Day 5 — Structured outputs (slide talks as JSON)
+
+**What is "structured output", and why is a Pydantic schema better than asking for JSON in the prompt?**
+-  Structured output = the LLM returns data in a fixed shape (JSON) instead of
+  free text. For a slide talk: a list of slides, each with a title, bullets,
+  speaker notes and the chunk IDs it cites.
+- Asking for JSON only in the prompt is a request, not a guarantee. The model can
+  return broken JSON, extra text around it, missing fields or wrong types.
+- With a Pydantic schema:
+  1. the schema is passed to Gemini, so the model is constrained to that shape;
+  2. Pydantic validates the result: required fields, types and rules
+     (e.g. exactly 3 notes per slide), with a clear error if anything is wrong;
+  3. the rest of my code gets a typed Python object, not a string to parse.
+- The schema is also the single source of truth: the same model defines what
+  Gemini must produce and what my code checks.
+
+
+**What does the self-correction loop do? When did it actually run?**
+-  If the output fails validation or my checks (bad JSON, wrong slide count,
+  invented citation, too few cited sentences), the error message is sent back to
+  Gemini with a request to fix it, up to a fixed number of attempts. If it still
+  fails, the run fails clearly instead of saving a bad result.
+- When it actually ran: (fill in from your logs: which run, which error
+  triggered it, and whether the retry fixed it)
+
+**What is math-aware source selection, and why did 3 -> 5 math chunks matter?**
+-  Normal retrieval ranks chunks by relevance to the request, so equation chunks
+  can rank low. Math-aware selection makes sure chunks labelled `math` are also
+  added to the context, so the model can preserve key equations in LaTeX, which
+  the assignment requires.
+- 3 -> 5 mattered because Eq. 1 (softmax with temperature) ranked 4th among math
+  chunks, so with only 3 it was left out and the talk had no Eq. 1. Its chunk
+  never says "temperature" (the page-boundary problem again), so it couldn't rank
+  higher by itself.
+- This is one of Part B's suggested improvements ("math-aware retrieval"), so I
+  can show it working in my own system.
+
+**What went wrong & how I fixed it:**
+- The script was just bullets + notes pasted together (repetitive). Fix: prompt says "natural speech,
+  transitions, never repeat a sentence" -> it then used "Now let's look at...".
+- Eq. 1 (softmax with temperature) was missing: its chunk ranked 4th among math chunks and only 3
+  were added (it never says "temperature" - page boundary again). Fix: add 5 math chunks.
+- BIG ONE: for policymakers, Gemini invented "government agencies process citizen feedback" and
+  cited a real chunk for it - looks grounded but is not. A new grounding rule did NOT stop it.
+  The cause was my audience description ("they care about real-world impact...") pushing it to
+  invent impact. Fix: reworded the policymakers description -> no invented framing, and it now
+  includes real limitations. Lesson: prompts can CAUSE hallucination; and a citation that exists
+  does not prove the sentence is true (Day 6 checks sentence vs chunk).
+- The script had NO citations and my checks missed it. Fix: new check "at least 60% of script
+  sentences cite a source".

@@ -11,8 +11,9 @@ from src import config
 
 AUDIENCES = {
     "policymakers": (
-        "policymakers and government officials: smart but not technical; they care about "
-        "real-world impact, costs, risks and decisions, not about how the maths works"
+        "policymakers and government officials: smart but not technical; skip how the maths works "
+        "and focus on what the paper itself shows about cost, speed, accuracy and limitations. "
+        "Do not invent policy scenarios or say who would use it - let them draw their own conclusions"
     ),
     "grad_students": (
         "graduate students in machine learning: they know the basics and want the method, "
@@ -36,10 +37,20 @@ STYLES = {
 }
 
 # Spoken length in seconds
-LENGTHS = {"30s": 30, "90s": 90, "5min": 300}
+LENGTHS = {"30s": 30, "90s": 90, "5min": 300, "7min": 420}
 
 # How many chunks to retrieve: a longer script needs more material
-CHUNKS_FOR_LENGTH = {"30s": 4, "90s": 6, "5min": 10}
+CHUNKS_FOR_LENGTH = {"30s": 4, "90s": 6, "5min": 10, "7min": 12}
+
+
+def target_words_for(length: str) -> int:
+    """90s at 150 words per minute -> 225 words."""
+    return round(LENGTHS[length] / 60 * config.SPEAKING_WORDS_PER_MINUTE)
+
+
+def check_choice(name: str, value: str, allowed: dict) -> None:
+    if value not in allowed:
+        raise ValueError(f"Unknown {name} '{value}'. Choose one of: {', '.join(allowed)}")
 
 
 @dataclass
@@ -52,20 +63,14 @@ class ScriptRequest:
     change_instruction: str = ""  # used later for edits like "make #2 less technical"
 
     def __post_init__(self):
-        _check_choice("audience", self.audience, AUDIENCES)
-        _check_choice("length", self.length, LENGTHS)
-        _check_choice("style", self.style, STYLES)
+        check_choice("audience", self.audience, AUDIENCES)
+        check_choice("length", self.length, LENGTHS)
+        check_choice("style", self.style, STYLES)
 
     @property
     def target_words(self) -> int:
-        """90s at 150 words per minute -> 225 words."""
-        return round(LENGTHS[self.length] / 60 * config.SPEAKING_WORDS_PER_MINUTE)
+        return target_words_for(self.length)
 
     @property
     def n_chunks(self) -> int:
         return CHUNKS_FOR_LENGTH[self.length]
-
-
-def _check_choice(name: str, value: str, allowed: dict) -> None:
-    if value not in allowed:
-        raise ValueError(f"Unknown {name} '{value}'. Choose one of: {', '.join(allowed)}")

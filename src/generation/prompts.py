@@ -13,9 +13,8 @@ cite every sentence, stay safe and accessible. This is what keeps RAG grounded.
 
 from src.generation.options import AUDIENCES, STYLES, ScriptRequest
 
-SYSTEM_PROMPT = """You write spoken scripts that explain research papers to a specific audience.
-
-Rules - follow all of them:
+# Rules 1-7 are shared by every output type (scripts here, slide decks in src/talks/)
+GROUNDING_RULES = """Rules - follow all of them:
 1. Use ONLY facts from the SOURCES below. Never add facts, numbers or claims from your own memory.
 2. After EVERY sentence that states a fact, cite the source chunk ID(s) in square brackets,
    exactly as written in the sources, e.g. [P3_p2_c06] or [P3_p2_c06][P3_p3_c01].
@@ -28,7 +27,25 @@ Rules - follow all of them:
    $-\\frac{1}{N}\\sum_{n=1}^{N}$). Rebuild them carefully and keep EVERY term.
 6. Safety and accessibility: no offensive, discriminatory or sensational language;
    explain jargon for non-expert audiences; prefer short, clear sentences.
-7. Output only the script text - no title, no headings, no notes to the user."""
+7. Adapting to the audience changes HOW you say things, never WHAT is true. Do not invent
+   use cases, organisations (e.g. "government agencies"), scenarios, benefits or numbers that
+   the sources do not state. A citation must point to a chunk that really says that thing."""
+
+SYSTEM_PROMPT = f"""You write spoken scripts that explain research papers to a specific audience.
+
+{GROUNDING_RULES}
+8. Output only the script text - no title, no headings, no notes to the user."""
+
+CHANGE_BLOCK = """
+CHANGE REQUEST: {change_instruction}
+Apply this change while keeping every rule above (still cite every fact).
+"""
+
+
+def change_block(change_instruction: str) -> str:
+    """The CHANGE REQUEST part of a prompt - empty for a first draft."""
+    return CHANGE_BLOCK.format(change_instruction=change_instruction) if change_instruction else ""
+
 
 SCRIPT_TEMPLATE = """TASK: Write a spoken script about: {topic}
 
@@ -39,25 +56,15 @@ LENGTH: about {target_words} words ({length} when read aloud at 150 words per mi
 SOURCES:
 {sources}"""
 
-CHANGE_BLOCK = """
-CHANGE REQUEST: {change_instruction}
-Apply this change while keeping every rule above (still cite every fact).
-"""
-
 
 def build_script_prompt(request: ScriptRequest, sources: str) -> str:
     """Fill the template for one request. `sources` comes from context.format_sources()."""
-    change_block = (
-        CHANGE_BLOCK.format(change_instruction=request.change_instruction)
-        if request.change_instruction
-        else ""
-    )
     return SCRIPT_TEMPLATE.format(
         topic=request.topic,
         audience=AUDIENCES[request.audience],
         style=STYLES[request.style],
         target_words=request.target_words,
         length=request.length,
-        change_block=change_block,
+        change_block=change_block(request.change_instruction),
         sources=sources,
     )

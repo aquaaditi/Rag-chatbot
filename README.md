@@ -51,14 +51,23 @@ Rag-chatbot/
 │   │   ├── bm25_index.py      #   SPARSE keyword search (BM25)
 │   │   ├── hybrid.py          #   merge both rankings (Reciprocal Rank Fusion)
 │   │   └── retriever.py       #   build / save / load index, retrieve()
-│   └── generation/            # STAGE 4: request + chunks -> script with [chunk ID] citations
-│       ├── options.py         #   audience / length / style choices, ScriptRequest
-│       ├── context.py         #   format chunks as the SOURCES block of the prompt
-│       ├── prompts.py         #   prompt template family + grounding rules (system prompt)
-│       ├── citations.py       #   find + check the [chunk IDs] in the answer
-│       ├── script_result.py   #   GeneratedScript data type
-│       ├── generator.py       #   ScriptGenerator: retrieve -> prompt -> LLM -> check
-│       └── export.py          #   save a run as Markdown (examples/)
+│   ├── generation/            # STAGE 4: request + chunks -> script with [chunk ID] citations
+│   │   ├── options.py         #   audience / length / style choices, ScriptRequest
+│   │   ├── context.py         #   format chunks as the SOURCES block of the prompt
+│   │   ├── prompts.py         #   prompt template family + grounding rules (system prompt)
+│   │   ├── citations.py       #   find + check the [chunk IDs] in the answer
+│   │   ├── script_result.py   #   GeneratedScript data type
+│   │   ├── generator.py       #   ScriptGenerator: retrieve -> prompt -> LLM -> check
+│   │   ├── source_selection.py #  abstract + top chunks + math-aware equation chunks
+│   │   └── export.py          #   save a run as Markdown (examples/)
+│   └── talks/                 # STAGE 4b: structured slide talks (JSON via Pydantic schema)
+│       ├── schema.py          #   Slide / Talk: the JSON shape Gemini must return
+│       ├── request.py         #   TalkRequest: slides, notes per slide, focus, equations...
+│       ├── prompts.py         #   talk template + self-correction retry prompt
+│       ├── checks.py          #   slide count, notes, equations, length, citations
+│       ├── result.py          #   GeneratedTalk data type
+│       ├── generator.py       #   TalkGenerator: sources -> JSON -> check -> retry once
+│       └── export.py          #   save a talk deck as Markdown
 ├── tests/                     # one test file per stage (pytest)
 ├── data/
 │   ├── papers/                # input papers
@@ -69,6 +78,7 @@ Rag-chatbot/
 ├── build_index.py             # Day 3: embed all chunks, save index/ (git-ignored)
 ├── search.py                  # Day 3: python search.py "question" [--paper P3] [--compare]
 ├── generate.py                # Day 4: python generate.py --paper P3 --audience policymakers --length 90s
+├── make_talk.py               # Day 5: python make_talk.py --paper P3 --slides 7 --notes 3 --focus methods
 ├── examples/                  # saved example runs (input -> script -> sources -> checks)
 └── NOTES.md                   # learning journal
 ```
