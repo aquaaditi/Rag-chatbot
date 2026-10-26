@@ -510,3 +510,163 @@ One line: a citation shows where the model looked, not that it's right.
 like to add a nice ending. I need to measure citation coverage, the share of
 sentences with a source, and flag uncited ones."
 One line: models add uncited conclusions, so measure coverage.
+       DAY - 5  Structured output (slides, scripts, notes)
+
+# Day 5 — Structured outputs (slide talks)
+
+## Structured output and Pydantic
+
+**Q1. What is structured output, and why did you need it?**
+"The LLM returns data in a fixed shape instead of free text. The task asks for
+slide bullets, speaker notes, equations and a full script. With structured
+output, each is its own field, so I can check each part, count slides and notes,
+and export them cleanly. With one block of text, I'd have to guess where each
+part starts."
+One line: a fixed shape lets me check and use each part separately.
+
+**Q2. Why use a Pydantic schema instead of asking for JSON in the prompt?**
+"A prompt request is not a guarantee: the model can return broken JSON, extra
+text or missing fields. The schema is passed to Gemini, which constrains the
+output to that shape, and Pydantic then validates it and gives me Python objects.
+The same schema defines what the model must produce and what my code checks."
+One line: the schema enforces the shape; a prompt only asks for it.
+
+**Q3. What does your schema look like?**
+"A Slide has a title, bullets, equations and speaker notes. A Talk has a title,
+a list of slides, and the full script. The field descriptions also act as
+instructions to the model for each field."
+One line: Talk → slides → title, bullets, equations, notes; plus a script.
+
+**Q4. Why are equations a separate field?**
+"So they can't get lost inside bullet text, and so I can check them directly:
+the request says to preserve key equations, and a separate field lets me verify
+that equations are present."
+One line: a separate field makes equations checkable.
+
+## Validation, checks and retries
+
+**Q5. What's the difference between schema validation and your checks?**
+"Schema validation checks the shape: correct fields and types. My checks test
+whether the output follows the request and the rules: 7 slides, 3 notes per
+slide, equations present, script length, citation coverage, no invented IDs. A
+response can have a perfect shape and still break the request."
+One line: validation checks shape; checks check the request.
+
+**Q6. What does your self-correction loop do?**
+"If the checks find problems, I send the list of problems back to Gemini and ask
+for a corrected version, once. It really ran in one of my runs: attempts = 2."
+One line: send the problem list back and retry once.
+
+**Q7. Why retry only once?**
+"Each retry costs time and money, and repeated retries can loop without
+improving. One retry fixes most simple misses. If it still fails, the run fails
+clearly instead of saving a bad result. My study plan also limits model calls per
+turn for the same reasons."
+One line: one retry balances fixing errors against cost and loops.
+
+**Q8. What happens if the retry also fails?**
+"The run is reported as failed, with the list of problems. Saving a deck that
+breaks the rules would be worse, because the user would trust it."
+One line: fail clearly rather than save a bad result.
+
+**Q9. Why is sending the problem list better than just asking again?**
+"A plain retry may repeat the same mistake. A specific list, like 'slide 4 has 2
+notes, needs 3', tells the model exactly what to fix."
+One line: specific feedback gives a better second attempt.
+
+## Maths
+
+**Q10. What is math-aware source selection?**
+"Normal retrieval ranks chunks by relevance, so equation chunks can rank low.
+Math-aware selection deliberately adds chunks labelled as maths, so the model
+has the equations it's asked to preserve. It's one of the improvements Part B
+suggests."
+One line: deliberately include equation chunks when equations are requested.
+
+**Q11. Why did you change from 3 to 5 equation chunks?**
+"The key equation, softmax with temperature, ranked 4th among maths chunks, so
+with 3 it was left out. Its chunk never says 'temperature' because the
+explanation is on the next page. With 5 it was included and the talk had all
+key equations."
+One line: the key equation ranked 4th, so 3 wasn't enough.
+
+**Q12. Is increasing to 5 a real fix?**
+"It fixed this case, but the root cause is the page boundary. A more robust fix
+is to keep an equation with its explanation, for example by adding neighbouring
+chunks or letting a chunk cross a page. 5 is a tuned number, and could miss an
+equation in a longer paper."
+One line: a practical fix; the real cause is the page boundary.
+
+**Q13. How do you know the LaTeX equations are correct?**
+"I checked all 5 against the paper by hand. The model rebuilds them from scrambled
+PDF text, so they can look right and still be wrong. Using the LaTeX source when
+available, or automated comparison, would make this safer."
+One line: rebuilt maths must be checked against the paper.
+
+## Faithfulness and prompts
+
+**Q14. Tell me about a hallucination you found.** (your best story)
+"For policymakers, Gemini wrote that government agencies process citizen
+feedback with these models, and cited a real chunk. A stricter grounding rule
+didn't stop it. The cause was my own audience description, which said
+policymakers care about real-world impact, so the model invented impact. I
+reworded it, and the deck stopped inventing and even included the paper's real
+limitations."
+One line: my own prompt caused the hallucination.
+
+**Q15. What's the tension between audience adaptation and faithfulness?**
+"Adapting for an audience pushes the model to add relevance: 'why this matters
+to you'. If the paper doesn't say it, the model may invent it. So audience
+instructions should change how things are explained, not ask for new content."
+One line: adapt the explanation, never invent the content.
+
+**Q16. Why didn't the stronger grounding rule fix it?**
+"The audience instruction and the grounding rule pulled in opposite directions,
+and the specific instruction won. Adding more rules doesn't help if another part
+of the prompt causes the problem; you have to find and fix the cause."
+One line: fix the cause in the prompt, don't just add rules.
+
+**Q17. The script had no citations and your checks missed it. What did you do?**
+"I added a citation-coverage check: at least 60% of script sentences must cite a
+source. Checks only catch what you test for, so each new failure becomes a new
+check."
+One line: every new failure becomes a new check.
+
+**Q18. Why 60%, not 100%?**
+"Transitions like 'Now let's look at the results' have no facts to cite. 60%
+catches scripts with almost no citations. It's a heuristic; a better approach is
+claim-level, where every factual claim must have at least one citation."
+One line: a heuristic for now; claim-level checks are better.
+
+## Code design and testing
+
+**Q19. Why share grounding rules and source selection across stages?**
+"Scripts and talks need the same rules. If I copied them, fixing a rule in one
+place would leave the other wrong. Sharing them means one fix applies everywhere."
+One line: one source of truth, so fixes apply everywhere.
+
+**Q20. Tell me about the word-count test bug.**
+"A test expected a certain word count, but the citation IDs in the text counted
+as words, so the number was off. I changed the test to compute the expected
+value instead of hard-coding it. It also raised a design question: script length
+should probably be measured without citation IDs, since they aren't spoken."
+One line: citations counted as words, so compute expected values.
+
+**Q21. How does this connect to the assignment?**
+"It produces the task's main example: a 7-slide talk for graduate students on
+methods, with 3 speaker notes per slide and key equations in LaTeX, plus slide
+bullets and a full speaker script, all with citations. It passed every check on
+the first try."
+One line: it delivers the assignment's headline example.
+
+## Follow-ups to prepare
+
+**Q22. The task says the script should be about 5–7 minutes. Was yours?**
+"(Check your output: 5–7 minutes is about 750–1,050 words at 150 words per
+minute. Say the real number and whether your length check enforces it.)"
+
+**Q23. What would you improve next?**
+"Claim-level structured citations instead of a sentence-percentage check, a
+Checker that verifies each claim against its chunk, and keeping equations with
+their explanations across page boundaries."
+One line: claim-level citations, a Checker, and a fix for the page boundary.

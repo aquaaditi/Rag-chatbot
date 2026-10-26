@@ -184,3 +184,30 @@
 | **Scrambled equation** | An equation that comes out of a PDF as jumbled symbols, e.g. "−1 N N X n=1". |
 | **Export / run log** | A saved record of one run: input, prompt, sources and output. |
 | **Token budget** | How many tokens you can spend on the prompt and output; more chunks use more of it. |
+
+
+## Day 5 — Structured outputs
+
+| Word | Simple meaning |
+|---|---|
+| **Structured output** | The LLM returns data in a fixed shape (JSON), not free text. |
+| **Schema** | The definition of that shape: which fields exist and what type each is. |
+| **JSON schema** | A standard way to describe the shape of JSON data. Pydantic can produce one. |
+| **Field** | One named part of the data, e.g. `speaker_notes`. |
+| **Field description** | Text attached to a field explaining what it should contain; the LLM reads it as an instruction. |
+| **Schema validation** | Checking the output has the right shape and types. |
+| **Validation checks** | Checking the output follows the request (slide count, notes per slide, citations). |
+| **Self-correction loop** | Sending the list of problems back to the LLM so it can fix its output. |
+| **Retry** | Trying again after a failure. Here: once. |
+| **Attempts** | How many times the LLM was called for one result (2 = one retry happened). |
+| **Math-aware retrieval** | Deliberately including chunks that contain equations. |
+| **Speaker notes** | Short notes for the presenter for each slide. |
+| **Speaker script** | The full text the presenter would say, start to finish. |
+| **Transition** | A linking sentence like "Now let's look at...", with no facts to cite. |
+| **Citation coverage** | The share of sentences (or claims) that cite a source. |
+| **Faithfulness** | Whether each claim is truly supported by its source. |
+| **Audience adaptation** | Changing how content is explained for a specific audience. |
+| **Prompt-induced hallucination** | A false claim caused by the wording of your own prompt. |
+| **Heuristic threshold** | A rule-of-thumb number, like "60% of sentences cited". |
+| **Hard-coded value** | A fixed number written directly in code or a test, instead of being computed. |
+| **Shared code / DRY** | "Don't Repeat Yourself": keep one copy of logic used in several places. |
