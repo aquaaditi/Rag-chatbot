@@ -277,16 +277,43 @@ The policymaker script ended with an UNCITED conclusion of its own.
 ## Day 6 — Provenance (is every sentence really supported?)
 
 **What is a "claim", and what are the 4 verdicts?**
--
+- A claim is the smallest checkable unit: one generated sentence plus the chunk
+  IDs it cites, and where it sits (e.g. "slide 3 · note 2").
+- The 4 verdicts:
+  ✅ supported   — best match with its cited source scores >= 0.80, numbers match
+  ⚠️ weak        — 0.70–0.80: related, but not clearly backed
+  ❌ unsupported — below 0.70, or a number not found in the cited source
+  ➖ uncited     — no citation at all (fine for transitions, a problem for facts)
 
 **Why do we need BOTH a semantic check and an exact number check?** (hint: 74 vs 47)
--
+-  The semantic check (embeddings) checks MEANING: does the claim say roughly what
+  the source says? But embeddings treat "74" and "47" as almost the same, because
+  the rest of the sentence is identical.
+- The exact check makes sure every number in the claim really appears in the
+  cited source.
+- My evidence: "47 errors" scored 0.76 on similarity, inside the range of true
+  paraphrases, so the semantic check alone couldn't reject it. Only the number
+  check caught it.
 
 **What is citation coverage, and what is our factuality proxy?**
--
+- Citation coverage: the share of claims that cite at least one source.
+  It measures how much is CITED, not whether the citations are right.
+- Factuality proxy: the "supported share", the share of claims whose best match
+  with their cited source passes the threshold and whose numbers match.
+- Both are named in the assignment's automatic evaluation. It's called a PROXY
+  because similarity is an estimate of support, not proof of truth.
+- Example: my talk had 95% coverage but only 69% supported, so citations being
+  present doesn't mean they're backing the sentence.
 
 **What can embedding similarity NOT detect?** (hint: "fastText requires expensive GPUs")
--
+-  Contradictions. "fastText requires expensive GPUs" uses the same topic and words
+  as the paper (fastText, training, hardware), so it scores high, but the paper
+  says the opposite: it trains fast on a CPU.
+- Embeddings measure TOPIC, not TRUTH. My test contradiction scored 0.70 ("weak"),
+  not "unsupported".
+- To catch this, you need NLI (a model that decides support / contradiction /
+  unrelated) or an LLM judge that reads the claim and its source.
+
 
 **What I found:**
 - Calibration: true paraphrases 0.75-0.93, invented "government agencies" claims 0.57-0.67, unrelated

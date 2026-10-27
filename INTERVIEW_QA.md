@@ -670,3 +670,171 @@ minute. Say the real number and whether your length check enforces it.)"
 Checker that verifies each claim against its chunk, and keeping equations with
 their explanations across page boundaries."
 One line: claim-level citations, a Checker, and a fix for the page boundary.
+
+# Day 6 — Provenance (checking where every sentence comes from)
+
+## 🟢 Basic
+
+**Q1. What is provenance in your project?**
+"Being able to show where every generated sentence comes from: which chunk and
+page supports it. The assignment requires a source link for each claim or
+sentence."
+One line: every sentence traced to its source.
+
+**Q2. What is a claim?**
+"The smallest checkable unit: one sentence plus the chunk IDs it cites. I also
+record where it sits, like 'slide 3, note 2', so a problem can be found quickly."
+One line: one sentence + its citations + its location.
+
+**Q3. Why did you build provenance checking after Days 4 and 5?**
+"Because I saw that a valid citation doesn't prove a sentence is true. The
+'government agencies' claim cited a real chunk but was invented. I needed an
+automatic way to check each sentence against its source."
+One line: real citations were attached to false sentences.
+
+**Q4. What are the four verdicts?**
+"Supported: clearly backed by the source. Weak: related but not clearly backed.
+Unsupported: the source doesn't back it. Uncited: no citation at all."
+One line: supported, weak, unsupported, uncited.
+
+**Q5. What's the difference between citation coverage and supported share?**
+"Citation coverage is how much of the output has a citation. Supported share is
+how much is actually backed by the cited source. Coverage can be 100% while
+supported share is low, if the citations are wrong."
+One line: coverage = cited; supported share = actually backed.
+
+## 🟡 Intermediate
+
+**Q6. How does the semantic check work?**
+"I embed each claim and each sentence of its cited sources, then find the most
+similar one. The similarity score decides the verdict: at least 0.80 is
+supported, 0.70–0.80 is weak, below 0.70 is unsupported."
+One line: embed claim and sources, take the best match.
+
+**Q7. Why do you also need an exact number check?**
+"Embeddings treat '74' and '47' as almost the same. In my results, '47 errors'
+scored 0.76 on similarity, so it looked fine, but the number check flagged it
+because 47 doesn't appear in the source. Numbers must match exactly."
+One line: embeddings blur numbers; exact matching catches them.
+
+**Q8. How does the number check handle formats like 15,000?**
+"It normalises numbers first, so '15,000' becomes '15000' and matches. Numbers
+inside maths ($…$) are ignored, because equations contain symbols like 1/N that
+aren't factual figures."
+One line: normalise formats, skip numbers inside equations.
+
+**Q9. What are 'evidence units', and why use pairs of sentences?**
+"The pieces a claim is compared against: single sentences, pairs of neighbouring
+sentences, and section headings. Pairs matter because one generated sentence
+often combines information from two source sentences."
+One line: claims often combine two sentences, so I compare against pairs too.
+
+**Q10. Why count section headings as evidence?**
+"A slide title like 'Distillation on MNIST' was flagged as unsupported, but it
+came from a section heading. That was a false alarm, so headings now count as
+evidence."
+One line: titles often come from headings, not sentences.
+
+**Q11. What does a 'misattributed citation' mean, and how did you catch one?**
+"The claim is true, but cites the wrong place. '100 million images' cited page 7,
+but the fact is on page 5. The check found that the claim matched a different
+source better than the one it cited."
+One line: right fact, wrong citation.
+
+**Q12. Why are the 4 uncited claims acceptable?**
+"They were transitions like 'Now let's look at the results'. They contain no
+facts, so there's nothing to cite."
+One line: transitions have no facts to cite.
+
+## 🔴 Advanced
+
+**Q13. How did you choose the thresholds 0.80 and 0.70?**
+"By calibration: I scored known true and known false examples first, and chose
+thresholds that separated them, instead of guessing. The honest limitation is
+that it was a small set, so the thresholds should be re-checked on more examples."
+One line: measured on known examples, not guessed.
+
+**Q14. Why is calibration important?**
+"Similarity scores have no fixed meaning. 0.75 may be high for one model and low
+for another. Without calibration, a threshold is just a guess, and the verdicts
+would be unreliable."
+One line: a threshold only means something after calibration.
+
+**Q15. What's the biggest limitation of embedding-based checking?**
+"Embeddings measure topic, not truth. A contradiction, like 'higher temperature
+makes probabilities sharper' when the paper says softer, uses the same words
+and topic, so it scores high. One contradiction scored 0.70 and was only 'weak'."
+One line: embeddings know the topic, not whether it's true.
+
+**Q16. How would you catch contradictions?**
+"With NLI, natural language inference, a model trained to decide whether one
+sentence supports, contradicts or is unrelated to another. Or with an LLM judge
+that reads the claim and its cited source and gives a verdict with a reason."
+One line: NLI or an LLM judge, which check meaning, not just topic.
+
+**Q17. What are the risks of an LLM judge?**
+"It costs model calls, it can be wrong or inconsistent, and it may agree with
+text written by a similar model. To reduce that, the judge sees only the claim
+and its cited source, and can be a different model. Its accuracy also needs
+measuring."
+One line: it's useful but costly, and needs checking itself.
+
+**Q18. What are false positives and false negatives in your checker?**
+"A false positive is flagging a good claim as bad, like the section title false
+alarm. A false negative is passing a bad claim, like the contradiction scored as
+'weak'. Raising the threshold reduces false negatives but creates more false
+positives."
+One line: false alarms vs missed errors, traded off by the threshold.
+
+**Q19. Is 'supported share' a measure of factuality?**
+"It's a factuality proxy, which is what the assignment asks for: overlap between
+generated claims and source sentences. It isn't true factuality, because
+embeddings can't detect contradictions. That's why it's called a proxy."
+One line: a proxy for factuality, not proof.
+
+**Q20. Your talk had 69% supported and 25% weak. Is that good?**
+"It's a starting baseline. Many 'weak' claims are probably reasonable
+paraphrases that combine information, but some may be real errors, so they're
+worth reviewing by hand. I'd use the weak list as a review queue and compare the
+results with human ratings."
+One line: a baseline; weak claims need human review.
+
+**Q21. How would you measure how good your checker is?**
+"Seed known bad claims, like wrong numbers, wrong citations and contradictions,
+mixed with good ones, and count how many the checker catches and how many good
+claims it wrongly flags. Those are the false-accept and false-reject rates."
+One line: test the checker on seeded good and bad claims.
+
+**Q22. Your checker reports problems. Should it also block bad output?**
+"Right now it reports. The next step in my plan is write-check-save: if claims
+are unsupported or numbers are wrong, the draft isn't saved, or it's sent back
+for correction. Reporting first let me calibrate before trusting it to block."
+One line: report first; block once it's calibrated.
+
+## Code design and testing
+
+**Q23. Why does the retriever share its embedding model with the checker?**
+"Loading the model twice wastes memory and startup time. Sharing one copy makes
+the tools faster and keeps embeddings consistent."
+One line: load once, use everywhere.
+
+**Q24. Why use a fake embedder built from word counts in tests?**
+"The real model is slow and its scores can change between versions. A fake
+embedder is instant and predictable, so tests check my logic (claim splitting,
+verdicts, metrics) and not the model's behaviour."
+One line: fakes test my logic quickly and predictably.
+
+**Q25. How did you handle citations placed after the full stop?**
+"Gemini sometimes writes 'sentence. [P3_p2_c06]'. A simple splitter would attach
+that citation to the next sentence. I handle that case, so each citation stays
+with the sentence it belongs to."
+One line: keep each citation with the right sentence.
+
+## Your stories (most important)
+
+**Q26. Tell me what your provenance checker caught.**
+"Three things: the invented 'government agencies' claim from Day 5, now caught
+automatically as unsupported; '47 errors', which looked fine on similarity but
+failed the number check; and a true fact cited to the wrong page. It also missed
+a contradiction, which shows its limit."
+One line: invented claims, wrong numbers, wrong pages, and one honest miss.
