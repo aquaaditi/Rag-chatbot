@@ -44,3 +44,9 @@ RRF_K = 60  # constant in Reciprocal Rank Fusion (standard value from the RRF pa
 # ---------------------------------------------------------------- generation (src/generation/)
 SPEAKING_WORDS_PER_MINUTE = 150  # average talk speed; turns "90s" into a word target
 EXAMPLES_DIR = PROJECT_ROOT / "examples"  # saved example runs (inputs -> outputs)
+
+# ---------------------------------------------------------------- provenance (src/provenance/)
+# Cosine similarity between a claim and its best-matching source sentence.
+# Calibrated on real outputs - see NOTES.md Day 6.
+SUPPORTED_THRESHOLD = 0.80  # at or above: the source clearly says this
+WEAK_THRESHOLD = 0.70  # between the two: partly supported / paraphrased loosely

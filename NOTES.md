@@ -273,3 +273,29 @@ The policymaker script ended with an UNCITED conclusion of its own.
   does not prove the sentence is true (Day 6 checks sentence vs chunk).
 - The script had NO citations and my checks missed it. Fix: new check "at least 60% of script
   sentences cite a source".
+
+## Day 6 — Provenance (is every sentence really supported?)
+
+**What is a "claim", and what are the 4 verdicts?**
+-
+
+**Why do we need BOTH a semantic check and an exact number check?** (hint: 74 vs 47)
+-
+
+**What is citation coverage, and what is our factuality proxy?**
+-
+
+**What can embedding similarity NOT detect?** (hint: "fastText requires expensive GPUs")
+-
+
+**What I found:**
+- Calibration: true paraphrases 0.75-0.93, invented "government agencies" claims 0.57-0.67, unrelated
+  0.47 -> thresholds supported >= 0.80, weak >= 0.70. A wrong number ("47 errors") scored 0.76 -
+  only the exact number check caught it. A CONTRADICTION scored 0.70 ("weak") - embeddings measure
+  topic, not truth (would need NLI / LLM-as-judge).
+- False alarm: "matching logits is a special case of distillation" was flagged, but it is the title
+  of Section 2.1. Fix: section headings count as evidence -> supported (0.90).
+- Real catch: "JFT dataset with 100 million images" cited page 7, but 100 million is on page 5
+  (P3_p5_c05) -> the sentence merged two chunks but cited one. Number check caught it.
+- 7-slide talk: 77 claims, citation coverage 95%, supported 69%, weak 25%, 1 unsupported,
+  4 uncited (all transitions like "Now let's look at...").

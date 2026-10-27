@@ -52,9 +52,10 @@ def talk_to_markdown(result: GeneratedTalk, include_prompt: bool = False) -> str
     return "\n".join(lines) + "\n"
 
 
-def save_talk_markdown(result: GeneratedTalk, directory: Path, include_prompt: bool = False) -> Path:
+def save_talk_markdown(result: GeneratedTalk, directory: Path, include_prompt: bool = False, extra: str = "") -> Path:
+    """`extra` = more Markdown to add at the end (e.g. the provenance report)."""
     directory.mkdir(parents=True, exist_ok=True)
     r = result.request
     path = directory / f"talk_{r.paper_id or 'all'}_{r.n_slides}slides_{r.audience}_{r.style}.md"
-    path.write_text(talk_to_markdown(result, include_prompt), encoding="utf-8")
+    path.write_text(talk_to_markdown(result, include_prompt) + extra, encoding="utf-8")
     return path

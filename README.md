@@ -60,14 +60,20 @@ Rag-chatbot/
 │   │   ├── generator.py       #   ScriptGenerator: retrieve -> prompt -> LLM -> check
 │   │   ├── source_selection.py #  abstract + top chunks + math-aware equation chunks
 │   │   └── export.py          #   save a run as Markdown (examples/)
-│   └── talks/                 # STAGE 4b: structured slide talks (JSON via Pydantic schema)
-│       ├── schema.py          #   Slide / Talk: the JSON shape Gemini must return
-│       ├── request.py         #   TalkRequest: slides, notes per slide, focus, equations...
-│       ├── prompts.py         #   talk template + self-correction retry prompt
-│       ├── checks.py          #   slide count, notes, equations, length, citations
-│       ├── result.py          #   GeneratedTalk data type
-│       ├── generator.py       #   TalkGenerator: sources -> JSON -> check -> retry once
-│       └── export.py          #   save a talk deck as Markdown
+│   ├── talks/                 # STAGE 4b: structured slide talks (JSON via Pydantic schema)
+│   │   ├── schema.py          #   Slide / Talk: the JSON shape Gemini must return
+│   │   ├── request.py         #   TalkRequest: slides, notes per slide, focus, equations...
+│   │   ├── prompts.py         #   talk template + self-correction retry prompt
+│   │   ├── checks.py          #   slide count, notes, equations, length, citations
+│   │   ├── result.py          #   GeneratedTalk data type
+│   │   ├── generator.py       #   TalkGenerator: sources -> JSON -> check -> retry once
+│   │   └── export.py          #   save a talk deck as Markdown
+│   └── provenance/            # STAGE 5: every claim -> the source sentence that supports it
+│       ├── claim.py           #   split outputs into claims (sentence + cited IDs)
+│       ├── numbers.py         #   EXACT match: numbers must appear in the cited source
+│       ├── support.py         #   SEMANTIC match: best source sentence + verdict per claim
+│       ├── report.py          #   metrics: citation coverage, supported share, number errors
+│       └── export.py          #   Markdown provenance table + terminal summary
 ├── tests/                     # one test file per stage (pytest)
 ├── data/
 │   ├── papers/                # input papers

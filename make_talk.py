@@ -15,6 +15,8 @@ import argparse
 
 from src import config
 from src.generation import AUDIENCES, LENGTHS, STYLES
+from src.provenance import ProvenanceReport, check_provenance, claims_from_talk
+from src.provenance.export import explain, report_to_markdown, summary_lines
 from src.retrieval import Retriever
 from src.talks import GeneratedTalk, TalkGenerator, TalkRequest
 from src.talks.export import save_talk_markdown
@@ -37,14 +39,21 @@ def main():
     )
 
     print("Loading retriever and asking the LLM (a full talk can take a minute)...")
-    result = TalkGenerator(Retriever.load()).generate(request)
+    retriever = Retriever.load()
+    result = TalkGenerator(retriever).generate(request)
 
     if args.show_prompt:
         print("\n========== PROMPT SENT TO THE LLM ==========\n" + result.prompt)
     print_talk(result)
 
+    report = None
+    if not args.no_check:
+        report = check_provenance(claims_from_talk(result), result.sources, retriever.embedder)
+        print_provenance(report)
+
     if args.save:
-        path = save_talk_markdown(result, config.EXAMPLES_DIR, include_prompt=args.show_prompt)
+        extra = report_to_markdown(report) if report else ""
+        path = save_talk_markdown(result, config.EXAMPLES_DIR, include_prompt=args.show_prompt, extra=extra)
         print(f"\nSaved -> {path.relative_to(config.PROJECT_ROOT)}")
 
 
@@ -61,6 +70,7 @@ def parse_args():
     parser.add_argument("--no-equations", action="store_true", help="don't require equations")
     parser.add_argument("--show-prompt", action="store_true")
     parser.add_argument("--save", action="store_true", help="save to examples/ as Markdown")
+    parser.add_argument("--no-check", action="store_true", help="skip the provenance check")
     return parser.parse_args()
 
 
@@ -82,6 +92,13 @@ def print_talk(result: GeneratedTalk):
           f"(target ~{result.request.target_words})")
     print(f"Chunks cited: {len(result.cited_ids)} of {len(result.sources)} given")
     print("Problems left: " + ("none" if not result.problems else "\n  - " + "\n  - ".join(result.problems)))
+
+
+def print_provenance(report: ProvenanceReport):
+    print("\n================ PROVENANCE ================")
+    print("\n".join(summary_lines(report)))
+    for check in report.flagged:
+        print(f"  [{check.verdict}] {check.claim.location}: {check.claim.text[:90]}\n      -> {explain(check)}")
 
 
 if __name__ == "__main__":

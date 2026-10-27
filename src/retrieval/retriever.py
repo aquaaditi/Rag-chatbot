@@ -34,6 +34,11 @@ class Retriever:
         self._embedder = embedder
         self._bm25 = BM25Index([passage_text(c) for c in chunks])  # fast to rebuild, so not saved
 
+    @property
+    def embedder(self) -> Embedder:
+        """The embedding model - shared with other stages (e.g. provenance) to avoid loading it twice."""
+        return self._embedder
+
     # ------------------------------------------------------------ build / save / load
 
     @classmethod

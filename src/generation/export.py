@@ -42,10 +42,11 @@ def script_to_markdown(result: GeneratedScript, include_prompt: bool = False) ->
     return "\n".join(lines) + "\n"
 
 
-def save_markdown(result: GeneratedScript, directory: Path, include_prompt: bool = False) -> Path:
+def save_markdown(result: GeneratedScript, directory: Path, include_prompt: bool = False, extra: str = "") -> Path:
+    """`extra` = more Markdown to add at the end (e.g. the provenance report)."""
     directory.mkdir(parents=True, exist_ok=True)
     r = result.request
     name = f"{r.paper_id or 'all'}_{r.audience}_{r.length}_{r.style}.md"
     path = directory / name
-    path.write_text(script_to_markdown(result, include_prompt), encoding="utf-8")
+    path.write_text(script_to_markdown(result, include_prompt) + extra, encoding="utf-8")
     return path
