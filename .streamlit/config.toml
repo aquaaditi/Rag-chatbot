@@ -1,0 +1,6 @@
+# Streamlit settings for this project (streamlit run app.py reads this file)
+[browser]
+gatherUsageStats = false   # do not send usage statistics to Streamlit
+
+[server]
+maxUploadSize = 20         # MB - same limit as config.MAX_UPLOAD_MB

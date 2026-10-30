@@ -23,9 +23,15 @@ The code is organised as a pipeline. Each folder in `src/` is one stage, and eac
 has one job:
 
 ```
-paper.pdf ──► ingestion ──► chunking ──► retrieval ──► generation ──► answer + citations
-              (blocks)      (chunks)   (top-k chunks)  (Day 4+)
+paper.pdf ──► ingestion ──► chunking ──► retrieval ──► generation / talks ──► provenance
+              (blocks)      (chunks)   (top-k chunks)  (script, slides)      (claim checks)
+                                                              ▲
+ browser (app.py, src/ui) ──► conversation (ChatSession) ─────┘   safety checks the message
+ terminal (chat.py)       ──►   create / edit / undo              before and the text after
 ```
+
+**Frontend vs backend:** `app.py` + `src/ui/` (Streamlit) and `chat.py` (terminal) only show things;
+all the work is done by the backend in the other `src/` folders, through `ChatSession.handle(message)`.
 
 ```
 Rag-chatbot/
@@ -74,7 +80,7 @@ Rag-chatbot/
 │   │   ├── support.py         #   SEMANTIC match: best source sentence + verdict per claim
 │   │   ├── report.py          #   metrics: citation coverage, supported share, number errors
 │   │   └── export.py          #   Markdown provenance table + terminal summary
-│   └── conversation/          # STAGE 6: chat - create, edit (#2 less technical), undo, with change tracking
+│   ├── conversation/          # STAGE 6: chat - create, edit (#2 less technical), undo, with change tracking
 │       ├── commands.py        #   understand a message (fast path + Gemini structured output)
 │       ├── edit_prompts.py    #   DELTA-ANCHORED edit prompts (only the changed part + its sources)
 │       ├── editing.py         #   Editor: edit a slide / the script / the whole talk -> new talk + reason
@@ -84,11 +90,24 @@ Rag-chatbot/
 │       ├── versions.py        #   versions + changes + before/after metrics, undo
 │       ├── formatting.py      #   Markdown chat replies
 │       ├── log.py             #   logs/session_*.json + .md (evidence of iteration)
-│       └── session.py         #   ChatSession.handle(message) -> reply
+│   │   └── session.py         #   ChatSession.handle(message) -> reply
+│   ├── safety/                # STAGE 7: safety layers around the LLM
+│   │   ├── offensive.py       #   offensive words (word list, minus research words + the paper's own words)
+│   │   ├── inclusive.py       #   exclusionary words -> inclusive alternatives ("blacklist" -> "blocklist")
+│   │   ├── injection.py       #   prompt injection ("ignore previous instructions") in messages / papers
+│   │   ├── accessibility.py   #   long sentences, undefined acronyms, readability floor per audience
+│   │   ├── input_guard.py     #   check_message(): refuse BEFORE calling the LLM
+│   │   └── report.py          #   check_output(): offensive -> blocked, the rest -> warnings
+│   ├── upload.py              # add an uploaded paper: save -> ingest -> chunk -> scan -> index
+│   └── ui/                    # FRONTEND: the Streamlit chat page (shows things, decides nothing)
+│       ├── state.py           #   shared retriever (cache_resource) + one ChatSession per tab
+│       ├── sidebar.py         #   upload, paper list, examples, downloads, new conversation
+│       └── chat_view.py       #   the conversation + message box
 ├── tests/                     # one test file per stage (pytest)
 ├── data/
 │   ├── papers/                # input papers
 │   ├── chunks/                # output of chunking (JSON)
+│   ├── uploads/               # papers uploaded in the UI (git-ignored)
 │   └── references/            # human-written reference scripts (for evaluation)
 ├── hello_llm.py               # Day 1 check: can we call the LLM?
 ├── chunk_papers.py            # Day 2: run ingestion + chunking on all papers
@@ -97,6 +116,8 @@ Rag-chatbot/
 ├── generate.py                # Day 4: python generate.py --paper P3 --audience policymakers --length 90s
 ├── make_talk.py               # Day 5: python make_talk.py --paper P3 --slides 7 --notes 3 --focus methods
 ├── chat.py                    # Day 7: python chat.py  (or --demo for a scripted conversation)
+├── app.py                     # Day 8: streamlit run app.py  (the chat UI in the browser)
+├── .streamlit/config.toml     # UI settings: no usage statistics, 20 MB upload limit
 ├── logs/                      # conversation logs
 ├── examples/                  # saved example runs (input -> script -> sources -> checks)
 └── NOTES.md                   # learning journal
@@ -119,10 +140,12 @@ GEMINI_API_KEY=your_key_here
 ## Usage
 
 ```bash
-streamlit run app.py
+python build_index.py          # once: build the search index for data/papers/
+streamlit run app.py           # chat UI at http://localhost:8501
+python chat.py                 # or chat in the terminal
 ```
 
-Upload a paper, then chat, e.g.:
+Upload a paper (or use the 3 included ones), then chat, e.g.:
 
 - "Make a 90-second script for policymakers"
 - "Make a 7-slide talk for graduate students focusing on methods; include 3 speaker notes per slide"

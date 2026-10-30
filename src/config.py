@@ -51,3 +51,16 @@ EXAMPLES_DIR = PROJECT_ROOT / "examples"  # saved example runs (inputs -> output
 # Calibrated on real outputs - see NOTES.md Day 6.
 SUPPORTED_THRESHOLD = 0.80  # at or above: the source clearly says this
 WEAK_THRESHOLD = 0.70  # between the two: partly supported / paraphrased loosely
+
+# ---------------------------------------------------------------- safety (src/safety/)
+# Layer 1: Gemini's own filter blocks harmful requests/answers at this level or above
+# (BLOCK_LOW_AND_ABOVE / BLOCK_MEDIUM_AND_ABOVE / BLOCK_ONLY_HIGH / BLOCK_NONE)
+GEMINI_SAFETY_THRESHOLD = "BLOCK_MEDIUM_AND_ABOVE"
+MAX_MESSAGE_CHARS = 2000  # longer chat messages are refused
+MAX_SENTENCE_WORDS = 35  # longer sentences get an accessibility warning
+# Lowest Flesch reading ease we accept per audience (grad students may read academic text)
+READABILITY_FLOOR = {"policymakers": 40, "press": 50}
+
+# ---------------------------------------------------------------- uploads (src/upload.py, Day 8 UI)
+UPLOADS_DIR = PROJECT_ROOT / "data" / "uploads"  # papers uploaded in the chat UI (git-ignored)
+MAX_UPLOAD_MB = 20

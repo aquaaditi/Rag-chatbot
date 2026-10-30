@@ -140,6 +140,7 @@ def test_full_conversation_create_edit_undo_and_log(tmp_path):
 
     assert "v2: slide 2" in reply
     assert "Replaced jargon with everyday words." in reply  # the WHY
+    assert "\n\n**Why it changed:**" in reply  # own paragraph (Markdown ignores a single line break)
     # the DELTA - word level, so the unchanged "the" stays plain
     assert "~~uses~~ **learns from** the ~~cross-entropy gradient~~ **big model's guesses**" in reply
     assert "readability" in reply  # before -> after metrics

@@ -52,6 +52,13 @@ def talk_changes(old: Talk, new: Talk) -> list[FieldChange]:
     return changes
 
 
+def talk_fields(talk: Talk) -> list[tuple[str, str]]:
+    """Every text field of a talk with its name, e.g. ("slide 2 · bullet 1", "...").
+    = the changes from an empty talk, so the names match the diffs (used by the safety checks)."""
+    empty_slides = [Slide(title="", bullets=[], equations=[], speaker_notes=[]) for _ in talk.slides]
+    return [(c.where, c.new) for c in talk_changes(Talk(title="", slides=empty_slides, script=""), talk)]
+
+
 def _compare(where: str, old_items: list[str], new_items: list[str]) -> list[FieldChange]:
     """Compare two lists item by item; a missing item counts as "" (added / removed)."""
     numbered = len(old_items) > 1 or len(new_items) > 1 or "bullet" in where or "note" in where or "equation" in where

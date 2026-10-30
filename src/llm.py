@@ -30,6 +30,19 @@ _client = genai.Client(
     ),
 )
 
+# Safety layer 1: Gemini refuses / stops when a request or answer is harmful at this level or above
+SAFETY_CATEGORIES = [
+    types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+    types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+    types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+    types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+]
+SAFETY_SETTINGS = [
+    types.SafetySetting(category=category, threshold=types.HarmBlockThreshold(config.GEMINI_SAFETY_THRESHOLD))
+    for category in SAFETY_CATEGORIES
+]
+BLOCKED_FINISH_REASONS = {types.FinishReason.SAFETY, types.FinishReason.PROHIBITED_CONTENT, types.FinishReason.BLOCKLIST}
+
 
 def ask_llm(user_message: str, system_prompt: str = "", max_tokens: int = 8000) -> str:
     """Send one message to the LLM and return its text reply."""
@@ -39,10 +52,11 @@ def ask_llm(user_message: str, system_prompt: str = "", max_tokens: int = 8000) 
         config=types.GenerateContentConfig(
             system_instruction=system_prompt or None,
             max_output_tokens=max_tokens,
+            safety_settings=SAFETY_SETTINGS,
         ),
     )
-
-    # response.text is None when the model returns no text (e.g. blocked by a safety filter)
+    if blocked := blocked_reason(response):
+        return f"[Blocked by the safety filter: {blocked}]"
     return response.text or "[The model returned no text for this request.]"
 
 
@@ -59,11 +73,25 @@ def ask_llm_structured(user_message: str, schema: type[T], system_prompt: str = 
             max_output_tokens=max_tokens,
             response_mime_type="application/json",
             response_schema=schema,
+            safety_settings=SAFETY_SETTINGS,
         ),
     )
+    if blocked := blocked_reason(response):
+        raise ValueError(f"Gemini's safety filter blocked this request ({blocked}). Please rephrase it.")
     if response.parsed is None:  # blocked, cut off by max_tokens, or invalid JSON
         raise ValueError(f"The model did not return valid {schema.__name__} JSON:\n{(response.text or '')[:500]}")
     return schema.model_validate(_repair_latex(response.parsed.model_dump()))
+
+
+def blocked_reason(response: types.GenerateContentResponse) -> str | None:
+    """Why Gemini's safety filter blocked the request (prompt) or stopped the answer - or None."""
+    feedback = response.prompt_feedback
+    if feedback and feedback.block_reason:
+        return f"request blocked: {feedback.block_reason.name}"
+    candidate = response.candidates[0] if response.candidates else None
+    if candidate and candidate.finish_reason in BLOCKED_FINISH_REASONS:
+        return f"answer stopped: {candidate.finish_reason.name}"
+    return None
 
 
 # When the model writes LaTeX like \frac or \text inside JSON without escaping the backslash,

@@ -6,9 +6,9 @@ session.py - ChatSession: one conversation with the chatbot.
     session.handle("make #2 less technical")    # -> diff + reason + before/after metrics
     session.handle("undo")
 
-For every message:  understand (commands.py) -> act (talks / editing) ->
-measure before/after (readability + provenance) -> check the goal, retry once if
-missed (goals.py) -> new version -> log the turn.
+For every message:  safety check the message (src/safety) -> understand (commands.py) ->
+act (talks / editing) -> measure before/after (readability + provenance) -> check the goal,
+retry once if missed (goals.py) -> safety check the new text -> new version -> log the turn.
 """
 
 from collections.abc import Callable
@@ -18,9 +18,10 @@ from google.genai.errors import APIError
 from src import config
 from src.chunking import Chunk
 from src.conversation.commands import ParsedMessage, parse_message, to_talk_request
-from src.conversation.diff import talk_changes
+from src.conversation.diff import talk_changes, talk_fields
 from src.conversation.editing import Editor
-from src.conversation.formatting import render_change, render_history, render_outline, render_slide
+from src.conversation.formatting import (render_blocked, render_change, render_history, render_outline,
+                                         render_safety, render_slide)
 from src.conversation.goals import check_goal
 from src.conversation.log import ConversationLog
 from src.conversation.readability import reading_ease, slide_texts, talk_texts
@@ -30,6 +31,8 @@ from src.llm import ask_llm_structured
 from src.provenance import Claim, check_provenance, claims_from_slide, extract_claims
 from src.provenance.claim import strip_citations
 from src.retrieval import Retriever
+from src.safety import SafetyReport, check_message, check_output
+from src.safety.offensive import words_in
 from src.talks import GeneratedTalk, Talk, TalkGenerator, TalkRequest
 from src.talks.checks import all_text
 from src.talks.export import save_talk_markdown
@@ -55,20 +58,34 @@ class ChatSession:
         self.request: TalkRequest | None = None
         self.sources: list[Chunk] = []
         self.log = ConversationLog(log_dir)
-        self.papers = paper_catalog(retriever.chunks)
 
     @property
     def talk(self) -> Talk | None:
         return self.history.current.talk if self.history.current else None
+
+    @property
+    def papers(self) -> dict[str, str]:
+        """Recomputed each time, so a paper uploaded in the UI shows up straight away."""
+        return paper_catalog(self._retriever.chunks)
+
+    def current_result(self) -> GeneratedTalk | None:
+        """The current version as a GeneratedTalk (for saving / downloading as Markdown)."""
+        if not self.talk:
+            return None
+        return GeneratedTalk(self.request, self.talk, self.sources, prompt="", problems=[],
+                             attempts=0, cited_ids=find_citations(all_text(self.talk)))
 
     # ------------------------------------------------------------ one turn
 
     def handle(self, message: str) -> str:
         action = "error"
         try:
-            parsed = parse_message(message, self.papers, len(self.talk.slides) if self.talk else None, self._llm)
-            action = parsed.action
-            reply = self._dispatch(parsed)
+            if refusal := check_message(message, self._paper_words()):  # before any LLM call
+                action, reply = "refused", f"🛡️ {refusal}"
+            else:
+                parsed = parse_message(message, self.papers, len(self.talk.slides) if self.talk else None, self._llm)
+                action = parsed.action
+                reply = self._dispatch(parsed)
         except (ValueError, APIError) as error:  # keep the chat alive; show what went wrong
             reply = f"⚠️ Sorry, that failed: {error}"
         version = self.history.current.number if self.history.current else None
@@ -91,15 +108,20 @@ class ChatSession:
             return f"Which paper should the talk be about? {options}"
         request = to_talk_request(parsed)
         result = self._talks.generate(request)
+        metrics = self._measure(talk_texts(result.talk), self._talk_claims(result.talk), result.sources)
+        safety = self._safety(talk_fields(result.talk), result.talk, request.audience, result.sources,
+                              metrics.reading_ease)
+        if safety.blocked:
+            return render_blocked(safety)  # the old talk (if any) stays as it was
         self.request, self.sources = request, result.sources
         self.history.reset()
         version = self.history.add(result.talk)
-        metrics = self._measure(talk_texts(result.talk), self._talk_claims(result.talk))
         return (
             f"✅ Created a {request.n_slides}-slide talk for {request.audience} ({request.style}).\n\n"
             + render_outline(result.talk, version.number)
             + f"\n\n**Measured:** readability {metrics.reading_ease:.0f} · supported claims "
               f"{metrics.supported_share:.0%} · citation coverage {metrics.citation_coverage:.0%}"
+            + render_safety(safety)
         )
 
     def _edit(self, parsed: ParsedMessage) -> str:
@@ -123,7 +145,12 @@ class ChatSession:
 
         change = Change(instruction, target, reason, talk_changes(old, new), before, after,
                         attempts=attempts, unmet_goal=feedback or None)
-        return render_change(self.history.add(new, change))
+        # only the changed fields are checked - the rest was checked when it was written
+        safety = self._safety([(c.where, c.new) for c in change.field_changes if c.new], new,
+                              self.request.audience, self.sources, after.reading_ease)
+        if safety.blocked:
+            return render_blocked(safety)  # the edit is thrown away; the talk stays at the old version
+        return render_change(self.history.add(new, change)) + render_safety(safety)
 
     def _apply_edit(self, old: Talk, target: str, numbers: list[int], instruction: str,
                     feedback: str) -> tuple[Talk, str, str]:
@@ -162,9 +189,7 @@ class ChatSession:
     def _save(self, parsed: ParsedMessage) -> str:
         if not self.talk:
             return "There is no talk to save yet."
-        result = GeneratedTalk(self.request, self.talk, self.sources, prompt="", problems=[],
-                               attempts=0, cited_ids=find_citations(all_text(self.talk)))
-        path = save_talk_markdown(result, config.EXAMPLES_DIR)
+        path = save_talk_markdown(self.current_result(), config.EXAMPLES_DIR)
         return f"💾 Saved v{self.history.current.number} to {path.relative_to(config.PROJECT_ROOT)}"
 
     # ------------------------------------------------------------ measuring
@@ -180,10 +205,20 @@ class ChatSession:
             texts, claims = talk_texts(talk), self._talk_claims(talk)
         return self._measure(texts, claims)
 
-    def _measure(self, texts: list[str], claims: list[Claim]) -> Metrics:
-        report = check_provenance(claims, self.sources, self._retriever.embedder)
+    def _measure(self, texts: list[str], claims: list[Claim], sources: list[Chunk] | None = None) -> Metrics:
+        report = check_provenance(claims, self.sources if sources is None else sources, self._retriever.embedder)
         n_words = len(" ".join(strip_citations(t) for t in texts).split())
         return Metrics(reading_ease(texts), report.supported_share, report.citation_coverage, n_words)
+
+    def _paper_words(self) -> set[str]:
+        """Every word in the papers - so names like "Wang" in a message are not called offensive."""
+        return words_in(" ".join(c.text for c in self._retriever.chunks))
+
+    @staticmethod
+    def _safety(fields: list[tuple[str, str]], talk: Talk, audience: str, sources: list[Chunk],
+                reading_ease: float) -> SafetyReport:
+        return check_output(fields, audience, " ".join(c.text for c in sources),
+                            " ".join(text for _, text in talk_fields(talk)), reading_ease)
 
     @staticmethod
     def _talk_claims(talk: Talk) -> list[Claim]:

@@ -49,6 +49,13 @@ class Retriever:
         store.add(embedder.embed_passages([passage_text(c) for c in chunks]))
         return cls(chunks, store, embedder)
 
+    def add(self, chunks: list[Chunk]) -> None:
+        """Add new chunks (e.g. a paper uploaded in the UI): embed only the new ones.
+        Lives in memory; call save() to keep them."""
+        self._vectors.add(self._embedder.embed_passages([passage_text(c) for c in chunks]))
+        self.chunks = self.chunks + chunks
+        self._bm25 = BM25Index([passage_text(c) for c in self.chunks])  # BM25 needs all chunks (word stats)
+
     def save(self, directory: Path = config.INDEX_DIR) -> None:
         directory.mkdir(parents=True, exist_ok=True)
         self._vectors.save(directory)

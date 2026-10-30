@@ -383,3 +383,43 @@ The policymaker script ended with an UNCITED conclusion of its own.
   paper's wording, and some precision is lost (the gradient formula left the notes). Fix: the reply
   now WARNS when grounding drops by >= 20 points.
 - Test bug: my fake LLM matched "make #2 less technical" in the parser's own EXAMPLES, not the message.
+
+## Day 8 — Safety + the chat UI (Streamlit)
+
+**What are the 4 safety layers, and what does each one catch that the others miss?**
+- 
+
+**Why is a word list not enough for "no offensive content"? (look at "Wang" and "Dong")**
+- 
+
+**What is prompt injection, and where can it come from in THIS project? (2 places)**
+- 
+
+**Which safety problems BLOCK an answer, and which only WARN? Why the difference?**
+- 
+
+**Frontend vs backend: what does app.py / src/ui do, and what does it NOT do?**
+- 
+
+**Why does the retriever live in st.cache_resource but the ChatSession in st.session_state?**
+- 
+
+**What went wrong & how I fixed it:**
+- The profanity word list flagged the author surnames "Wang" and "Dong" (from the references) and
+  normal research words ("kill the process", "sexual harassment detection"). Blocking them would block
+  the paper itself and people's names - which is the discriminatory part. Fix: research words are
+  always allowed, and words that appear in the SOURCES are allowed (the model is quoting the paper).
+  Found by running the checker on my own papers and outputs BEFORE trusting it.
+- On real saved talks, the accessibility checks found real problems: "CNN" never spelled out in the
+  press talk, "CPU" for policymakers, 37-48 word sentences. In the UI demo
+  (logs/demo_3_ui_safety_*), asking "make the whole talk simpler ... spell out every acronym" removed
+  the acronym warnings and raised readability 39 -> 46 (floor for the press is 50, so 1 warning left).
+- Gemini's safety filter is OFF by default for newer models (per Google's docs), and a blocked answer used to look like
+  "invalid JSON". Fix: set safety_settings explicitly + blocked_reason() gives a clear message.
+- Streamlit sends usage statistics by default -> turned off in .streamlit/config.toml.
+- Uploaded papers can hide instructions (white text in a PDF). Fix: upload.py drops chunks that look
+  like prompt injection, and grounding rule 6 says the SOURCES are data, not orders.
+- In the browser, "v2 ... Why it changed ... Measured" ran together into one paragraph and the
+  safety heading stuck to the last bullet. Markdown ignores a single line break (the terminal does
+  not), so my terminal tests never showed it. Fix: blank lines between paragraphs + a test.
+  Lesson: test in the real UI, not only in the terminal.

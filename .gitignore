@@ -8,6 +8,7 @@ __pycache__/
 
 # Generated data (vector index etc.)
 index/
+data/uploads/
 
 # Editor settings (personal)
 .vscode/

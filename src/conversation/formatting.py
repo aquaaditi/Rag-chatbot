@@ -5,9 +5,11 @@ formatting.py - turn talks, slides and changes into Markdown chat replies.
 
 from src.conversation.diff import word_diff
 from src.conversation.versions import Change, Metrics, Version
+from src.safety import SafetyReport
 from src.talks import Slide, Talk
 
 GROUNDING_DROP_WARNING = 0.20  # warn when supported claims fall by 20 percentage points or more
+MAX_SAFETY_LINES = 6  # show at most this many safety warnings in one reply
 
 
 def render_slide(slide: Slide, number: int) -> str:
@@ -44,7 +46,8 @@ def render_change(version: Version) -> str:
         lines.append("🔁 The first attempt missed its measured goal, so it was redone once.")
     if change.unmet_goal:
         lines.append(f"⚠️ **Goal not fully met:** {change.unmet_goal} You can ask again or \"undo\".")
-    lines += ["", f"**What changed** ({len(change.field_changes)} fields; ~~removed~~ **added**):"]
+    # Markdown ignores a single line break - separate paragraphs need a blank line
+    lines = ["\n\n".join(lines), "", f"**What changed** ({len(change.field_changes)} fields; ~~removed~~ **added**):"]
     for fc in change.field_changes:
         if not fc.old:
             lines.append(f"- *{fc.where}* (added): **{fc.new}**")
@@ -52,6 +55,25 @@ def render_change(version: Version) -> str:
             lines.append(f"- *{fc.where}* (removed): ~~{fc.old}~~")
         else:
             lines.append(f"- *{fc.where}*: {word_diff(fc.old, fc.new)}")
+    return "\n".join(lines)
+
+
+def render_safety(report: SafetyReport) -> str:
+    """Warnings under a reply ("" if there are none). Blocking issues use render_blocked()."""
+    warnings = [i for i in report.issues if not i.blocking]
+    if not warnings:
+        return ""
+    lines = ["", "", f"🛡️ **Safety & accessibility** ({len(warnings)} to review):"]  # blank line: ends a list above
+    lines += [f"- *{i.where}* · {i.kind}: {i.detail}" for i in warnings[:MAX_SAFETY_LINES]]
+    if len(warnings) > MAX_SAFETY_LINES:
+        lines.append(f"- ... and {len(warnings) - MAX_SAFETY_LINES} more")
+    return "\n".join(lines)
+
+
+def render_blocked(report: SafetyReport) -> str:
+    lines = ["🛡️ **I did not keep this answer** - it contained wording that should not be shown:"]
+    lines += [f"- *{i.where}*: {i.detail}" for i in report.issues if i.blocking]
+    lines += ["", "Nothing was changed. Please try again or rephrase the request."]
     return "\n".join(lines)
 
 
