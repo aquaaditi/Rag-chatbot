@@ -838,3 +838,161 @@ automatically as unsupported; '47 errors', which looked fine on similarity but
 failed the number check; and a true fact cited to the wrong page. It also missed
 a contradiction, which shows its limit."
 One line: invented claims, wrong numbers, wrong pages, and one honest miss.
+
+
+# Day 7 — Conversation & change tracking ("make #2 less technical")
+
+## 🟢 Basic
+
+**Q1. What does Day 7 add to the chatbot?**
+"Iterative editing. After a talk is generated, the user can ask things like 'make
+#2 less technical' or 'make the script shorter'. The bot changes only that part,
+shows the old and new versions with the reason, and measures whether the change
+really happened."
+One line: chat-based edits with visible, measured changes.
+
+**Q2. Which assignment requirement does this cover?**
+"Change-tracking: when the user asks 'make #2 less technical', the chatbot must
+show the delta, old vs new, and why it changed. It also produces the conversation
+logs the assignment asks for as evidence."
+One line: change-tracking with old vs new and the reason.
+
+**Q3. What is the 'delta'?**
+"The difference between the old and new version of the edited part."
+One line: what changed between old and new.
+
+**Q4. Where does the edit request go in the prompt?**
+"Into the {change_instruction} parameter of the prompt template. It's empty for
+a first draft and filled for edits."
+One line: the {change_instruction} slot.
+
+**Q5. Why save each conversation turn to logs?**
+"They show the bot can iterate and refine, which the assignment requires as
+evidence. They also let me debug: I compared my first and second demos from the
+logs."
+One line: logs are evidence and a debugging record.
+
+## 🟡 Intermediate
+
+**Q6. What is delta-anchored editing?**
+"Changing only the part the user asked about, keeping everything else exactly the
+same, and grounding the new version on the same source chunks. It's one of the
+improvements suggested in Part B."
+One line: edit only the target, keep the rest, stay grounded.
+
+**Q7. Why not regenerate the whole talk for each edit?**
+"Regenerating can silently change parts the user was happy with and that were
+already checked. Editing one part is cheaper, faster, and only the changed part
+needs re-checking."
+One line: regenerating risks changing what was already right.
+
+**Q8. How does the bot know what '#2' means?**
+"A parser turns the message into a structured edit request: which part (slide 2
+or point 2), and what kind of change. If the reference is ambiguous, the safe
+choice is to ask the user instead of guessing."
+One line: parse the target; ask if it's unclear.
+
+**Q9. How does the bot show the change?**
+"Old version, new version, the LLM's stated reason, and measured numbers:
+readability before and after, word count before and after, and the share of
+supported claims before and after."
+One line: old vs new, the reason, and measured evidence.
+
+**Q10. What are measurable goals?**
+"goals.py turns an edit request into something I can measure. 'Less technical'
+means the readability score must go up; 'shorter' means fewer words, closer to
+the target. Then the code checks whether the goal was met."
+One line: turn words like "simpler" into numbers.
+
+**Q11. What happens if a goal isn't met?**
+"The bot retries once, sending the actual numbers as feedback, e.g. 'readability
+went from 34 to 32; it needs to go up'. In my second demo, readability went from
+29 to 49 and the script from 467 to 257 words."
+One line: retry once with the real numbers as feedback.
+
+## 🔴 Advanced
+
+**Q12. Why not trust the LLM's explanation of its change?**
+"Because it was wrong. In my first demo, it said 'made it less technical', but
+readability went down from 34 to 32 and 51 to 39. It said 'shortened the
+script', but it went from 529 to 538 words. An LLM's reason is a claim, and
+claims must be checked."
+One line: the model said it simplified, but the numbers said it didn't.
+
+**Q13. What are the limits of a readability score?**
+"Formulas like this mostly measure sentence length and word length. They don't
+know whether a word is jargon, or whether the explanation is clear. A sentence
+can score 'easy' and still be confusing. So it's a useful proxy, but human
+evaluation should judge audience suitability."
+One line: readability formulas count length, not clarity.
+
+**Q14. What's the trade-off between simplicity and faithfulness?**
+"Simplifying moved the text away from the paper's wording and dropped precise
+details. Supported claims fell from 43% to 29% and from 71% to 17%, and the
+gradient formula disappeared from the notes. Simpler for the audience means less
+precise and harder to verify."
+One line: simpler language costs precision and verifiability.
+
+**Q15. Is all of that drop real?**
+"Not necessarily. Part is real: a formula was dropped. Part may be my checker:
+plain-English paraphrases score lower on embedding similarity even when true.
+I'd review the claims that changed verdict by hand to separate the two."
+One line: some loss is real; some is the checker's limit.
+
+**Q16. Why warn instead of blocking when grounding drops?**
+"Some loss of precision is expected and may be acceptable to the user, and part
+of the drop may be the checker's limitation. So the reply warns when grounding
+drops by 20 points or more, and the user decides. Invented facts or wrong
+numbers would be different; those should block."
+One line: warn on trade-offs, block on clear errors.
+
+**Q17. How would you reduce the faithfulness drop?**
+"Tell the edit prompt to simplify the wording but keep the key facts, numbers and
+equations; check that cited facts from the old version still appear in the new
+one; and use an LLM judge for paraphrases in the weak band."
+One line: simplify wording, preserve facts, and check what was lost.
+
+**Q18. What if two goals conflict, like 'shorter' and 'keep all the details'?**
+"They can't both be fully met. I'd measure both, show the result, and let the
+user choose, rather than silently favouring one."
+One line: measure both, show the conflict, let the user decide.
+
+**Q19. Why retry only once?**
+"Retries cost calls and time, and repeated retries can loop. One retry with
+specific numbers fixed both goals in my second demo. If it still fails, the bot
+should report it honestly."
+One line: one specific retry, then report honestly.
+
+**Q20. After an edit, what needs re-checking?**
+"Only the changed part: its citations, numbers and support. The rest was already
+checked and didn't change, so re-checking everything wastes time."
+One line: re-check only the delta.
+
+**Q21. How would you support 'undo' or going back to an earlier version?**
+"Keep every version, not just the latest. In the full design, that's the drafts
+and draft_versions tables, with citations tied to each version, so any earlier
+version can be restored and compared."
+One line: store every version, not just the newest.
+
+## Your bug stories
+
+**Q22. Tell me about the LaTeX bug.**
+"Gemini returned LaTeX inside JSON, and '\frac' became a form-feed character plus
+'rac'. In JSON, \f, \t, \b and \r are valid escape codes, so the JSON was valid
+but the maths was silently corrupted. '\e' would have failed loudly. I added a
+repair step in llm.py and a test. Silent failures are the dangerous ones."
+One line: valid JSON, silently broken maths.
+
+**Q23. Tell me about the test bug with the fake LLM.**
+"My fake LLM was supposed to react to the user's message 'make #2 less
+technical'. But that phrase also appeared in the parser prompt's own examples, so
+the fake matched the examples instead of the real message. The test passed for
+the wrong reason. I fixed it to match only the actual user message."
+One line: the test passed for the wrong reason.
+
+**Q24. What did you learn from comparing the two demos?**
+"The first demo looked fine until I measured it: readability went down and the
+script got longer, despite the model saying the opposite. After adding measurable
+goals and a retry, the second demo met both goals. Measuring turned a convincing
+claim into a checkable fact."
+One line: measure every claim, including the model's claims about itself.

@@ -330,16 +330,47 @@ The policymaker script ended with an UNCITED conclusion of its own.
 ## Day 7 — Conversation & change tracking ("make #2 less technical")
 
 **What is delta-anchored editing, and why is it better than regenerating the whole talk?**
--
+- Delta-anchored editing changes ONLY the part the user pointed at (e.g. slide 2),
+  keeps everything else exactly as it was, and grounds the new version on the
+  same source chunks. The "delta" (old vs new) is then shown and checked.
+- Better than regenerating everything because:
+  1. parts the user was happy with don't change unexpectedly;
+  2. content that was already checked stays checked; only the changed part
+     needs re-checking;
+  3. it's cheaper and faster (smaller prompt and output);
+  4. the user can see exactly what changed.
+- It's one of Part B's suggested improvements ("delta-anchored re-generation to
+  keep change-tracked edits grounded"), and I can show it working.
 
 **How does the bot show "the delta (old vs new) and why it changed"?**
--
+- For the edited part, it shows the OLD version and the NEW version side by side
+  (or as a diff), the LLM's stated reason for the change, and MEASURED evidence:
+  e.g. readability before → after, word count before → after, and the
+  supported-claims share before → after.
+- Each turn is saved to logs/, which gives the "conversation logs as evidence"
+  the assignment asks for.
 
 **Why measure an edit instead of trusting the LLM's "reason"?**
--
+- Because the reason can be false. In my 1st demo the LLM said "made it less
+  technical", but readability went DOWN (34 -> 32, 51 -> 39). It said "shortened
+  the script", but it got LONGER (529 -> 538 words).
+- So goals.py turns requests into measurable goals (less technical = readability
+  up; shorter = fewer words / closer to the target). If a goal is missed, the bot
+  retries once with the actual numbers as feedback.
+- Lesson: an LLM's explanation of its own change is a claim, and claims must be
+  checked, just like facts in the script.
 
 **What is the trade-off between simplicity and faithfulness? (look at "supported claims" in the demo)**
--
+- Simpler language moves away from the paper's wording, and some precise details
+  get dropped. In my demo, supported claims fell 43% -> 29% and 71% -> 17%, and the
+  gradient formula left the speaker notes.
+- Part of the drop is REAL (lost precision, a dropped formula). Part may be my
+  CHECKER's limitation: plain-English paraphrases score lower on embedding
+  similarity even when true (see Day 6).
+- So I don't block simplified edits; the reply WARNS when grounding drops by
+  20 points or more, so the user can decide.
+- One-line: simpler for the audience usually means less precise and harder to
+  verify, so make the cost visible.
 
 **What went wrong & how I fixed it:**
 - 1st demo (logs/demo_1_before_fixes_*): the LLM said "made it less technical" but readability went
