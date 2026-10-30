@@ -16,6 +16,7 @@ from src.chunking.sentences import split_sentences
 from src.generation.citations import find_citations
 from src.generation.script_result import GeneratedScript
 from src.talks.result import GeneratedTalk
+from src.talks.schema import Slide
 
 # A [...] group that contains at least one chunk ID, e.g. [P3_p2_c06] or [P1_p2_c01, P3_p2_c06]
 CITATION_GROUP = re.compile(r"\s*\[[^\[\]]*P\d+_[ps]\d+_c\d+[^\[\]]*\]")
@@ -53,12 +54,18 @@ def claims_from_script(result: GeneratedScript) -> list[Claim]:
     return extract_claims(result.text, "script")
 
 
+def claims_from_slide(slide: Slide, number: int) -> list[Claim]:
+    claims: list[Claim] = []
+    for b, bullet in enumerate(slide.bullets, start=1):
+        claims += extract_claims(bullet, f"slide {number} · bullet {b}")
+    for n, note in enumerate(slide.speaker_notes, start=1):
+        claims += extract_claims(note, f"slide {number} · note {n}")
+    return claims
+
+
 def claims_from_talk(result: GeneratedTalk) -> list[Claim]:
     claims: list[Claim] = []
-    for s, slide in enumerate(result.talk.slides, start=1):
-        for b, bullet in enumerate(slide.bullets, start=1):
-            claims += extract_claims(bullet, f"slide {s} · bullet {b}")
-        for n, note in enumerate(slide.speaker_notes, start=1):
-            claims += extract_claims(note, f"slide {s} · note {n}")
+    for number, slide in enumerate(result.talk.slides, start=1):
+        claims += claims_from_slide(slide, number)
     claims += extract_claims(result.talk.script, "script")
     return claims

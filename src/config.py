@@ -17,6 +17,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PAPERS_DIR = PROJECT_ROOT / "data" / "papers"
 CHUNKS_DIR = PROJECT_ROOT / "data" / "chunks"
 INDEX_DIR = PROJECT_ROOT / "index"  # built by build_index.py (git-ignored, can be rebuilt)
+LOGS_DIR = PROJECT_ROOT / "logs"  # conversation logs (evidence that the bot iterates)
 
 # ---------------------------------------------------------------- LLM (src/llm.py)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")

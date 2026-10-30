@@ -326,3 +326,29 @@ The policymaker script ended with an UNCITED conclusion of its own.
   (P3_p5_c05) -> the sentence merged two chunks but cited one. Number check caught it.
 - 7-slide talk: 77 claims, citation coverage 95%, supported 69%, weak 25%, 1 unsupported,
   4 uncited (all transitions like "Now let's look at...").
+
+## Day 7 — Conversation & change tracking ("make #2 less technical")
+
+**What is delta-anchored editing, and why is it better than regenerating the whole talk?**
+-
+
+**How does the bot show "the delta (old vs new) and why it changed"?**
+-
+
+**Why measure an edit instead of trusting the LLM's "reason"?**
+-
+
+**What is the trade-off between simplicity and faithfulness? (look at "supported claims" in the demo)**
+-
+
+**What went wrong & how I fixed it:**
+- 1st demo (logs/demo_1_before_fixes_*): the LLM said "made it less technical" but readability went
+  DOWN (34 -> 32, 51 -> 39), and said "shortened the script" but it got LONGER (529 -> 538 words).
+  Fix: goals.py turns requests into measurable goals; if missed, retry once with the numbers as
+  feedback. 2nd demo: readability 29 -> 49 and 42 -> 52, script 467 -> 257 words (target 225).
+- LaTeX broke: "\frac" became "<form feed>rac". In JSON, \f \t \b \r are VALID escape codes, so
+  unescaped LaTeX is silently corrupted (\e would fail loudly). Fix: repair in llm.py + test.
+- Simplifying dropped "supported claims" (43% -> 29%, 71% -> 17%): simpler words drift from the
+  paper's wording, and some precision is lost (the gradient formula left the notes). Fix: the reply
+  now WARNS when grounding drops by >= 20 points.
+- Test bug: my fake LLM matched "make #2 less technical" in the parser's own EXAMPLES, not the message.

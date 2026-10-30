@@ -68,12 +68,23 @@ Rag-chatbot/
 │   │   ├── result.py          #   GeneratedTalk data type
 │   │   ├── generator.py       #   TalkGenerator: sources -> JSON -> check -> retry once
 │   │   └── export.py          #   save a talk deck as Markdown
-│   └── provenance/            # STAGE 5: every claim -> the source sentence that supports it
-│       ├── claim.py           #   split outputs into claims (sentence + cited IDs)
-│       ├── numbers.py         #   EXACT match: numbers must appear in the cited source
-│       ├── support.py         #   SEMANTIC match: best source sentence + verdict per claim
-│       ├── report.py          #   metrics: citation coverage, supported share, number errors
-│       └── export.py          #   Markdown provenance table + terminal summary
+│   ├── provenance/            # STAGE 5: every claim -> the source sentence that supports it
+│   │   ├── claim.py           #   split outputs into claims (sentence + cited IDs)
+│   │   ├── numbers.py         #   EXACT match: numbers must appear in the cited source
+│   │   ├── support.py         #   SEMANTIC match: best source sentence + verdict per claim
+│   │   ├── report.py          #   metrics: citation coverage, supported share, number errors
+│   │   └── export.py          #   Markdown provenance table + terminal summary
+│   └── conversation/          # STAGE 6: chat - create, edit (#2 less technical), undo, with change tracking
+│       ├── commands.py        #   understand a message (fast path + Gemini structured output)
+│       ├── edit_prompts.py    #   DELTA-ANCHORED edit prompts (only the changed part + its sources)
+│       ├── editing.py         #   Editor: edit a slide / the script / the whole talk -> new talk + reason
+│       ├── goals.py           #   measurable goal per request (simpler -> readability up, 90s -> 225 words)
+│       ├── diff.py            #   the delta: field by field, word by word (~~old~~ **new**)
+│       ├── readability.py     #   Flesch reading ease
+│       ├── versions.py        #   versions + changes + before/after metrics, undo
+│       ├── formatting.py      #   Markdown chat replies
+│       ├── log.py             #   logs/session_*.json + .md (evidence of iteration)
+│       └── session.py         #   ChatSession.handle(message) -> reply
 ├── tests/                     # one test file per stage (pytest)
 ├── data/
 │   ├── papers/                # input papers
@@ -85,6 +96,8 @@ Rag-chatbot/
 ├── search.py                  # Day 3: python search.py "question" [--paper P3] [--compare]
 ├── generate.py                # Day 4: python generate.py --paper P3 --audience policymakers --length 90s
 ├── make_talk.py               # Day 5: python make_talk.py --paper P3 --slides 7 --notes 3 --focus methods
+├── chat.py                    # Day 7: python chat.py  (or --demo for a scripted conversation)
+├── logs/                      # conversation logs
 ├── examples/                  # saved example runs (input -> script -> sources -> checks)
 └── NOTES.md                   # learning journal
 ```

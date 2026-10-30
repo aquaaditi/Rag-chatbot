@@ -11,7 +11,10 @@ source sentence that supports it (or flagged when nothing does)
     report = check_provenance(claims_from_talk(result), result.sources, retriever.embedder)
 """
 
-from src.provenance.claim import Claim, claims_from_script, claims_from_talk, extract_claims
+from src.provenance.claim import Claim, claims_from_script, claims_from_slide, claims_from_talk, extract_claims
 from src.provenance.report import ProvenanceReport, check_provenance
 
-__all__ = ["Claim", "ProvenanceReport", "check_provenance", "claims_from_script", "claims_from_talk", "extract_claims"]
+__all__ = [
+    "Claim", "ProvenanceReport", "check_provenance",
+    "claims_from_script", "claims_from_slide", "claims_from_talk", "extract_claims",
+]

@@ -63,4 +63,24 @@ def ask_llm_structured(user_message: str, schema: type[T], system_prompt: str = 
     )
     if response.parsed is None:  # blocked, cut off by max_tokens, or invalid JSON
         raise ValueError(f"The model did not return valid {schema.__name__} JSON:\n{(response.text or '')[:500]}")
-    return response.parsed
+    return schema.model_validate(_repair_latex(response.parsed.model_dump()))
+
+
+# When the model writes LaTeX like \frac or \text inside JSON without escaping the backslash,
+# JSON reads "\f" as a form-feed character, "\t" as a tab, "\b" as backspace, "\r" as a carriage
+# return - so "\frac" arrives as "<form feed>rac". These characters never belong in our text,
+# so we turn them back into the backslash + letter the model meant.
+CONTROL_TO_LATEX = {"\f": "\\f", "\b": "\\b", "\t": "\\t", "\r": "\\r"}
+
+
+def _repair_latex(value):
+    """Recursively fix strings inside the parsed JSON (dicts, lists, strings)."""
+    if isinstance(value, str):
+        for char, latex in CONTROL_TO_LATEX.items():
+            value = value.replace(char, latex)
+        return value
+    if isinstance(value, list):
+        return [_repair_latex(v) for v in value]
+    if isinstance(value, dict):
+        return {k: _repair_latex(v) for k, v in value.items()}
+    return value
