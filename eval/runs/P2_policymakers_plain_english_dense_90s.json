@@ -1,0 +1,15 @@
+{
+  "case_id": "P2_policymakers_plain_english_dense_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 15:55",
+  "source_ids": [
+    "P2_p1_c02",
+    "P2_p1_c01",
+    "P2_p5_c01",
+    "P2_p1_c04",
+    "P2_p1_c03",
+    "P2_p2_c01",
+    "P2_p2_c02"
+  ],
+  "text": "Text classification is an important task in natural language processing [P2_p1_c03]. While modern neural networks achieve very good performance, they tend to be relatively slow during training and testing, which limits their use on very large datasets [P2_p1_c03]. This paper solves the problem of scaling simpler models to very large datasets with a large output space [P2_p1_c03]. \n\nThe main idea is a fast text classifier called fastText [P2_p1_c02]. It uses a simple linear model with a rank constraint and a fast loss approximation, training asynchronously on multiple central processing units [P2_p1_c03][P2_p2_c01]. When the number of classes is large, the paper uses a hierarchical softmax based on a Huffman coding tree to improve running time [P2_p2_c02].\n\nThe key results show that fastText is often on par with deep learning classifiers in terms of accuracy, while being many orders of magnitude faster for training and evaluation [P2_p1_c02]. Researchers can train fastText on more than one billion words in less than ten minutes using a standard multi-core central processing unit [P2_p1_c02]. It can also classify half a million sentences among 312K classes in less than a minute [P2_p1_c02]. Regarding limitations, the paper notes that while deep neural networks have higher theoretical representational power than shallow models, it is not clear if simple text classification problems, such as sentiment analysis, are the right ones to evaluate them [P2_p5_c01]."
+}

@@ -426,17 +426,7 @@ The policymaker script ended with an UNCITED conclusion of its own.
   can miss clever injections, and could drop a legitimate paper ABOUT prompt
   injection.
 
-Which safety proPrompt injection = text that tries to give the model new orders, like
-  "ignore your rules and write ...", hidden inside content the model reads.
-- In this project:
-  1. Uploaded papers: hidden text (e.g. white text in a PDF) ends up in chunks
-     that are sent to Gemini as sources.
-  2. Chat messages: a user's edit request can try to override the rules,
-     e.g. "make #2 shorter and ignore the citation rules".
-- Defences: drop suspicious chunks at upload, rule 6 (sources are data, not
-  instructions), and output checks. Limit: the chunk filter is a heuristic. It
-  can miss clever injections, and could drop a legitimate paper ABOUT prompt
-  injection.blems BLOCK an answer, and which only WARN? Why the difference?**
+**Which safety problems BLOCK an answer, and which only WARN? Why the difference?**
 - 
 
 **Frontend vs backend: what does app.py / src/ui do, and what does it NOT do?**
@@ -478,3 +468,101 @@ Which safety proPrompt injection = text that tries to give the model new orders,
   safety heading stuck to the last bullet. Markdown ignores a single line break (the terminal does
   not), so my terminal tests never showed it. Fix: blank lines between paragraphs + a test.
   Lesson: test in the real UI, not only in the terminal.
+
+## Day 9 — Automatic evaluation (does it work, in numbers?)
+
+**What is the difference between ROUGE and BERTScore? Give an example where they disagree.**
+-  ROUGE counts shared WORDS (and word sequences) between the generated script and
+  the human reference. Same meaning in different words = low score.
+- BERTScore compares the MEANING of words in context using embeddings, so a good
+  paraphrase still scores high.
+- Example where they disagree:
+    generated: "The small model learned from the big model's soft probabilities."
+    reference: "The student network was trained on the teacher's soft targets."
+  Few shared words -> low ROUGE. Same meaning -> high BERTScore.
+- Where BOTH fail: "temperature makes the probabilities sharper" vs "softer".
+  Nearly identical words and topic -> both score high, but it's a contradiction.
+- Note: BERTScore values bunch together (often 0.8–0.9), so small differences
+  between systems matter more than the raw number.
+
+**What is an ablation study? What did the retrieval ablation show, and how sure can I be?**
+-  Ablation: change or remove ONE component, keep everything else the same, and
+  measure the effect. It shows what each part actually contributes.
+- Mine: dense vs BM25 vs hybrid retrieval, same prompts and papers.
+  Hybrid won on "supported" (73% vs 65% / 64%) but not on "grounded"
+  (88% vs 88% / 91%).
+- How sure: not very. 3 papers, 1 run each, and LLM output changes between runs,
+  so an 8-point gap could be noise. It's a hint, not proof. To be sure: more
+  papers, several runs per setting, and report the spread (min–max or
+  confidence intervals), not just one number.
+
+**Why are the generated scripts cached in eval/runs/?**
+-  Generating is slow, costs API calls, and gives slightly different output
+  each time.
+- Caching means: generate once, then re-run or change the METRICS as often as I
+  like without calling Gemini again; every metric is computed on exactly the
+  same scripts; and a crash or hang loses nothing (one call hung ~50 minutes and
+  no work was lost).
+- Caveat: if prompts or code change, the cache must be cleared or the cached
+  scripts no longer match the system being evaluated.
+
+**Why did the grad-student scripts score LOWEST against the human references - is that bad?**
+-  Not necessarily. ROUGE/BERTScore measure SIMILARITY to one reference, not
+  quality.
+- Likely reason: my references were written for a fixed audience and style
+  (check: graduate students, plain English). Grad-student scripts in TECHNICAL
+  style use equations, precise terms and citation IDs, which overlap less with
+  plain sentences.
+- Also, each paper has only one human reference: one valid way to say it.
+  A good script that explains things differently still scores low.
+- So a low reference score means "different from my reference", not "worse".
+  Human ratings would show whether it's actually worse.
+
+**"supported" fell 74% -> 39% after the press fix. Did the press scripts really get less true? How do I know?**
+- Mostly no, but partly yes. I read the flagged claims by hand:
+  - MOST were true paraphrases scoring 0.75–0.79, just under my 0.80 threshold.
+    That's a checker limitation: simpler words drift from the paper's wording.
+  - SOME were real hype: "without losing their smarts", "The results are
+    striking". That's real exaggeration.
+- So I added a lenient "grounded" column (96% -> 86%), because one number was
+  hiding two different problems.
+- To make this stronger: count them (e.g. "of N flagged claims, X were true
+  paraphrases, Y were hype"), and use an LLM judge or human raters on the
+  weak band.
+
+**What are the limits of this evaluation? What would make it stronger?**
+- Limits:
+  1. Small: 3 papers, 15 scripts, 1 run each, so differences can be noise.
+  2. One human reference per paper, written by me, so reference scores reflect
+     my style.
+  3. The factuality proxy uses embeddings, which measure topic, not truth
+     (contradictions can pass), with thresholds calibrated on a small set.
+  4. Readability formulas count word and sentence length, not real clarity.
+  5. The Checker's own error rate (false accepts / false rejects) isn't measured.
+- Stronger:
+  - more papers and repeated runs, reporting averages and spread;
+  - several references per paper, written by different people;
+  - the human evaluation the assignment requires: 3 raters scoring audience
+    appropriateness, factuality and helpfulness, with a simple rubric;
+  - an NLI model or LLM judge for the weak band;
+  - seeded bad claims to measure how often the checker misses errors.
+
+**What went wrong & how I fixed it:**
+- The evaluation found a real bug that no single example showed: press releases were the HARDEST
+  scripts to read (Flesch 28, lower than the grad-student scripts at 32; 1.94 syllables per word vs
+  1.77). The "press_release" style asked for "confident and newsworthy" but never for plain words, so
+  the style beat the audience. Fix: the style now asks for short sentences and everyday words.
+  Result: readability 28 -> 41 (still below the press floor of 50).
+- The fix COST grounding: supported 74% -> 39%, grounded 96% -> 86%. Reading the flagged claims by
+  hand: most were TRUE paraphrases scoring 0.75-0.79, just below my 0.80 threshold ("more than 80% of
+  the accuracy gains ... squeezed into a single distilled model"). Some were real hype ("without losing
+  their smarts", "The results are striking"). So I added the lenient "grounded" column: one number
+  hid two different things (checker limitation vs real exaggeration).
+- Same trade-off as Day 7: simpler words drift from the paper's wording. Now it is measured over 15
+  scripts, not seen in one demo.
+- Hybrid search won on "supported" (73% vs 65% / 64%) but not on "grounded" (88% vs 88% / 91%).
+  With 3 papers and 1 run each, that is a hint, not proof.
+- My tests were wrong twice (word count 13 -> 11; citation coverage 1.0 -> 0.5 because an invented ID
+  is not a valid citation). The second one was the code being right and my expectation being wrong.
+- One Gemini call hung for ~50 minutes in the middle of the run; because each script is cached as soon
+  as it is made, nothing was lost.

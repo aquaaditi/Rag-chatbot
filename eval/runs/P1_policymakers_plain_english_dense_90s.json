@@ -1,0 +1,14 @@
+{
+  "case_id": "P1_policymakers_plain_english_dense_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 15:55",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p1_c05",
+    "P1_p1_c01",
+    "P1_p2_c02",
+    "P1_p1_c03",
+    "P1_p4_c03"
+  ],
+  "text": "This research paper looks at sentence-level classification tasks, such as figuring out the sentiment of text or classifying questions [P1_p1_c02]. While deep learning methods have achieved remarkable results in computer vision and speech recognition, using them for natural language processing often involves learning word vector representations and performing composition over them for classification [P1_p1_c03]. Word vectors are essentially feature extractors that encode the meaning of words in a lower-dimensional space [P1_p1_c03].\n\nThe main idea is testing a simple computer vision network called a convolutional neural network, or CNN, built on top of pre-trained word vectors [P1_p1_c02, P1_p1_c03]. The research tests different setups, including keeping vectors static or fine-tuning them for specific tasks, and even using a multichannel architecture that combines both approaches [P1_p1_c02]. \n\nRegarding key results, a simple model using pre-trained static vectors achieves excellent results on multiple benchmarks, performing competitively against more complex models that require prior parse trees [P1_p1_c02, P1_p1_c02, P1_p4_c03]. Fine-tuning those vectors for specific tasks offers even further performance gains [P1_p1_c02, P1_p4_c03]. Overall, the tested models improve upon the state of the art on 4 out of 7 tasks [P1_p1_c02]. However, a baseline model that relies entirely on randomly initialized words does not perform well on its own [P1_p4_c03]. The sources do not provide information on cost or processing speed."
+}

@@ -1,0 +1,15 @@
+{
+  "case_id": "P3_policymakers_plain_english_bm25_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 16:50",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p5_c04",
+    "P3_p1_c04",
+    "P3_p7_c03",
+    "P3_p8_c02",
+    "P3_p4_c03",
+    "P3_p1_c03"
+  ],
+  "text": "Training many machine learning models and averaging their predictions is a simple way to boost performance [P3_p1_c02]. However, using a whole group of models together is cumbersome and computationally expensive for deployment to large numbers of users [P3_p1_c02]. \n\nThe training stage does not need real-time speed and can use huge amounts of computation to extract structure from large datasets [P3_p1_c03]. In contrast, deployment requires low latency and fewer computational resources [P3_p1_c03]. \n\nThe paper solves this mismatch using a transfer method called distillation [P3_p1_c03]. This compresses the knowledge from a large group of models into a single, smaller model that is much easier to deploy [P3_p1_c02][P3_p1_c03]. \n\nThe paper demonstrates that this distillation strategy successfully turns a group of models into a single model that works significantly better than a standard model of the same size learned directly from the training data [P3_p4_c03]. The authors also significantly improved the acoustic model of a heavily used commercial system using this approach [P3_p1_c02]. \n\nAdditionally, the paper introduces specialist models that learn to focus on fine-grained classes that full models confuse [P3_p1_c02]. When training models on very large datasets, using soft targets prevents overfitting [P3_p5_c04]. Tests using only 3% of the speech data—about 20M examples—showed that training with soft targets allowed a model with 85M parameters to recover almost all the information in the full training set, sitting just 2% shy of it [P3_p7_c03]."
+}

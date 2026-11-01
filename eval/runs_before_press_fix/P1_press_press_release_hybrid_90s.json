@@ -1,0 +1,14 @@
+{
+  "case_id": "P1_press_press_release_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 15:55",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p2_c01",
+    "P1_p4_c03",
+    "P1_p2_c02",
+    "P1_p1_c03",
+    "P1_p5_c04"
+  ],
+  "text": "A new study shows that a simple computer model can successfully classify sentences, improving upon the state of the art on 4 out of 7 tasks including sentiment analysis and question classification [P1_p1_c02]. \n\nWhile deep learning has achieved remarkable results in computer vision and speech recognition, researchers have applied these techniques to natural language processing using word vectors [P1_p1_c03]. These vectors project words onto a lower-dimensional space to encode semantic features [P1_p1_c03]. \n\nThe problem this paper solves is how to effectively use convolutional neural networks for sentence-level classification tasks [P1_p1_c02]. The main idea involves building convolutional neural networks on top of pre-trained word vectors [P1_p1_c02]. The researchers also proposed a simple modification to the architecture allowing the use of both task-specific and static vectors [P1_p1_c02]. \n\nThe key results demonstrate that even a simple convolutional neural network model with little hyperparameter tuning and static vectors achieves excellent results on multiple benchmarks [P1_p1_c02]. Furthermore, learning task-specific vectors through fine-tuning offers further gains in performance [P1_p1_c02]. This matters because it adds to the well-established evidence that unsupervised pre-training of word vectors is an important ingredient in deep learning for natural language processing [P1_p5_c04]."
+}

@@ -1,0 +1,14 @@
+{
+  "case_id": "P1_grad_students_technical_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 15:55",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p2_c01",
+    "P1_p4_c03",
+    "P1_p2_c02",
+    "P1_p1_c03",
+    "P1_p5_c04"
+  ],
+  "text": "This paper tackles sentence-level classification using convolutional neural networks built on top of pre-trained word vectors [P1_p1_c02]. Word vectors project sparse encodings onto a lower-dimensional space, serving as feature extractors that encode semantic features [P1_p1_c03]. \n\nThe architecture begins with a sentence represented as $x_{1:n} = x_1 \\oplus x_2 \\oplus \\dots \\oplus x_n$, where $\\oplus$ is the concatenation operator [P1_p2_c01]. A convolution operation applies a filter $w \\in \\mathbb{R}^{h \\cdot k}$ to a window of $h$ words, generating a feature $c_i$ via $c_i = f(w \\cdot x_{i:i+h-1} + b)$, where $b$ is a bias term and $f$ is a non-linear function like the hyperbolic tangent [P1_p2_c01]. This filter is applied to each word window to produce a feature map $c = [c_1, c_2, \\dots, c_{n-h+1}]$ [P1_p2_c01]. Next, a max-over-time pooling operation takes the maximum value $\\hat{c} = \\max\\{c\\}$ as the feature, which naturally handles variable sentence lengths [P1_p2_c01]. Multiple filters with varying window sizes capture multiple features, passing through a fully connected layer with dropout and a softmax output [P1_p2_c01][P1_p2_c02]. The authors also propose a multichannel architecture where filters apply to both static and fine-tuned word vector channels, adding the results [P1_p1_c02][P1_p2_c02].\n\nExperimentally, a simple CNN with static vectors achieves excellent results on multiple benchmarks, outperforming or competing with complex pooling and parse-tree methods [P1_p1_c02][P1_p4_c03]. Fine-tuning task-specific vectors yields further gains, and the models improve upon the state of the art on 4 out of 7 tasks, including sentiment analysis and question classification [P1_p1_c02][P1_p4_c03]."
+}

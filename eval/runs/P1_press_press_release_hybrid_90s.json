@@ -1,0 +1,14 @@
+{
+  "case_id": "P1_press_press_release_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 16:55",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p2_c01",
+    "P1_p4_c03",
+    "P1_p2_c02",
+    "P1_p1_c03",
+    "P1_p5_c04"
+  ],
+  "text": "A simple artificial intelligence model achieves top-tier results in understanding human language tasks like sentiment analysis [P1_p1_c02]. \n\nDeep learning systems have already achieved great success in computer vision and speech recognition [P1_p1_c03]. Adapting these techniques for written text often involves converting words into vector representations, which are dense lists of numbers that capture semantic meaning [P1_p1_c03]. \n\nThe new research explores a simple convolutional neural network built on top of pre-trained word vectors [P1_p1_c02, P1_p5_c04]. Originally invented for computer vision, these networks use filters to scan local features in data [P1_p1_c03]. In this model, the network scans windows of words in a sentence to extract key features [P1_p2_c01]. \n\nThe key finding is that a straightforward model using pre-trained word vectors performs remarkably well across multiple benchmarks [P1_p1_c02, P1_p4_c03]. It competes strongly against much more complex deep learning models that require parse trees or intricate pooling schemes [P1_p4_c03]. Furthermore, fine-tuning those word vectors specifically for individual tasks delivers even greater performance gains [P1_p1_c02, P1_p4_c03]. The models improved upon the state of the art on four out of seven tasks, including sentiment analysis and question classification [P1_p1_c02]. \n\nThis matters because it shows that pre-trained word vectors act as powerful universal feature extractors that can be easily and effectively utilized across different datasets [P1_p4_c03]."
+}

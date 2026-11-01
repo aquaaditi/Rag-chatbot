@@ -30,9 +30,13 @@ STYLES = {
     "plain_english": (
         "plain-English: short sentences, everyday words, explain or avoid every technical term"
     ),
+    # The last sentence was added after the Day 9 evaluation: without it, press releases were
+    # the HARDEST outputs to read (Flesch 28, below the grad-student scripts) - see eval/.
     "press_release": (
         "press release: start with the headline finding, then context, then why it matters; "
-        "confident and newsworthy, but never exaggerate beyond the sources"
+        "confident and newsworthy, but never exaggerate beyond the sources. Written for the "
+        "general public: short sentences (about 15 words), everyday words, and explain or leave "
+        "out every technical term"
     ),
 }
 
@@ -61,6 +65,7 @@ class ScriptRequest:
     style: str = "plain_english"
     paper_id: str | None = None  # e.g. "P3" to use only one paper
     change_instruction: str = ""  # used later for edits like "make #2 less technical"
+    retrieval_mode: str = "hybrid"  # "dense" / "bm25" only for experiments (evaluate.py)
 
     def __post_init__(self):
         check_choice("audience", self.audience, AUDIENCES)

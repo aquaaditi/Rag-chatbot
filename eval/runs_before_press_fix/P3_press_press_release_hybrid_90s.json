@@ -1,0 +1,15 @@
+{
+  "case_id": "P3_press_press_release_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 16:50",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p2_c04",
+    "P3_p1_c03",
+    "P3_p6_c03",
+    "P3_p5_c02",
+    "P3_p8_c02"
+  ],
+  "text": "Researchers have unveiled a simple new way to make powerful artificial intelligence models fast and lightweight enough for everyday use by millions of people [P3_p1_c02][P3_p1_c03]. \n\nTraining high-performing machine learning models often requires massive computing power and cumbersome ensembles of multiple models [P3_p1_c02][P3_p1_c03]. While these large models extract great structure from data, they are too expensive to deploy to a large number of users [P3_p1_c02][P3_p1_c03]. \n\nTo solve this, researchers developed a technique called distillation [P3_p1_c03][P3_p2_c04]. Much like biological insects that have a larval form to gather energy and an adult form built for travel, artificial intelligence can use a cumbersome model for training and a small model for deployment [P3_p1_c03]. Distillation transfers the knowledge from a large ensemble into a single, compact model by using a higher temperature on the final output probabilities to preserve valuable similarity structure, such as learning which images or sounds resemble one another [P3_p1_c02][P3_p2_c04]. \n\nIn key results, this approach successfully improved a heavily used commercial speech recognition system [P3_p1_c02]. More than 80% of the accuracy improvement gained by an ensemble of 10 models was successfully transferred to a single distilled model [P3_p5_c02]. This breakthrough matters because it bridges the gap between heavy-duty AI training and real-world deployment, making advanced technology significantly cheaper and faster to run for everyday users [P3_p1_c02][P3_p1_c03]."
+}

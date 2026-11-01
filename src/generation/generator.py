@@ -28,7 +28,8 @@ class ScriptGenerator:
         self._llm = llm
 
     def generate(self, request: ScriptRequest) -> GeneratedScript:
-        sources = select_sources(self._retriever, request.topic, k=request.n_chunks, paper_id=request.paper_id)
+        sources = select_sources(self._retriever, request.topic, k=request.n_chunks, paper_id=request.paper_id,
+                                 mode=request.retrieval_mode)
         prompt = build_script_prompt(request, format_sources(sources))
         text = self._llm(prompt, system_prompt=SYSTEM_PROMPT).strip()
 

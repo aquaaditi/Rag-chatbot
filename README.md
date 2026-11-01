@@ -98,6 +98,15 @@ Rag-chatbot/
 │   │   ├── accessibility.py   #   long sentences, undefined acronyms, readability floor per audience
 │   │   ├── input_guard.py     #   check_message(): refuse BEFORE calling the LLM
 │   │   └── report.py          #   check_output(): offensive -> blocked, the rest -> warnings
+│   ├── evaluation/            # STAGE 8: automatic evaluation (many scripts -> numbers)
+│   │   ├── cases.py           #   what to run: papers x search modes x audiences
+│   │   ├── references.py      #   human-written reference scripts (data/references/)
+│   │   ├── overlap.py         #   ROUGE-1/2/L: shared words with the reference
+│   │   ├── semantic.py        #   BERTScore: shared meaning with the reference
+│   │   ├── row.py             #   EvalRow: every metric of one script
+│   │   ├── runner.py          #   Evaluator: generate (cached in eval/runs/) -> measure
+│   │   ├── summary.py         #   experiment tables: per search mode / per audience
+│   │   └── export.py          #   eval/results.md + results.json
 │   ├── upload.py              # add an uploaded paper: save -> ingest -> chunk -> scan -> index
 │   └── ui/                    # FRONTEND: the Streamlit chat page (shows things, decides nothing)
 │       ├── state.py           #   shared retriever (cache_resource) + one ChatSession per tab
@@ -117,6 +126,8 @@ Rag-chatbot/
 ├── make_talk.py               # Day 5: python make_talk.py --paper P3 --slides 7 --notes 3 --focus methods
 ├── chat.py                    # Day 7: python chat.py  (or --demo for a scripted conversation)
 ├── app.py                     # Day 8: streamlit run app.py  (the chat UI in the browser)
+├── evaluate.py                # Day 9: python evaluate.py  (-> eval/results.md)
+├── eval/                      # evaluation results + runs/ (every generated script, cached)
 ├── .streamlit/config.toml     # UI settings: no usage statistics, 20 MB upload limit
 ├── logs/                      # conversation logs
 ├── examples/                  # saved example runs (input -> script -> sources -> checks)
@@ -153,7 +164,42 @@ Upload a paper (or use the 3 included ones), then chat, e.g.:
 
 ## Evaluation
 
-_Results will be added here._
+`python evaluate.py` generates 15 scripts (3 papers × 5 settings, 90 seconds each) and scores them.
+Every script is cached in `eval/runs/`, so re-scoring needs no LLM calls. Full tables, every script, and
+the meaning of each column are in [eval/results.md](eval/results.md).
+
+**Retrieval ablation** (same request, only the search changes; policymakers, plain English):
+
+| search | supported | grounded | cited | ROUGE-L | BERTScore |
+|---|---|---|---|---|---|
+| dense only | 65% | 88% | 97% | 0.167 | 0.392 |
+| BM25 only | 64% | 91% | 91% | 0.160 | 0.376 |
+| **hybrid** (used) | **73%** | 88% | 91% | 0.166 | 0.375 |
+
+**Audience adaptation** (hybrid search):
+
+| audience | supported | grounded | readability | BERTScore vs human script |
+|---|---|---|---|---|
+| grad students (technical) | 87% | 100% | 32 | 0.309 |
+| policymakers (plain English) | 73% | 88% | 42 | 0.375 |
+| press (press release) | 39% | 86% | 41 | 0.423 |
+
+**Findings**
+- **0 number errors and 0 invented citations in all 15 scripts.**
+- **Hybrid search** had the most strictly supported claims, but the lenient "grounded" share is
+  equal for all three, so with 3 papers × 1 run the advantage is suggestive, not proven.
+- **Audiences really differ:** technical scripts stay closest to the paper's wording (most supported),
+  and plain scripts are closest to the human-written references (higher BERTScore).
+- **Found and fixed by the evaluation:** press releases were the *hardest* scripts to read (Flesch 28,
+  below the grad-student scripts). After a prompt fix: 41. The cost was fewer strictly supported claims
+  (74% → 39%; grounded 96% → 86%). Checking those claims by hand showed most were true paraphrases
+  scoring just below the 0.80 threshold, but some were real press-release hype ("without losing their
+  smarts"). Before/after: [eval/results_before_press_fix.md](eval/results_before_press_fix.md).
+- All scripts come out 10–20% **shorter** than the 225-word target.
+
+**Limits:** 3 papers, one run per setting, and one LLM, so small differences are noise. "Supported" is
+an embedding-similarity *proxy* for truth (it measures closeness of wording, not correctness), and the
+human references were written for a general audience.
 
 ## References
 

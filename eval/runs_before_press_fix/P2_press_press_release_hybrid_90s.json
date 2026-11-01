@@ -1,0 +1,14 @@
+{
+  "case_id": "P2_press_press_release_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 15:56",
+  "source_ids": [
+    "P2_p1_c02",
+    "P2_p1_c04",
+    "P2_p2_c04",
+    "P2_p3_c02",
+    "P2_p2_c03",
+    "P2_p4_c02"
+  ],
+  "text": "A new text classifier called fastText matches the accuracy of complex deep learning methods while operating many orders of magnitude faster for training and evaluation [P2_p1_c02]. \n\nTraditional linear classifiers can struggle with large output spaces where some classes have very few examples [P2_p1_c04]. To solve this, fastText represents sentences as a bag of words and feeds them into a linear model with rank constraints, while also using a bag of n-grams to capture partial local word order [P2_p1_c04][P2_p2_c03]. \n\nThis approach is highly efficient [P2_p2_c03]. Researchers can train fastText on more than one billion words in less than ten minutes using a standard multicore CPU [P2_p1_c02]. It can also classify half a million sentences among 312K classes in less than a minute [P2_p1_c02]. \n\nIn experiments, fastText achieved accuracy that is often on par with deep learning classifiers [P2_p1_c02]. For sentiment analysis, its accuracy is slightly better than character-level convolutional networks, and adding bigram information improves performance by 1-4% [P2_p3_c02]. \n\nThis development matters because it offers a simple, highly efficient baseline for text classification that drastically cuts down processing time without sacrificing accuracy [P2_p1_c02]."
+}

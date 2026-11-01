@@ -1,0 +1,15 @@
+{
+  "case_id": "P3_press_press_release_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 16:57",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p2_c04",
+    "P3_p1_c03",
+    "P3_p6_c03",
+    "P3_p5_c02",
+    "P3_p8_c02"
+  ],
+  "text": "Researchers have found a new way to shrink massive computer learning models without losing their smarts [P3_p1_c02]. Training many different computer models together gives great results, but using them all at once is too slow and expensive for everyday users [P3_p1_c02]. \n\nTo solve this, scientists use a method called distillation [P3_p1_c03]. Like insects that change form as they grow, computer systems can use a large, heavy model for heavy-duty learning, and then transfer that knowledge into a small model that runs fast [P3_p1_c03]. \n\nThe big idea is to train the small model to mimic the soft probabilities of the large model, rather than just copying final hard answers [P3_p2_c04]. This passes along rich details about how different categories relate to one another [P3_p2_c04]. \n\nThe results are striking. More than 80% of the accuracy gains achieved by a bulky group of 10 models can be successfully squeezed into a single distilled model [P3_p5_c02]. Scientists also introduced specialist models that focus on fine details and learn rapidly in parallel [P3_p1_c02]. \n\nThis matters because it makes advanced artificial intelligence much easier to deploy to a large number of users without needing massive computing power [P3_p1_c02]."
+}

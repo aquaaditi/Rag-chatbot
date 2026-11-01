@@ -1,0 +1,15 @@
+{
+  "case_id": "P1_policymakers_plain_english_bm25_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 15:55",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p2_c01",
+    "P1_p4_c03",
+    "P1_p5_c04",
+    "P1_p1_c04",
+    "P1_p4_c04",
+    "P1_p1_c03"
+  ],
+  "text": "This research addresses sentence-level classification tasks, such as sentiment analysis and question classification [P1_p1_c02]. \n\nThe main idea is to use a simple convolutional neural network built on top of pre-trained word vectors [P1_p1_c04, P1_p5_c04]. Word vectors project words onto a lower-dimensional space to encode semantic features [P1_p1_c03]. The researchers use word vectors trained on 100 billion words of Google News [P1_p1_c04]. They test a simple model with little hyperparameter tuning, keeping word vectors static, and also test fine-tuning them for specific tasks [P1_p1_c02, P1_p1_c04]. They additionally propose a multi-channel architecture to use both static and task-specific vectors [P1_p1_c02, P1_p1_c04]. \n\nRegarding key results, the simple model with static vectors achieves excellent results on multiple benchmarks, improving upon the state of the art on 4 out of 7 tasks [P1_p1_c02, P1_p1_c04]. It gives competitive results against more sophisticated deep learning models that use complex pooling schemes or require pre-computed parse trees [P1_p4_c03]. Learning task-specific vectors through fine-tuning offers further performance gains [P1_p1_c02, P1_p1_c04]. A baseline model using only randomly initialized words does not perform well on its own [P1_p4_c03]. As for limitations, the results for the multi-channel architecture are mixed, indicating that further work on regularizing the fine-tuning process is warranted [P1_p4_c04]. The sources do not mention metrics for cost or speed."
+}

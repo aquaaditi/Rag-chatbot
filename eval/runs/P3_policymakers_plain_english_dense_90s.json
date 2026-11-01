@@ -1,0 +1,15 @@
+{
+  "case_id": "P3_policymakers_plain_english_dense_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 15:56",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p1_c01",
+    "P3_p2_c05",
+    "P3_p6_c03",
+    "P3_p2_c04",
+    "P3_p2_c01"
+  ],
+  "text": "Training many different machine learning models and averaging their predictions can improve performance [P3_p1_c02]. However, using a whole group of models together is cumbersome and can be too computationally expensive to deploy to a large number of users [P3_p1_c02]. \n\nThis paper solves that problem by showing how to compress the knowledge from a group of models into a single, smaller model [P3_p1_c02][P3_p1_c04]. The main idea is a technique called distillation [P3_p2_c04]. This involves training the smaller model to match the outputs of the larger, cumbersome model [P3_p2_c04][P3_p2_c05]. \n\nRegarding results, the paper achieves surprising outcomes on MNIST [P3_p1_c02]. It also shows that distillation can significantly improve the acoustic model of a heavily used commercial system [P3_p1_c02]. \n\nAdditionally, the paper introduces a new type of ensemble made of full models and specialist models [P3_p1_c02]. These specialist models learn to distinguish fine-grained classes that the full models confuse [P3_p1_c02]. Unlike a mixture of experts, these specialist models can be trained rapidly and in parallel [P3_p1_c02]. \n\nThe sources do not provide specific metrics or data regarding cost, speed, or accuracy improvements beyond noting the significant improvement on the commercial system and the surprising results on MNIST [P3_p1_c02]."
+}

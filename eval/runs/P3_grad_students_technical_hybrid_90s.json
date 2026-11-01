@@ -1,0 +1,15 @@
+{
+  "case_id": "P3_grad_students_technical_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-01 16:50",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p2_c04",
+    "P3_p1_c03",
+    "P3_p6_c03",
+    "P3_p5_c02",
+    "P3_p8_c02"
+  ],
+  "text": "Training massive models or ensembles yields high performance, but deployment requires low latency and fewer computational resources [P3_p1_c03]. This paper solves the deployment problem by transferring knowledge from a cumbersome model into a single, smaller model through a process called distillation [P3_p1_c02][P3_p1_c03]. \n\nThe main idea shifts the view of knowledge away from specific parameter values [P3_p1_c04]. Instead, distillation uses the output probabilities of the cumbersome model as soft targets [P3_p2_c04]. For tasks like MNIST, information resides in the ratios of very small probabilities in the soft targets, which define a rich similarity structure over the data [P3_p2_c04]. To make this information useful during transfer, distillation raises the temperature of the final softmax until the cumbersome model produces a suitably soft set of targets, and the small model is trained using this same high temperature [P3_p2_c04]. Matching the logits of the cumbersome model is a special case of this approach [P3_p2_c04]. \n\nFor experiments, the authors trained an ensemble of 10 separate models with random initializations to create diversity [P3_p5_c02]. For distillation, they tried temperatures of 1, 2, 5, and 10, using a relative weight of 0.5 on the cross-entropy for the hard targets [P3_p5_c02]. Experimental evidence shows that more than 80% of the improvement in frame classification accuracy achieved by an ensemble of 10 models is successfully transferred to the distilled model [P3_p5_c02]. Furthermore, the paper introduces specialist models targeting fine-grained classes confused by the generalist, clustered using an online K-means algorithm applied to the covariance matrix of the generalist's predictions [P3_p1_c02][P3_p6_c03]."
+}
