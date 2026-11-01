@@ -3,4 +3,6 @@
 gatherUsageStats = false   # do not send usage statistics to Streamlit
 
 [server]
+address = "localhost"      # only THIS computer can open the app (default = every device on the Wi-Fi)
 maxUploadSize = 20         # MB - same limit as config.MAX_UPLOAD_MB
+enableXsrfProtection = true  # (default) other websites cannot send requests to the app
