@@ -44,7 +44,6 @@ In simple words, RAG connects AI models with external knowledge to provide more 
    to test math preservation. Papers 1 & 2 are related (both text classification).
 
 **What broke & how I fixed it:**
--
 1. Wrong Gemini model name
    - Error message: 404 NOT_FOUND — "This model models/gemini-2.5-flash is no
      longer available to new users"
@@ -427,7 +426,13 @@ The policymaker script ended with an UNCITED conclusion of its own.
   injection.
 
 **Which safety problems BLOCK an answer, and which only WARN? Why the difference?**
-- 
+- I split safety checks by severity. Things that are harmful the moment they're
+  shown, like offensive content or leaked secrets, are blocked and logged.
+  Quality and trust issues, like unsupported sentences, low readability or
+  length mismatches, are shown with a warning, because the output is still
+  useful and blocking would cause too many false positives.
+- Warnings also make the system transparent: the user sees exactly which
+  sentence to double-check.
 
 **Frontend vs backend: what does app.py / src/ui do, and what does it NOT do?**
 -  DOES: shows the chat, handles uploads and buttons, displays diffs, citations,
