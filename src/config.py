@@ -63,6 +63,7 @@ READABILITY_FLOOR = {"policymakers": 40, "press": 50}
 
 # ---------------------------------------------------------------- evaluation (src/evaluation/, evaluate.py)
 EVAL_DIR = PROJECT_ROOT / "eval"  # results.md / results.json + runs/ (every generated script, cached)
+HUMAN_EVAL_DIR = EVAL_DIR / "human"  # items.json (what to rate) + ratings_<rater>.json (the human ratings)
 REFERENCES_DIR = PROJECT_ROOT / "data" / "references"  # human-written 90s scripts: paper1_90s.txt = P1
 # BERTScore compares the MEANING of two texts token by token. distilbert is a small (~250 MB) model
 # that runs on a CPU; the BERTScore paper's best model (roberta-large, 1.4 GB) is too slow here.

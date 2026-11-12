@@ -17,6 +17,49 @@ source citations and conversational editing.
 - **Safety** — no offensive content, accessible language
 - **Evaluation** — factuality proxy, citation coverage, ROUGE / BERTScore, human ratings
 
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph OFFLINE["Once per paper: build_index.py, or an upload in the UI"]
+        P["Paper: PDF / LaTeX"] --> ING["ingestion<br/>text blocks + page numbers,<br/>LaTeX math kept whole"]
+        ING --> CH["chunking<br/>~250-word chunks, IDs like P3_p2_c06"]
+        CH --> EMB["embedder<br/>bge-small-en-v1.5"]
+        EMB --> IDX[("index<br/>FAISS dense + BM25 keywords")]
+    end
+
+    subgraph ONLINE["Every chat message"]
+        U["You: browser (app.py) or terminal (chat.py)"] --> IG{"input guard<br/>too long? injection? offensive?"}
+        IG -- refused --> U
+        IG -- ok --> CS["conversation: ChatSession<br/>create / edit slide 2 / undo"]
+        CS --> RET["retrieval<br/>hybrid search (RRF)"]
+        IDX --> RET
+        RET --> GEN["generation / talks<br/>prompt with grounding rules + audience / length / style"]
+        GEN <--> LLM["Gemini<br/>JSON output + safety filter"]
+        GEN --> PROV["provenance<br/>claim -> source sentence, numbers checked"]
+        PROV --> SAFE{"output checks<br/>offensive?"}
+        SAFE -- blocked --> CS
+        SAFE -- "ok (+ warnings: long sentences,<br/>acronyms, readability)" --> VER["versions + diff<br/>v1 -> v2, why it changed"]
+        VER --> U
+        VER --> LOG[("logs/<br/>every turn")]
+    end
+
+    subgraph EVAL["Evaluation"]
+        RUNS[("eval/runs/<br/>15 cached scripts")] --> AUTO["evaluate.py<br/>ROUGE, BERTScore, supported,<br/>citations, readability"]
+        RUNS --> HUM["rate.py<br/>blind human ratings"]
+        AUTO --> CMP["do the metrics agree<br/>with the human?"]
+        HUM --> CMP
+    end
+
+    GEN -. "same generator" .-> RUNS
+```
+
+**One request, step by step:** the message passes the input guard → `ChatSession` works out what you
+want → hybrid search finds the best chunks of the paper → Gemini writes the script or slides using
+ONLY those chunks, citing their IDs → provenance checks every sentence against its cited chunk →
+safety blocks harmful text and warns about hard-to-read text → the new version is saved, with a diff
+against the old one, and the turn is logged.
+
 ## Project Structure
 
 The code is organised as a pipeline. Each folder in `src/` is one stage, and each file in a stage
@@ -107,6 +150,13 @@ Rag-chatbot/
 │   │   ├── runner.py          #   Evaluator: generate (cached in eval/runs/) -> measure
 │   │   ├── summary.py         #   experiment tables: per search mode / per audience
 │   │   └── export.py          #   eval/results.md + results.json
+│   ├── human_eval/            # STAGE 9: human evaluation (people rate the cached scripts, blind)
+│   │   ├── rubric.py          #   the questions + what every score means
+│   │   ├── items.py           #   what to rate: 15 scripts + doubted sentences (+ controls) -> items.json
+│   │   ├── ratings.py         #   one rater's answers: eval/human/ratings_<rater>.json
+│   │   ├── session.py         #   the blind, resumable rating loop in the terminal
+│   │   ├── analysis.py        #   means, majority labels, true share vs checker, agreement, correlations
+│   │   └── export.py          #   eval/human/results.md
 │   ├── upload.py              # add an uploaded paper: save -> ingest -> chunk -> scan -> index
 │   └── ui/                    # FRONTEND: the Streamlit chat page (shows things, decides nothing)
 │       ├── state.py           #   shared retriever (cache_resource) + one ChatSession per tab
@@ -127,7 +177,8 @@ Rag-chatbot/
 ├── chat.py                    # Day 7: python chat.py  (or --demo for a scripted conversation)
 ├── app.py                     # Day 8: streamlit run app.py  (the chat UI in the browser)
 ├── evaluate.py                # Day 9: python evaluate.py  (-> eval/results.md)
-├── eval/                      # evaluation results + runs/ (every generated script, cached)
+├── rate.py                    # Day 10: python rate.py --rater <name>  (-> eval/human/results.md)
+├── eval/                      # evaluation results + runs/ (every generated script, cached) + human/
 ├── .streamlit/config.toml     # UI settings: no usage statistics, 20 MB upload limit
 ├── logs/                      # conversation logs
 ├── examples/                  # saved example runs (input -> script -> sources -> checks)
@@ -153,6 +204,8 @@ GEMINI_API_KEY=your_key_here
 ```bash
 python build_index.py          # once: build the search index for data/papers/
 streamlit run app.py           # chat UI at http://localhost:8501
+python evaluate.py             # automatic evaluation -> eval/results.md
+python rate.py --rater <name>  # human evaluation (blind, resumable) -> eval/human/results.md
 python chat.py                 # or chat in the terminal
 ```
 
@@ -200,6 +253,22 @@ the meaning of each column are in [eval/results.md](eval/results.md).
 **Limits:** 3 papers, one run per setting, and one LLM, so small differences are noise. "Supported" is
 an embedding-similarity *proxy* for truth (it measures closeness of wording, not correctness), and the
 human references were written for a general audience.
+
+### Human evaluation
+
+`python rate.py --rater <name>` shows the same 15 cached scripts to a person, **blind**: they see the
+audience but not the search mode, the metrics or the checker's verdicts. Each script gets 1-5 for
+**factuality**, **audience fit** and **helpfulness**, using a written rubric. Then every sentence the
+checker doubted (weak / unsupported / uncited), plus one supported sentence per script as a control,
+gets a label: **true / hype / wrong / not a claim**. Answers are saved after every item, and each rater
+gets their own file and their own random order.
+
+The report ([eval/human/results.md](eval/human/results.md)) answers:
+- How many claims are **really** true, compared with "supported" (strict) and "grounded" (lenient)?
+- Do the automatic metrics rank the scripts the way a human does (Spearman correlation)?
+- Do the raters agree with each other?
+
+_Results: to be added after the ratings._
 
 ## References
 

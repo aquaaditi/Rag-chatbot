@@ -1,0 +1,982 @@
+{
+  "scripts": [
+    {
+      "case_id": "P1_grad_students_technical_hybrid_90s",
+      "audience": "grad_students",
+      "mode": "hybrid",
+      "text": "This paper tackles sentence-level classification using convolutional neural networks built on top of pre-trained word vectors. Word vectors project sparse encodings onto a lower-dimensional space, serving as feature extractors that encode semantic features. \n\nThe architecture begins with a sentence represented as $x_{1:n} = x_1 \\oplus x_2 \\oplus \\dots \\oplus x_n$, where $\\oplus$ is the concatenation operator. A convolution operation applies a filter $w \\in \\mathbb{R}^{h \\cdot k}$ to a window of $h$ words, generating a feature $c_i$ via $c_i = f(w \\cdot x_{i:i+h-1} + b)$, where $b$ is a bias term and $f$ is a non-linear function like the hyperbolic tangent. This filter is applied to each word window to produce a feature map $c = [c_1, c_2, \\dots, c_{n-h+1}]$. Next, a max-over-time pooling operation takes the maximum value $\\hat{c} = \\max\\{c\\}$ as the feature, which naturally handles variable sentence lengths. Multiple filters with varying window sizes capture multiple features, passing through a fully connected layer with dropout and a softmax output. The authors also propose a multichannel architecture where filters apply to both static and fine-tuned word vector channels, adding the results.\n\nExperimentally, a simple CNN with static vectors achieves excellent results on multiple benchmarks, outperforming or competing with complex pooling and parse-tree methods. Fine-tuning task-specific vectors yields further gains, and the models improve upon the state of the art on 4 out of 7 tasks, including sentiment analysis and question classification.",
+      "source_ids": [
+        "P1_p1_c02",
+        "P1_p2_c01",
+        "P1_p4_c03",
+        "P1_p2_c02",
+        "P1_p1_c03",
+        "P1_p5_c04"
+      ]
+    },
+    {
+      "case_id": "P1_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "mode": "bm25",
+      "text": "This research addresses sentence-level classification tasks, such as sentiment analysis and question classification. \n\nThe main idea is to use a simple convolutional neural network built on top of pre-trained word vectors. Word vectors project words onto a lower-dimensional space to encode semantic features. The researchers use word vectors trained on 100 billion words of Google News. They test a simple model with little hyperparameter tuning, keeping word vectors static, and also test fine-tuning them for specific tasks. They additionally propose a multi-channel architecture to use both static and task-specific vectors. \n\nRegarding key results, the simple model with static vectors achieves excellent results on multiple benchmarks, improving upon the state of the art on 4 out of 7 tasks. It gives competitive results against more sophisticated deep learning models that use complex pooling schemes or require pre-computed parse trees. Learning task-specific vectors through fine-tuning offers further performance gains. A baseline model using only randomly initialized words does not perform well on its own. As for limitations, the results for the multi-channel architecture are mixed, indicating that further work on regularizing the fine-tuning process is warranted. The sources do not mention metrics for cost or speed.",
+      "source_ids": [
+        "P1_p1_c02",
+        "P1_p2_c01",
+        "P1_p4_c03",
+        "P1_p5_c04",
+        "P1_p1_c04",
+        "P1_p4_c04",
+        "P1_p1_c03"
+      ]
+    },
+    {
+      "case_id": "P1_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "mode": "dense",
+      "text": "This research paper looks at sentence-level classification tasks, such as figuring out the sentiment of text or classifying questions. While deep learning methods have achieved remarkable results in computer vision and speech recognition, using them for natural language processing often involves learning word vector representations and performing composition over them for classification. Word vectors are essentially feature extractors that encode the meaning of words in a lower-dimensional space.\n\nThe main idea is testing a simple computer vision network called a convolutional neural network, or CNN, built on top of pre-trained word vectors. The research tests different setups, including keeping vectors static or fine-tuning them for specific tasks, and even using a multichannel architecture that combines both approaches. \n\nRegarding key results, a simple model using pre-trained static vectors achieves excellent results on multiple benchmarks, performing competitively against more complex models that require prior parse trees. Fine-tuning those vectors for specific tasks offers even further performance gains. Overall, the tested models improve upon the state of the art on 4 out of 7 tasks. However, a baseline model that relies entirely on randomly initialized words does not perform well on its own. The sources do not provide information on cost or processing speed.",
+      "source_ids": [
+        "P1_p1_c02",
+        "P1_p1_c05",
+        "P1_p1_c01",
+        "P1_p2_c02",
+        "P1_p1_c03",
+        "P1_p4_c03"
+      ]
+    },
+    {
+      "case_id": "P1_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "mode": "hybrid",
+      "text": "This research looks at how computers can classify sentences, such as analyzing sentiment or sorting questions. While deep learning has done well in speech recognition and computer vision, natural language processing poses unique challenges. \n\nThe main idea is using a simple computer vision tool called a convolutional neural network, built on top of pre-trained word vectors. Word vectors turn words into dense representations that encode semantic features, meaning words with similar meanings stay close together in a vector space. \n\nThe paper shows that a simple model using static, pre-trained vectors performs remarkably well, competing with more complex deep learning models that require parse trees or complex pooling schemes. Pre-trained vectors act as good, universal feature extractors across different datasets. Furthermore, learning task-specific vectors through fine-tuning offers even greater performance gains. The authors also tested a modified architecture that uses both static and task-specific vectors at the same time. \n\nRegarding accuracy, the models improved upon the state of the art on four out of seven tasks tested. The research shows that unsupervised pre-training of word vectors is an important ingredient for this type of technology. The sources do not provide data on financial costs or processing speed.",
+      "source_ids": [
+        "P1_p1_c02",
+        "P1_p2_c01",
+        "P1_p4_c03",
+        "P1_p2_c02",
+        "P1_p1_c03",
+        "P1_p5_c04"
+      ]
+    },
+    {
+      "case_id": "P1_press_press_release_hybrid_90s",
+      "audience": "press",
+      "mode": "hybrid",
+      "text": "A simple artificial intelligence model achieves top-tier results in understanding human language tasks like sentiment analysis. \n\nDeep learning systems have already achieved great success in computer vision and speech recognition. Adapting these techniques for written text often involves converting words into vector representations, which are dense lists of numbers that capture semantic meaning. \n\nThe new research explores a simple convolutional neural network built on top of pre-trained word vectors. Originally invented for computer vision, these networks use filters to scan local features in data. In this model, the network scans windows of words in a sentence to extract key features. \n\nThe key finding is that a straightforward model using pre-trained word vectors performs remarkably well across multiple benchmarks. It competes strongly against much more complex deep learning models that require parse trees or intricate pooling schemes. Furthermore, fine-tuning those word vectors specifically for individual tasks delivers even greater performance gains. The models improved upon the state of the art on four out of seven tasks, including sentiment analysis and question classification. \n\nThis matters because it shows that pre-trained word vectors act as powerful universal feature extractors that can be easily and effectively utilized across different datasets.",
+      "source_ids": [
+        "P1_p1_c02",
+        "P1_p2_c01",
+        "P1_p4_c03",
+        "P1_p2_c02",
+        "P1_p1_c03",
+        "P1_p5_c04"
+      ]
+    },
+    {
+      "case_id": "P2_grad_students_technical_hybrid_90s",
+      "audience": "grad_students",
+      "mode": "hybrid",
+      "text": "Linear classifiers like logistic regression or SVMs often struggle with generalization when handling large output spaces where some classes have very few examples. While deep learning or low-rank matrix factorization solve this, they can be slow. This paper introduces fastText, a fast and efficient baseline for text and sentence classification.\n\nThe architecture uses a rank constraint where a first weight matrix $A$ acts as a look-up table over words. These word representations are averaged into a text representation, which is then fed to a linear classifier. To capture local word order without high computational costs, fastText uses a bag of n-grams as additional features, maintaining a memory-efficient mapping through the hashing trick.\n\nIn sentiment analysis experiments, fastText achieves accuracy slightly better than char-CNN and char-CRNN, and is competitive with recurrent approaches like LSTM-GRNN, without using pre-trained word embeddings. Furthermore, adding bigram information improves performance by 1% to 4%. For scalability, evaluated on a tag prediction task using the YFCC100M dataset with 91,188,648 training examples and 312,116 unique tags, fastText trains on more than one billion words in less than ten minutes on a standard multicore CPU. It can also classify half a million sentences among 312K classes in less than a minute.",
+      "source_ids": [
+        "P2_p1_c02",
+        "P2_p1_c04",
+        "P2_p2_c04",
+        "P2_p3_c02",
+        "P2_p2_c03",
+        "P2_p4_c02"
+      ]
+    },
+    {
+      "case_id": "P2_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "mode": "bm25",
+      "text": "Text classification systems often struggle to balance speed and accuracy. This paper solves that problem by introducing a fast text classifier called fastText. \n\nThe main idea is a simple text classifier that represents sentences by averaging word information, while adding n-grams, which are sequences of words, to capture local word order efficiently. \n\nRegarding cost and speed, the paper shows the system is many orders of magnitude faster for training and evaluation than complex deep learning classifiers. It can be trained on more than one billion words in less than ten minutes using a standard multicore CPU. It can also classify half a million sentences among 312K classes in less than a minute. \n\nIn terms of accuracy, fastText is often on par with deep learning classifiers. On sentiment analysis tasks, adding bigram information improves performance by 1-4%. Its accuracy is slightly better than some character-based convolutional networks, but a bit worse than others. \n\nAs for limitations, fastText does not use pre-trained word embeddings, which can explain small accuracy differences compared to other methods. The sources do not contain further information about limitations.",
+      "source_ids": [
+        "P2_p1_c02",
+        "P2_p2_c04",
+        "P2_p3_c02",
+        "P2_p1_c04",
+        "P2_p2_c03",
+        "P2_p4_c02"
+      ]
+    },
+    {
+      "case_id": "P2_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "mode": "dense",
+      "text": "Text classification is an important task in natural language processing. While modern neural networks achieve very good performance, they tend to be relatively slow during training and testing, which limits their use on very large datasets. This paper solves the problem of scaling simpler models to very large datasets with a large output space. \n\nThe main idea is a fast text classifier called fastText. It uses a simple linear model with a rank constraint and a fast loss approximation, training asynchronously on multiple central processing units. When the number of classes is large, the paper uses a hierarchical softmax based on a Huffman coding tree to improve running time.\n\nThe key results show that fastText is often on par with deep learning classifiers in terms of accuracy, while being many orders of magnitude faster for training and evaluation. Researchers can train fastText on more than one billion words in less than ten minutes using a standard multi-core central processing unit. It can also classify half a million sentences among 312K classes in less than a minute. Regarding limitations, the paper notes that while deep neural networks have higher theoretical representational power than shallow models, it is not clear if simple text classification problems, such as sentiment analysis, are the right ones to evaluate them.",
+      "source_ids": [
+        "P2_p1_c02",
+        "P2_p1_c01",
+        "P2_p5_c01",
+        "P2_p1_c04",
+        "P2_p1_c03",
+        "P2_p2_c01",
+        "P2_p2_c02"
+      ]
+    },
+    {
+      "case_id": "P2_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "mode": "hybrid",
+      "text": "This paper solves the problem of how to classify text quickly and efficiently. Traditional linear classifiers can struggle to generalize when there are many possible categories and few examples. \n\nThe main idea is a text classifier called fastText. It represents sentences by grouping words together and adds local word order information using n-grams, which are sequences of words. \n\nRegarding cost and speed, the paper shows that fastText is many orders of magnitude faster for training and evaluation than deep learning classifiers. It can be trained on more than one billion words in less than ten minutes using a standard multi-core computer processor. It can also classify half a million sentences across 312K categories in less than a minute. \n\nIn terms of accuracy, fastText is often on par with deep learning classifiers. For sentiment analysis, its accuracy is slightly better than some existing methods like char-CNN and char-CRNN, though a bit worse than VDCNN. Adding word pairs called bigrams improves performance by 1% to 4%. \n\nAs for limitations, fastText does not use pre-trained word embeddings, which can explain a 1% difference in accuracy compared to certain other approaches. The sources do not mention any other limitations.",
+      "source_ids": [
+        "P2_p1_c02",
+        "P2_p1_c04",
+        "P2_p2_c04",
+        "P2_p3_c02",
+        "P2_p2_c03",
+        "P2_p4_c02"
+      ]
+    },
+    {
+      "case_id": "P2_press_press_release_hybrid_90s",
+      "audience": "press",
+      "mode": "hybrid",
+      "text": "A new text classifier named fastText delivers high accuracy while running many orders of magnitude faster for training and evaluation. \n\nTraditional text classification often uses simple linear models, but they can struggle when dealing with large output spaces where some classes have very few examples. Common solutions use complex multilayer neural networks or factorize classifiers into low rank matrices. \n\nTo solve this, the authors introduce fastText, which represents sentences using a bag of words and adds a bag of n-grams to capture partial information about local word order. \n\nThe results are striking. We can train fastText on more than one billion words in less than ten minutes using a standard multicore CPU. It can also classify half a million sentences among 312K classes in less than a minute. On sentiment analysis tasks, its accuracy is often on par with deep learning classifiers and slightly better than some existing methods. \n\nThis matters because it provides a simple and efficient baseline that matches deep learning accuracy while drastically reducing the time needed to train and evaluate large text datasets.",
+      "source_ids": [
+        "P2_p1_c02",
+        "P2_p1_c04",
+        "P2_p2_c04",
+        "P2_p3_c02",
+        "P2_p2_c03",
+        "P2_p4_c02"
+      ]
+    },
+    {
+      "case_id": "P3_grad_students_technical_hybrid_90s",
+      "audience": "grad_students",
+      "mode": "hybrid",
+      "text": "Training massive models or ensembles yields high performance, but deployment requires low latency and fewer computational resources. This paper solves the deployment problem by transferring knowledge from a cumbersome model into a single, smaller model through a process called distillation. \n\nThe main idea shifts the view of knowledge away from specific parameter values. Instead, distillation uses the output probabilities of the cumbersome model as soft targets. For tasks like MNIST, information resides in the ratios of very small probabilities in the soft targets, which define a rich similarity structure over the data. To make this information useful during transfer, distillation raises the temperature of the final softmax until the cumbersome model produces a suitably soft set of targets, and the small model is trained using this same high temperature. Matching the logits of the cumbersome model is a special case of this approach. \n\nFor experiments, the authors trained an ensemble of 10 separate models with random initializations to create diversity. For distillation, they tried temperatures of 1, 2, 5, and 10, using a relative weight of 0.5 on the cross-entropy for the hard targets. Experimental evidence shows that more than 80% of the improvement in frame classification accuracy achieved by an ensemble of 10 models is successfully transferred to the distilled model. Furthermore, the paper introduces specialist models targeting fine-grained classes confused by the generalist, clustered using an online K-means algorithm applied to the covariance matrix of the generalist's predictions.",
+      "source_ids": [
+        "P3_p1_c02",
+        "P3_p1_c04",
+        "P3_p2_c04",
+        "P3_p1_c03",
+        "P3_p6_c03",
+        "P3_p5_c02",
+        "P3_p8_c02"
+      ]
+    },
+    {
+      "case_id": "P3_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "mode": "bm25",
+      "text": "Training many machine learning models and averaging their predictions is a simple way to boost performance. However, using a whole group of models together is cumbersome and computationally expensive for deployment to large numbers of users. \n\nThe training stage does not need real-time speed and can use huge amounts of computation to extract structure from large datasets. In contrast, deployment requires low latency and fewer computational resources. \n\nThe paper solves this mismatch using a transfer method called distillation. This compresses the knowledge from a large group of models into a single, smaller model that is much easier to deploy. \n\nThe paper demonstrates that this distillation strategy successfully turns a group of models into a single model that works significantly better than a standard model of the same size learned directly from the training data. The authors also significantly improved the acoustic model of a heavily used commercial system using this approach. \n\nAdditionally, the paper introduces specialist models that learn to focus on fine-grained classes that full models confuse. When training models on very large datasets, using soft targets prevents overfitting. Tests using only 3% of the speech data—about 20M examples—showed that training with soft targets allowed a model with 85M parameters to recover almost all the information in the full training set, sitting just 2% shy of it.",
+      "source_ids": [
+        "P3_p1_c02",
+        "P3_p5_c04",
+        "P3_p1_c04",
+        "P3_p7_c03",
+        "P3_p8_c02",
+        "P3_p4_c03",
+        "P3_p1_c03"
+      ]
+    },
+    {
+      "case_id": "P3_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "mode": "dense",
+      "text": "Training many different machine learning models and averaging their predictions can improve performance. However, using a whole group of models together is cumbersome and can be too computationally expensive to deploy to a large number of users. \n\nThis paper solves that problem by showing how to compress the knowledge from a group of models into a single, smaller model. The main idea is a technique called distillation. This involves training the smaller model to match the outputs of the larger, cumbersome model. \n\nRegarding results, the paper achieves surprising outcomes on MNIST. It also shows that distillation can significantly improve the acoustic model of a heavily used commercial system. \n\nAdditionally, the paper introduces a new type of ensemble made of full models and specialist models. These specialist models learn to distinguish fine-grained classes that the full models confuse. Unlike a mixture of experts, these specialist models can be trained rapidly and in parallel. \n\nThe sources do not provide specific metrics or data regarding cost, speed, or accuracy improvements beyond noting the significant improvement on the commercial system and the surprising results on MNIST.",
+      "source_ids": [
+        "P3_p1_c02",
+        "P3_p1_c04",
+        "P3_p1_c01",
+        "P3_p2_c05",
+        "P3_p6_c03",
+        "P3_p2_c04",
+        "P3_p2_c01"
+      ]
+    },
+    {
+      "case_id": "P3_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "mode": "hybrid",
+      "text": "A common way to improve computer learning is to train many models and average their predictions. However, using a whole group of models together is cumbersome and can be too computationally expensive for a large number of users. \n\nThe problem is that training needs to extract structure from massive datasets using huge amounts of computation, while serving many users has strict limits on speed and computing resources. \n\nTo solve this, the paper uses a main idea called distillation. This transfers the knowledge from a cumbersome group of models into a single, smaller model that is much easier to deploy. \n\nRegarding results, the paper shows surprising outcomes on MNIST and successfully improves a heavily used commercial speech recognition system. More than 80% of the accuracy improvement gained by a group of ten models is successfully transferred to the single distilled model. \n\nThe paper also introduces specialist models to handle categories that full models often confuse. These specialists can be trained rapidly and in parallel. \n\nAs for limitations, when specialists are trained on heavily enriched data, they have a strong tendency to overfit on their special classes. The sources do not mention other limitations.",
+      "source_ids": [
+        "P3_p1_c02",
+        "P3_p1_c04",
+        "P3_p2_c04",
+        "P3_p1_c03",
+        "P3_p6_c03",
+        "P3_p5_c02",
+        "P3_p8_c02"
+      ]
+    },
+    {
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "mode": "hybrid",
+      "text": "Researchers have found a new way to shrink massive computer learning models without losing their smarts. Training many different computer models together gives great results, but using them all at once is too slow and expensive for everyday users. \n\nTo solve this, scientists use a method called distillation. Like insects that change form as they grow, computer systems can use a large, heavy model for heavy-duty learning, and then transfer that knowledge into a small model that runs fast. \n\nThe big idea is to train the small model to mimic the soft probabilities of the large model, rather than just copying final hard answers. This passes along rich details about how different categories relate to one another. \n\nThe results are striking. More than 80% of the accuracy gains achieved by a bulky group of 10 models can be successfully squeezed into a single distilled model. Scientists also introduced specialist models that focus on fine details and learn rapidly in parallel. \n\nThis matters because it makes advanced artificial intelligence much easier to deploy to a large number of users without needing massive computing power.",
+      "source_ids": [
+        "P3_p1_c02",
+        "P3_p1_c04",
+        "P3_p2_c04",
+        "P3_p1_c03",
+        "P3_p6_c03",
+        "P3_p5_c02",
+        "P3_p8_c02"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "key": "P1_grad_students_technical_hybrid_90s#2",
+      "case_id": "P1_grad_students_technical_hybrid_90s",
+      "audience": "grad_students",
+      "claim": "Word vectors project sparse encodings onto a lower-dimensional space, serving as feature extractors that encode semantic features.",
+      "evidence": "Word vectors, wherein words are projected from a sparse, 1-of-V encoding (here V is the vocabulary size) onto a lower dimensional vector space via a hidden layer, are essentially feature extractors that encode semantic features of words in their dimensions.",
+      "chunk_id": "P1_p1_c03",
+      "page": 1,
+      "verdict": "supported",
+      "score": 0.942
+    },
+    {
+      "key": "P1_grad_students_technical_hybrid_90s#3",
+      "case_id": "P1_grad_students_technical_hybrid_90s",
+      "audience": "grad_students",
+      "claim": "The architecture begins with a sentence represented as $x_{1:n} = x_1 \\oplus x_2 \\oplus \\dots \\oplus x_n$, where $\\oplus$ is the concatenation operator.",
+      "evidence": "wait for the video and do n't rent it n x k representation of sentence with static and non-static channels Convolutional layer with multiple filter widths and feature maps Max-over-time pooling Fully connected layer with dropout and softmax output Figure 1: Model architecture with two channels for an example sentence. necessary) is represented as x1:n = x1 ⊕x2 ⊕. . . ⊕xn, (1) where ⊕is the concatenation operator. In general, let xi:i+j refer to the concatenation of words xi, xi+1, . . . , xi+j.",
+      "chunk_id": "P1_p2_c01",
+      "page": 2,
+      "verdict": "weak",
+      "score": 0.795
+    },
+    {
+      "key": "P1_policymakers_plain_english_bm25_90s#3",
+      "case_id": "P1_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "Word vectors project words onto a lower-dimensional space to encode semantic features.",
+      "evidence": "Word vectors, wherein words are projected from a sparse, 1-of-V encoding (here V is the vocabulary size) onto a lower dimensional vector space via a hidden layer, are essentially feature extractors that encode semantic features of words in their dimensions. In such dense representations, semantically close words are likewise close—in euclidean or cosine distance—in the lower dimensional vector space.",
+      "chunk_id": "P1_p1_c03",
+      "page": 1,
+      "verdict": "supported",
+      "score": 0.9
+    },
+    {
+      "key": "P1_policymakers_plain_english_bm25_90s#5",
+      "case_id": "P1_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "They test a simple model with little hyperparameter tuning, keeping word vectors static, and also test fine-tuning them for specific tasks.",
+      "evidence": "We additionally propose a simple modification to the architecture to allow for the use of both task-specific and static vectors.",
+      "chunk_id": "P1_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.711
+    },
+    {
+      "key": "P1_policymakers_plain_english_bm25_90s#7",
+      "case_id": "P1_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "Regarding key results, the simple model with static vectors achieves excellent results on multiple benchmarks, improving upon the state of the art on 4 out of 7 tasks.",
+      "evidence": "Despite little tuning of hyperparameters, this simple model achieves excellent results on multiple benchmarks, suggesting that the pre-trained vectors are ‘universal’ feature extractors that can be utilized for various classification tasks.",
+      "chunk_id": "P1_p1_c04",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.774
+    },
+    {
+      "key": "P1_policymakers_plain_english_bm25_90s#12",
+      "case_id": "P1_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "The sources do not mention metrics for cost or speed.",
+      "evidence": "Results of our models against other methods are listed in table 2.",
+      "chunk_id": "P1_p4_c03",
+      "page": 4,
+      "verdict": "uncited",
+      "score": 0.546
+    },
+    {
+      "key": "P1_policymakers_plain_english_dense_90s#1",
+      "case_id": "P1_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "This research paper looks at sentence-level classification tasks, such as figuring out the sentiment of text or classifying questions.",
+      "evidence": "We report on a series of experiments with convolutional neural networks (CNN) trained on top of pre-trained word vectors for sentence-level classification tasks.",
+      "chunk_id": "P1_p1_c02",
+      "page": 1,
+      "verdict": "supported",
+      "score": 0.822
+    },
+    {
+      "key": "P1_policymakers_plain_english_dense_90s#4",
+      "case_id": "P1_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "The main idea is testing a simple computer vision network called a convolutional neural network, or CNN, built on top of pre-trained word vectors.",
+      "evidence": "We report on a series of experiments with convolutional neural networks (CNN) trained on top of pre-trained word vectors for sentence-level classification tasks.",
+      "chunk_id": "P1_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.793
+    },
+    {
+      "key": "P1_policymakers_plain_english_dense_90s#5",
+      "case_id": "P1_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "The research tests different setups, including keeping vectors static or fine-tuning them for specific tasks, and even using a multichannel architecture that combines both approaches.",
+      "evidence": "We additionally propose a simple modification to the architecture to allow for the use of both task-specific and static vectors.",
+      "chunk_id": "P1_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.77
+    },
+    {
+      "key": "P1_policymakers_plain_english_dense_90s#8",
+      "case_id": "P1_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "Overall, the tested models improve upon the state of the art on 4 out of 7 tasks.",
+      "evidence": "The CNN models discussed herein improve upon the state of the art on 4 out of 7 tasks, which include sentiment analysis and question classification.",
+      "chunk_id": "P1_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.769
+    },
+    {
+      "key": "P1_policymakers_plain_english_dense_90s#10",
+      "case_id": "P1_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "The sources do not provide information on cost or processing speed.",
+      "evidence": "Results of our models against other methods are listed in table 2.",
+      "chunk_id": "P1_p4_c03",
+      "page": 4,
+      "verdict": "uncited",
+      "score": 0.544
+    },
+    {
+      "key": "P1_policymakers_plain_english_hybrid_90s#3",
+      "case_id": "P1_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "The main idea is using a simple computer vision tool called a convolutional neural network, built on top of pre-trained word vectors.",
+      "evidence": "We report on a series of experiments with convolutional neural networks (CNN) trained on top of pre-trained word vectors for sentence-level classification tasks.",
+      "chunk_id": "P1_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.794
+    },
+    {
+      "key": "P1_policymakers_plain_english_hybrid_90s#4",
+      "case_id": "P1_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "Word vectors turn words into dense representations that encode semantic features, meaning words with similar meanings stay close together in a vector space.",
+      "evidence": "Word vectors, wherein words are projected from a sparse, 1-of-V encoding (here V is the vocabulary size) onto a lower dimensional vector space via a hidden layer, are essentially feature extractors that encode semantic features of words in their dimensions. In such dense representations, semantically close words are likewise close—in euclidean or cosine distance—in the lower dimensional vector space.",
+      "chunk_id": "P1_p1_c03",
+      "page": 1,
+      "verdict": "supported",
+      "score": 0.903
+    },
+    {
+      "key": "P1_policymakers_plain_english_hybrid_90s#9",
+      "case_id": "P1_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "Regarding accuracy, the models improved upon the state of the art on four out of seven tasks tested.",
+      "evidence": "The CNN models discussed herein improve upon the state of the art on 4 out of 7 tasks, which include sentiment analysis and question classification.",
+      "chunk_id": "P1_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.761
+    },
+    {
+      "key": "P1_policymakers_plain_english_hybrid_90s#11",
+      "case_id": "P1_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "The sources do not provide data on financial costs or processing speed.",
+      "evidence": "Results of our models against other methods are listed in table 2.",
+      "chunk_id": "P1_p4_c03",
+      "page": 4,
+      "verdict": "uncited",
+      "score": 0.537
+    },
+    {
+      "key": "P1_press_press_release_hybrid_90s#2",
+      "case_id": "P1_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "Deep learning systems have already achieved great success in computer vision and speech recognition.",
+      "evidence": "Deep learning models have achieved remarkable results in computer vision (Krizhevsky et al., 2012) and speech recognition (Graves et al., 2013) in recent years.",
+      "chunk_id": "P1_p1_c03",
+      "page": 1,
+      "verdict": "supported",
+      "score": 0.92
+    },
+    {
+      "key": "P1_press_press_release_hybrid_90s#3",
+      "case_id": "P1_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "Adapting these techniques for written text often involves converting words into vector representations, which are dense lists of numbers that capture semantic meaning.",
+      "evidence": "Word vectors, wherein words are projected from a sparse, 1-of-V encoding (here V is the vocabulary size) onto a lower dimensional vector space via a hidden layer, are essentially feature extractors that encode semantic features of words in their dimensions.",
+      "chunk_id": "P1_p1_c03",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.787
+    },
+    {
+      "key": "P1_press_press_release_hybrid_90s#5",
+      "case_id": "P1_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "Originally invented for computer vision, these networks use filters to scan local features in data.",
+      "evidence": "Convolutional neural networks (CNN) utilize layers with convolving filters that are applied to local features (LeCun et al., 1998).",
+      "chunk_id": "P1_p1_c03",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.784
+    },
+    {
+      "key": "P1_press_press_release_hybrid_90s#6",
+      "case_id": "P1_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "In this model, the network scans windows of words in a sentence to extract key features.",
+      "evidence": "A convolution operation involves a filter w ∈Rhk, which is applied to a window of h words to produce a new feature.",
+      "chunk_id": "P1_p2_c01",
+      "page": 2,
+      "verdict": "weak",
+      "score": 0.774
+    },
+    {
+      "key": "P1_press_press_release_hybrid_90s#7",
+      "case_id": "P1_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "The key finding is that a straightforward model using pre-trained word vectors performs remarkably well across multiple benchmarks.",
+      "evidence": "These results suggest that the pretrained vectors are good, ‘universal’ feature extractors and can be utilized across datasets.",
+      "chunk_id": "P1_p4_c03",
+      "page": 4,
+      "verdict": "weak",
+      "score": 0.78
+    },
+    {
+      "key": "P2_grad_students_technical_hybrid_90s#2",
+      "case_id": "P2_grad_students_technical_hybrid_90s",
+      "audience": "grad_students",
+      "claim": "While deep learning or low-rank matrix factorization solve this, they can be slow.",
+      "evidence": "Common solutions to this problem are to factorize the linear classifier into low rank matrices (Schutze, 1992; Mikolov et al., 2013) or to use multilayer neural networks (Collobert and Weston, 2008; Zhang et al., 2015).",
+      "chunk_id": "P2_p1_c04",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.785
+    },
+    {
+      "key": "P2_grad_students_technical_hybrid_90s#5",
+      "case_id": "P2_grad_students_technical_hybrid_90s",
+      "audience": "grad_students",
+      "claim": "These word representations are averaged into a text representation, which is then fed to a linear classifier.",
+      "evidence": "The word representations are then averaged into a text representation, which is in turn fed to a linear classifier.",
+      "chunk_id": "P2_p1_c04",
+      "page": 1,
+      "verdict": "supported",
+      "score": 0.995
+    },
+    {
+      "key": "P2_grad_students_technical_hybrid_90s#10",
+      "case_id": "P2_grad_students_technical_hybrid_90s",
+      "audience": "grad_students",
+      "claim": "It can also classify half a million sentences among 312K classes in less than a minute.",
+      "evidence": "We can train fastText on more than one billion words in less than ten minutes using a standard multicore CPU, and classify half a million sentences among 312K classes in less than a minute.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.783
+    },
+    {
+      "key": "P2_policymakers_plain_english_bm25_90s#1",
+      "case_id": "P2_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "Text classification systems often struggle to balance speed and accuracy.",
+      "evidence": "This paper explores a simple and efficient baseline for text classification.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "uncited",
+      "score": 0.805
+    },
+    {
+      "key": "P2_policymakers_plain_english_bm25_90s#4",
+      "case_id": "P2_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "Regarding cost and speed, the paper shows the system is many orders of magnitude faster for training and evaluation than complex deep learning classifiers.",
+      "evidence": "Our experiments show that our fast text classifier fastText is often on par with deep learning classifiers in terms of accuracy, and many orders of magnitude faster for training and evaluation.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.797
+    },
+    {
+      "key": "P2_policymakers_plain_english_bm25_90s#6",
+      "case_id": "P2_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "It can also classify half a million sentences among 312K classes in less than a minute.",
+      "evidence": "We can train fastText on more than one billion words in less than ten minutes using a standard multicore CPU, and classify half a million sentences among 312K classes in less than a minute.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.783
+    },
+    {
+      "key": "P2_policymakers_plain_english_bm25_90s#10",
+      "case_id": "P2_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "As for limitations, fastText does not use pre-trained word embeddings, which can explain small accuracy differences compared to other methods.",
+      "evidence": "Unlike Tang et al. (2015), fastText does not use pre-trained word embeddings, which can be explained the 1% difference in accuracy.",
+      "chunk_id": "P2_p3_c02",
+      "page": 3,
+      "verdict": "supported",
+      "score": 0.871
+    },
+    {
+      "key": "P2_policymakers_plain_english_bm25_90s#11",
+      "case_id": "P2_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "The sources do not contain further information about limitations.",
+      "evidence": "This possibly limits their generalization in the context of large output space where some classes have very few examples.",
+      "chunk_id": "P2_p1_c04",
+      "page": 1,
+      "verdict": "uncited",
+      "score": 0.67
+    },
+    {
+      "key": "P2_policymakers_plain_english_dense_90s#5",
+      "case_id": "P2_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "It uses a simple linear model with a rank constraint and a fast loss approximation, training asynchronously on multiple central processing units.",
+      "evidence": "This model is trained asynchronously on multiple CPUs using stochastic gradient descent and a linearly decaying learning rate.",
+      "chunk_id": "P2_p2_c01",
+      "page": 2,
+      "verdict": "weak",
+      "score": 0.766
+    },
+    {
+      "key": "P2_policymakers_plain_english_dense_90s#6",
+      "case_id": "P2_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "When the number of classes is large, the paper uses a hierarchical softmax based on a Huffman coding tree to improve running time.",
+      "evidence": "In order to improve our running time, we use a hierarchical softmax (Goodman, 2001) based on the Huffman coding tree (Mikolov et al., 2013).",
+      "chunk_id": "P2_p2_c02",
+      "page": 2,
+      "verdict": "supported",
+      "score": 0.892
+    },
+    {
+      "key": "P2_policymakers_plain_english_dense_90s#9",
+      "case_id": "P2_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "It can also classify half a million sentences among 312K classes in less than a minute.",
+      "evidence": "We can train fastText on more than one billion words in less than ten minutes using a standard multicore CPU, and classify half a million sentences among 312K classes in less than a minute.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.783
+    },
+    {
+      "key": "P2_policymakers_plain_english_hybrid_90s#5",
+      "case_id": "P2_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "Regarding cost and speed, the paper shows that fastText is many orders of magnitude faster for training and evaluation than deep learning classifiers.",
+      "evidence": "Our experiments show that our fast text classifier fastText is often on par with deep learning classifiers in terms of accuracy, and many orders of magnitude faster for training and evaluation.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "supported",
+      "score": 0.899
+    },
+    {
+      "key": "P2_policymakers_plain_english_hybrid_90s#7",
+      "case_id": "P2_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "It can also classify half a million sentences across 312K categories in less than a minute.",
+      "evidence": "We can train fastText on more than one billion words in less than ten minutes using a standard multicore CPU, and classify half a million sentences among 312K classes in less than a minute.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.776
+    },
+    {
+      "key": "P2_policymakers_plain_english_hybrid_90s#12",
+      "case_id": "P2_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "The sources do not mention any other limitations.",
+      "evidence": "This possibly limits their generalization in the context of large output space where some classes have very few examples.",
+      "chunk_id": "P2_p1_c04",
+      "page": 1,
+      "verdict": "uncited",
+      "score": 0.612
+    },
+    {
+      "key": "P2_press_press_release_hybrid_90s#1",
+      "case_id": "P2_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "A new text classifier named fastText delivers high accuracy while running many orders of magnitude faster for training and evaluation.",
+      "evidence": "Our experiments show that our fast text classifier fastText is often on par with deep learning classifiers in terms of accuracy, and many orders of magnitude faster for training and evaluation.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "supported",
+      "score": 0.907
+    },
+    {
+      "key": "P2_press_press_release_hybrid_90s#2",
+      "case_id": "P2_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "Traditional text classification often uses simple linear models, but they can struggle when dealing with large output spaces where some classes have very few examples.",
+      "evidence": "While the Tagspace model is described using convolutions, we consider the linear version, which achieves comparable performance but is much faster. Results and training time.",
+      "chunk_id": "P2_p4_c02",
+      "page": 4,
+      "verdict": "weak",
+      "score": 0.753
+    },
+    {
+      "key": "P2_press_press_release_hybrid_90s#5",
+      "case_id": "P2_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "The results are striking.",
+      "evidence": "Results.",
+      "chunk_id": "P2_p3_c02",
+      "page": 3,
+      "verdict": "uncited",
+      "score": 0.849
+    },
+    {
+      "key": "P2_press_press_release_hybrid_90s#7",
+      "case_id": "P2_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "It can also classify half a million sentences among 312K classes in less than a minute.",
+      "evidence": "We can train fastText on more than one billion words in less than ten minutes using a standard multicore CPU, and classify half a million sentences among 312K classes in less than a minute.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.783
+    },
+    {
+      "key": "P2_press_press_release_hybrid_90s#8",
+      "case_id": "P2_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "On sentiment analysis tasks, its accuracy is often on par with deep learning classifiers and slightly better than some existing methods.",
+      "evidence": "Our experiments show that our fast text classifier fastText is often on par with deep learning classifiers in terms of accuracy, and many orders of magnitude faster for training and evaluation.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.767
+    },
+    {
+      "key": "P2_press_press_release_hybrid_90s#9",
+      "case_id": "P2_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "This matters because it provides a simple and efficient baseline that matches deep learning accuracy while drastically reducing the time needed to train and evaluate large text datasets.",
+      "evidence": "Our experiments show that our fast text classifier fastText is often on par with deep learning classifiers in terms of accuracy, and many orders of magnitude faster for training and evaluation.",
+      "chunk_id": "P2_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.708
+    },
+    {
+      "key": "P3_grad_students_technical_hybrid_90s#3",
+      "case_id": "P3_grad_students_technical_hybrid_90s",
+      "audience": "grad_students",
+      "claim": "The main idea shifts the view of knowledge away from specific parameter values.",
+      "evidence": "A conceptual block that may have prevented more investigation of this very promising approach is that we tend to identify the knowledge in a trained model with the learned parameter values and this makes it hard to see how we can change the form of the model but keep the same knowledge. A more abstract view of the knowledge, that frees it from any particular instantiation, is that it is a learned ∗Also affiliated with the University of Toronto and the Canadian Institute for Advanced Research. †Equal contribution.",
+      "chunk_id": "P3_p1_c04",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.736
+    },
+    {
+      "key": "P3_grad_students_technical_hybrid_90s#8",
+      "case_id": "P3_grad_students_technical_hybrid_90s",
+      "audience": "grad_students",
+      "claim": "For experiments, the authors trained an ensemble of 10 separate models with random initializations to create diversity.",
+      "evidence": "The models are randomly initialized with different initial parameter values and we find that this creates sufficient diversity in the trained models to allow the averaged predictions of the ensemble to significantly outperform the individual models.",
+      "chunk_id": "P3_p5_c02",
+      "page": 5,
+      "verdict": "supported",
+      "score": 0.866
+    },
+    {
+      "key": "P3_policymakers_plain_english_bm25_90s#3",
+      "case_id": "P3_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "The training stage does not need real-time speed and can use huge amounts of computation to extract structure from large datasets.",
+      "evidence": "In large-scale machine learning, we typically use very similar models for the training stage and the deployment stage despite their very different requirements: For tasks like speech and object recognition, training must extract structure from very large, highly redundant datasets but it does not need to operate in real time and it can use a huge amount of computation.",
+      "chunk_id": "P3_p1_c03",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.765
+    },
+    {
+      "key": "P3_policymakers_plain_english_bm25_90s#4",
+      "case_id": "P3_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "In contrast, deployment requires low latency and fewer computational resources.",
+      "evidence": "Deployment to a large number of users, however, has much more stringent requirements on latency and computational resources.",
+      "chunk_id": "P3_p1_c03",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.751
+    },
+    {
+      "key": "P3_policymakers_plain_english_bm25_90s#5",
+      "case_id": "P3_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "The paper solves this mismatch using a transfer method called distillation.",
+      "evidence": "Once the cumbersome model has been trained, we can then use a different kind of training, which we call “distillation” to transfer the knowledge from the cumbersome model to a small model that is more suitable for deployment.",
+      "chunk_id": "P3_p1_c03",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.703
+    },
+    {
+      "key": "P3_policymakers_plain_english_bm25_90s#6",
+      "case_id": "P3_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "This compresses the knowledge from a large group of models into a single, smaller model that is much easier to deploy.",
+      "evidence": "Caruana and his collaborators [1] have shown that it is possible to compress the knowledge in an ensemble into a single model which is much easier to deploy and we develop this approach further using a different compression technique.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "supported",
+      "score": 0.809
+    },
+    {
+      "key": "P3_policymakers_plain_english_bm25_90s#8",
+      "case_id": "P3_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "The authors also significantly improved the acoustic model of a heavily used commercial system using this approach.",
+      "evidence": "We achieve some surprising results on MNIST and we show that we can significantly improve the acoustic model of a heavily used commercial system by distilling the knowledge in an ensemble of models into a single model.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.769
+    },
+    {
+      "key": "P3_policymakers_plain_english_bm25_90s#11",
+      "case_id": "P3_policymakers_plain_english_bm25_90s",
+      "audience": "policymakers",
+      "claim": "Tests using only 3% of the speech data—about 20M examples—showed that training with soft targets allowed a model with 85M parameters to recover almost all the information in the full training set, sitting just 2% shy of it.",
+      "evidence": "Table 5 shows that with only 3% of the data (about 20M examples), training the baseline model with hard targets leads to severe overfitting (we did early stopping, as the accuracy drops sharply after reaching 44.5%), whereas the same model trained with soft targets is able to recover almost all the information in the full training set (about 2% shy).",
+      "chunk_id": "P3_p7_c03",
+      "page": 7,
+      "verdict": "weak",
+      "score": 0.782
+    },
+    {
+      "key": "P3_policymakers_plain_english_dense_90s#4",
+      "case_id": "P3_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "The main idea is a technique called distillation.",
+      "evidence": "We show later that matching the logits of the cumbersome model is actually a special case of distillation.",
+      "chunk_id": "P3_p2_c04",
+      "page": 2,
+      "verdict": "weak",
+      "score": 0.763
+    },
+    {
+      "key": "P3_policymakers_plain_english_dense_90s#5",
+      "case_id": "P3_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "This involves training the smaller model to match the outputs of the larger, cumbersome model.",
+      "evidence": "We have found that using the original training set works well, especially if we add a small term to the objective function that encourages the small model to predict the true targets as well as matching the soft targets provided by the cumbersome model.",
+      "chunk_id": "P3_p2_c05",
+      "page": 2,
+      "verdict": "weak",
+      "score": 0.759
+    },
+    {
+      "key": "P3_policymakers_plain_english_dense_90s#6",
+      "case_id": "P3_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "Regarding results, the paper achieves surprising outcomes on MNIST.",
+      "evidence": "We achieve some surprising results on MNIST and we show that we can significantly improve the acoustic model of a heavily used commercial system by distilling the knowledge in an ensemble of models into a single model.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "unsupported",
+      "score": 0.636
+    },
+    {
+      "key": "P3_policymakers_plain_english_dense_90s#7",
+      "case_id": "P3_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "It also shows that distillation can significantly improve the acoustic model of a heavily used commercial system.",
+      "evidence": "We achieve some surprising results on MNIST and we show that we can significantly improve the acoustic model of a heavily used commercial system by distilling the knowledge in an ensemble of models into a single model.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "unsupported",
+      "score": 0.683
+    },
+    {
+      "key": "P3_policymakers_plain_english_dense_90s#10",
+      "case_id": "P3_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "Unlike a mixture of experts, these specialist models can be trained rapidly and in parallel.",
+      "evidence": "Unlike a mixture of experts, these specialist models can be trained rapidly and in parallel.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "supported",
+      "score": 1.0
+    },
+    {
+      "key": "P3_policymakers_plain_english_dense_90s#11",
+      "case_id": "P3_policymakers_plain_english_dense_90s",
+      "audience": "policymakers",
+      "claim": "The sources do not provide specific metrics or data regarding cost, speed, or accuracy improvements beyond noting the significant improvement on the commercial system and the surprising results on MNIST.",
+      "evidence": "We achieve some surprising results on MNIST and we show that we can significantly improve the acoustic model of a heavily used commercial system by distilling the knowledge in an ensemble of models into a single model.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "unsupported",
+      "score": 0.584
+    },
+    {
+      "key": "P3_policymakers_plain_english_hybrid_90s#4",
+      "case_id": "P3_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "To solve this, the paper uses a main idea called distillation.",
+      "evidence": "Once the cumbersome model has been trained, we can then use a different kind of training, which we call “distillation” to transfer the knowledge from the cumbersome model to a small model that is more suitable for deployment. A version of this strategy has already been pioneered by Rich Caruana and his collaborators [1].",
+      "chunk_id": "P3_p1_c03",
+      "page": 1,
+      "verdict": "unsupported",
+      "score": 0.682
+    },
+    {
+      "key": "P3_policymakers_plain_english_hybrid_90s#6",
+      "case_id": "P3_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "Regarding results, the paper shows surprising outcomes on MNIST and successfully improves a heavily used commercial speech recognition system.",
+      "evidence": "We achieve some surprising results on MNIST and we show that we can significantly improve the acoustic model of a heavily used commercial system by distilling the knowledge in an ensemble of models into a single model.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.744
+    },
+    {
+      "key": "P3_policymakers_plain_english_hybrid_90s#7",
+      "case_id": "P3_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "More than 80% of the accuracy improvement gained by a group of ten models is successfully transferred to the single distilled model.",
+      "evidence": "More than 80% of the improvement in frame classification accuracy achieved by using an ensemble of 10 models is transferred to the distilled model which is similar to the improvement we observed in our preliminary experiments on MNIST.",
+      "chunk_id": "P3_p5_c02",
+      "page": 5,
+      "verdict": "supported",
+      "score": 0.83
+    },
+    {
+      "key": "P3_policymakers_plain_english_hybrid_90s#8",
+      "case_id": "P3_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "The paper also introduces specialist models to handle categories that full models often confuse.",
+      "evidence": "We also introduce a new type of ensemble composed of one or more full models and many specialist models which learn to distinguish fine-grained classes that the full models confuse.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.762
+    },
+    {
+      "key": "P3_policymakers_plain_english_hybrid_90s#11",
+      "case_id": "P3_policymakers_plain_english_hybrid_90s",
+      "audience": "policymakers",
+      "claim": "The sources do not mention other limitations.",
+      "evidence": "This is valuable information that defines a rich similarity structure over the data (i. e. it says which 2’s look like 3’s and which look like 7’s) but it has very little influence on the cross-entropy cost function during the transfer stage because the probabilities are so close to zero.",
+      "chunk_id": "P3_p2_c04",
+      "page": 2,
+      "verdict": "uncited",
+      "score": 0.617
+    },
+    {
+      "key": "P3_press_press_release_hybrid_90s#1",
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "Researchers have found a new way to shrink massive computer learning models without losing their smarts.",
+      "evidence": "Caruana and his collaborators [1] have shown that it is possible to compress the knowledge in an ensemble into a single model which is much easier to deploy and we develop this approach further using a different compression technique.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.756
+    },
+    {
+      "key": "P3_press_press_release_hybrid_90s#2",
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "Training many different computer models together gives great results, but using them all at once is too slow and expensive for everyday users.",
+      "evidence": "A very simple way to improve the performance of almost any machine learning algorithm is to train many different models on the same data and then to average their predictions [3]. Unfortunately, making predictions using a whole ensemble of models is cumbersome and may be too computationally expensive to allow deployment to a large number of users, especially if the individual models are large neural nets.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.768
+    },
+    {
+      "key": "P3_press_press_release_hybrid_90s#3",
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "To solve this, scientists use a method called distillation.",
+      "evidence": "Once the cumbersome model has been trained, we can then use a different kind of training, which we call “distillation” to transfer the knowledge from the cumbersome model to a small model that is more suitable for deployment. A version of this strategy has already been pioneered by Rich Caruana and his collaborators [1].",
+      "chunk_id": "P3_p1_c03",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.709
+    },
+    {
+      "key": "P3_press_press_release_hybrid_90s#4",
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "Like insects that change form as they grow, computer systems can use a large, heavy model for heavy-duty learning, and then transfer that knowledge into a small model that runs fast.",
+      "evidence": "A version of this strategy has already been pioneered by Rich Caruana and his collaborators [1]. In their important paper they demonstrate convincingly that the knowledge acquired by a large ensemble of models can be transferred to a single small model.",
+      "chunk_id": "P3_p1_c03",
+      "page": 1,
+      "verdict": "weak",
+      "score": 0.754
+    },
+    {
+      "key": "P3_press_press_release_hybrid_90s#5",
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "The big idea is to train the small model to mimic the soft probabilities of the large model, rather than just copying final hard answers.",
+      "evidence": "Caruana and his collaborators circumvent this problem by using the logits (the inputs to the final softmax) rather than the probabilities produced by the softmax as the targets for learning the small model and they minimize the squared difference between the logits produced by the cumbersome model and the logits produced by the small model.",
+      "chunk_id": "P3_p2_c04",
+      "page": 2,
+      "verdict": "weak",
+      "score": 0.75
+    },
+    {
+      "key": "P3_press_press_release_hybrid_90s#6",
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "This passes along rich details about how different categories relate to one another.",
+      "evidence": "For example, one version of a 2 may be given a probability of 10−6 of being a 3 and 10−9 of being a 7 whereas for another version it may be the other way around. This is valuable information that defines a rich similarity structure over the data (i. e. it says which 2’s look like 3’s and which look like 7’s) but it has very little influence on the cross-entropy cost function during the transfer stage because the probabilities are so close to zero.",
+      "chunk_id": "P3_p2_c04",
+      "page": 2,
+      "verdict": "unsupported",
+      "score": 0.612
+    },
+    {
+      "key": "P3_press_press_release_hybrid_90s#7",
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "The results are striking.",
+      "evidence": "We tried several clustering algorithms which produced similar results.",
+      "chunk_id": "P3_p6_c03",
+      "page": 6,
+      "verdict": "uncited",
+      "score": 0.68
+    },
+    {
+      "key": "P3_press_press_release_hybrid_90s#8",
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "More than 80% of the accuracy gains achieved by a bulky group of 10 models can be successfully squeezed into a single distilled model.",
+      "evidence": "More than 80% of the improvement in frame classification accuracy achieved by using an ensemble of 10 models is transferred to the distilled model which is similar to the improvement we observed in our preliminary experiments on MNIST.",
+      "chunk_id": "P3_p5_c02",
+      "page": 5,
+      "verdict": "weak",
+      "score": 0.781
+    },
+    {
+      "key": "P3_press_press_release_hybrid_90s#9",
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "Scientists also introduced specialist models that focus on fine details and learn rapidly in parallel.",
+      "evidence": "Unlike a mixture of experts, these specialist models can be trained rapidly and in parallel.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "supported",
+      "score": 0.865
+    },
+    {
+      "key": "P3_press_press_release_hybrid_90s#10",
+      "case_id": "P3_press_press_release_hybrid_90s",
+      "audience": "press",
+      "claim": "This matters because it makes advanced artificial intelligence much easier to deploy to a large number of users without needing massive computing power.",
+      "evidence": "Unfortunately, making predictions using a whole ensemble of models is cumbersome and may be too computationally expensive to allow deployment to a large number of users, especially if the individual models are large neural nets.",
+      "chunk_id": "P3_p1_c02",
+      "page": 1,
+      "verdict": "unsupported",
+      "score": 0.644
+    }
+  ]
+}

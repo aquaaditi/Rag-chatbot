@@ -571,3 +571,43 @@ The policymaker script ended with an UNCITED conclusion of its own.
   is not a valid citation). The second one was the code being right and my expectation being wrong.
 - One Gemini call hung for ~50 minutes in the middle of the run; because each script is cached as soon
   as it is made, nothing was lost.
+
+## Day 10 — Human evaluation + architecture diagram
+
+**Why do we need human ratings if we already have ROUGE, BERTScore and "supported"?**
+- 
+
+**Why is the rating BLIND (no search mode, no metrics, no checker verdict)? What could go wrong otherwise?**
+- 
+
+**Why does every score in the rubric have a written meaning (5 = ..., 3 = ..., 1 = ...)?**
+- 
+
+**Why rate one SUPPORTED sentence per script (the "control") when we only doubt the weak ones?**
+- 
+
+**What does a Spearman correlation between a human score and a metric tell you? Why is n = 15 a problem?**
+- 
+
+**Why would you want 2-3 raters instead of 1? What does "rater agreement" measure?**
+- 
+
+**Explain the architecture diagram in 30 seconds: what happens from a message to the reply?**
+- 
+
+**My results (fill in after rating):**
+- How many claims were really true, compared with supported / grounded?
+- Did any automatic metric agree with my scores? Which one did not?
+- What surprised me?
+
+**What went wrong & how I fixed it:**
+- While building the rating items, I looked at the sentences the checker doubted and found a type I
+  had not planned for: "The sources do not mention metrics for cost or speed." The policymaker
+  style asks about cost and limitations, and when the paper says nothing, the model says so. That is
+  honest (no invented facts), but it is not a claim about the paper, and "true / hype / wrong" does not
+  fit it. Fix: a 4th label, "n = not a claim", which is not counted in the true share. Lesson: look at
+  the real data before fixing the labels.
+- For uncited sentences, the item showed a score of 0.0 (the score of the CITED chunk, and there is
+  none). Fix: store the score of the best match among all sources.
+- My first rate.py had a --report flag that did nothing (the report is always written). Removed it:
+  `python rate.py` without a rater only updates the report.
