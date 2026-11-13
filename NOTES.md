@@ -713,3 +713,47 @@ The policymaker script ended with an UNCITED conclusion of its own.
   until it exists.
 - One new script had a number error: "91M training examples" is in the paper, but NOT in the chunks it
   cited. The checker was right to flag it - a citation must point to a chunk that says it.
+
+## Day 12 — Final check (fresh clone, like a reviewer)
+
+I downloaded the repo from GitHub into a new folder, made a brand-new venv, installed only from
+requirements.txt, built the index and ran the tests WITHOUT a .env file - exactly what a reviewer does.
+
+**Questions for me:**
+1. Why test from a fresh clone instead of just running the tests in my own folder?
+   - Answer: My own folder hides problems. It has things that are NOT on GitHub: my .env with the
+     API key, the built index/, and packages I installed by hand at some point. A reviewer has none
+     of these. A fresh clone tests what the reviewer actually gets, so "it works on my computer"
+     becomes "it works from GitHub". And it did find two problems my own folder never showed.
+2. The tests passed on my computer but failed in the fresh clone. What was different?
+   - Answer: The .env file. On my computer the API key exists, so creating the Gemini client at
+     import time worked. In the fresh clone there is no .env (it is git-ignored, on purpose), so the
+     client crashed while the tests were only being LOADED, before any test ran. The tests use a
+     fake LLM, so they never needed the key; they just imported a file that asked for it.
+3. Why is creating the Gemini client "lazily" (on the first call) better than at import time?
+   - Answer: Three reasons. (1) Things that don't call the LLM (tests, building the index,
+     reading the code) no longer need a key. (2) The error comes at the moment it matters, with a
+     clear message ("copy .env.example to .env"), instead of a confusing crash at startup. (3) The
+     client is still created only once (@cache), so there is no extra cost. General rule: importing
+     a file should not connect to the network or need secrets.
+4. If a reviewer has 10 minutes, which 3 things in my repo should they look at first, and why?
+   - Answer: (1) The README: the Architecture diagram and the Evaluation section, because they show
+     the whole design and the results in numbers in two minutes. (2) eval/results.md and
+     eval/human/results.md: the honest results, including what didn't work (e.g. no metric
+     correlated with the human scores, one rater only). (3) src/provenance/: the sentence-by-sentence
+     citation checker, because grounding is the core problem of a RAG system and that is where it
+     is checked, not just hoped for.
+
+**What went wrong & how I fixed it:**
+- pip failed with `OSError: No such file or directory` on a PyTorch license file. Windows has a
+  260-character path limit, and PyTorch has extremely long file names, so a venv inside a deep folder
+  breaks. Fix: a short venv path. Added a note to the README setup section.
+- My first background install printed "exit code 0" even though pip failed, because the exit code
+  came from the LAST command in the pipe (`tail`), not from pip. Lesson: check the real exit code.
+- The tests crashed in the fresh clone: "No API key was provided". src/llm.py created the Gemini
+  client when the file was IMPORTED, so every test that imported the generator needed a key - even
+  though those tests use a fake LLM. It never showed up on my computer because my .env exists.
+  Fix: create the client on the first real call (`@cache def _client()`), with a clear message if the
+  key is missing. Now the README's promise "pytest, offline, no key needed" is actually true.
+- README setup was missing the `git clone` / `cd` step, the Python version and the Mac/Linux
+  activate command. Added them.

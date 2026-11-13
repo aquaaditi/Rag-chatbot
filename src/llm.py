@@ -6,6 +6,7 @@ Every other module (generator, change-tracker, evaluator...) calls `ask_llm()`
 to switch providers, only this file changes.
 """
 
+from functools import cache
 from typing import TypeVar
 
 from google import genai
@@ -17,18 +18,22 @@ from src import config
 MODEL = config.LLM_MODEL
 T = TypeVar("T", bound=BaseModel)  # "some Pydantic model class" - used by ask_llm_structured
 
-_client = genai.Client(
-    api_key=config.GEMINI_API_KEY,
-    http_options=types.HttpOptions(
-        # Give up on a single request instead of waiting forever
-        timeout=config.LLM_TIMEOUT_MS,
-        # If Google is overloaded (429 / 503 / 504...), wait a bit and try again
-        retry_options=types.HttpRetryOptions(
-            attempts=config.LLM_RETRY_ATTEMPTS,
-            http_status_codes=config.LLM_RETRY_STATUS_CODES,
+@cache  # created on the FIRST real call, not on import - so the offline tests (fake LLMs) need no key
+def _client() -> genai.Client:
+    if not config.GEMINI_API_KEY:
+        raise RuntimeError("GEMINI_API_KEY is missing: copy .env.example to .env and paste your key there.")
+    return genai.Client(
+        api_key=config.GEMINI_API_KEY,
+        http_options=types.HttpOptions(
+            # Give up on a single request instead of waiting forever
+            timeout=config.LLM_TIMEOUT_MS,
+            # If Google is overloaded (429 / 503 / 504...), wait a bit and try again
+            retry_options=types.HttpRetryOptions(
+                attempts=config.LLM_RETRY_ATTEMPTS,
+                http_status_codes=config.LLM_RETRY_STATUS_CODES,
+            ),
         ),
-    ),
-)
+    )
 
 # Safety layer 1: Gemini refuses / stops when a request or answer is harmful at this level or above
 SAFETY_CATEGORIES = [
@@ -46,7 +51,7 @@ BLOCKED_FINISH_REASONS = {types.FinishReason.SAFETY, types.FinishReason.PROHIBIT
 
 def ask_llm(user_message: str, system_prompt: str = "", max_tokens: int = 8000) -> str:
     """Send one message to the LLM and return its text reply."""
-    response = _client.models.generate_content(
+    response = _client().models.generate_content(
         model=MODEL,
         contents=user_message,
         config=types.GenerateContentConfig(
@@ -65,7 +70,7 @@ def ask_llm_structured(user_message: str, schema: type[T], system_prompt: str = 
 
     Gemini's "structured output" mode only lets the model produce JSON of that shape,
     so we get e.g. Talk(slides=[Slide(...), ...]) instead of text we'd have to parse."""
-    response = _client.models.generate_content(
+    response = _client().models.generate_content(
         model=MODEL,
         contents=user_message,
         config=types.GenerateContentConfig(

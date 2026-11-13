@@ -192,9 +192,15 @@ Rag-chatbot/
 
 ## Setup
 
+Needs Python 3.12 (tested on Windows 11). The first install downloads PyTorch and takes a few minutes.
+On Windows, keep the folder path short (e.g. `C:\projects\Rag-chatbot`): PyTorch has very long file
+names, and pip fails with `OSError: No such file or directory` if the full path passes 260 characters.
+
 ```bash
+git clone https://github.com/aquaaditi/Rag-chatbot.git
+cd Rag-chatbot
 python -m venv venv
-venv\Scripts\activate          # Windows
+venv\Scripts\activate          # Windows  (Mac/Linux: source venv/bin/activate)
 pip install -r requirements.txt
 ```
 

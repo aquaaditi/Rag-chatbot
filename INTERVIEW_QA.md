@@ -1368,3 +1368,24 @@ One line: AI helped me learn and build; I verified, tested and decided.
 in the averages. Each one led to a check that now catches it automatically."
 (Pick the one YOU care about most.)
 One line: finding hidden problems and turning them into automatic checks.
+
+# Day 12 — Final check (fresh clone, like a reviewer)
+
+**Q1. How did you check that your project really works for someone else?**
+"I did what a reviewer would do: downloaded the repo from GitHub into a new folder, created a
+brand-new virtual environment, installed only from requirements.txt, built the index and ran all
+81 tests without an API key. My own folder hides problems, because it has my .env, my built
+index and packages I installed by hand. The fresh clone found two problems my folder never showed:
+the tests crashed without a key, and PyTorch's very long file names broke pip on Windows when the
+folder path was too deep. I fixed the first in code and documented the second in the README."
+One line: test what the reviewer gets, not what's on my computer; it found 2 hidden problems.
+
+**Q2. Your tests use a fake LLM. Why did they still need an API key, and how did you fix it?**
+"src/llm.py created the Gemini client at import time. Any test that imported the generator
+imported llm.py, and the client refused to start without a key, so the tests crashed while
+loading, before any of them ran. They passed on my computer only because my .env exists. I made
+the client lazy: a function with @cache creates it on the first real call, and raises a clear
+'copy .env.example to .env' message if the key is missing. Now the tests, the index build and
+anything that doesn't call the LLM run without a key. The rule I took from it: importing a module
+should never connect to the network or need secrets."
+One line: the client was created on import; I made it lazy, so offline tests need no key.
