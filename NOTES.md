@@ -575,30 +575,73 @@ The policymaker script ended with an UNCITED conclusion of its own.
 ## Day 10 — Human evaluation + architecture diagram
 
 **Why do we need human ratings if we already have ROUGE, BERTScore and "supported"?**
-- 
+- The automatic metrics are PROXIES: ROUGE counts shared words, BERTScore measures similar
+  meaning to ONE reference, and "supported" measures how close a sentence's wording is to the source.
+  None of them measures what we actually care about: is it true, is it right for the audience,
+  would someone use it?
+- Only a human can judge that. Human ratings are also how you check the metrics themselves: if a
+  metric does not go up when humans say quality goes up, the metric can't be trusted.
+- My result proves the point: "supported" sentences were not always exactly right (31% partly right
+  or hype), and BERTScore had nothing to do with my helpfulness scores.
 
 **Why is the rating BLIND (no search mode, no metrics, no checker verdict)? What could go wrong otherwise?**
-- 
+- If I knew the search mode, I might rate "hybrid" higher because I chose it (confirmation bias).
+- If I saw the checker said "supported", I would just agree with it (anchoring), and the human
+  check would only copy the machine instead of testing it.
+- The rater DOES see the audience, because "audience fit" can't be judged without it.
+- The order is also shuffled per rater, so tiredness at the end doesn't always hit the same scripts.
 
 **Why does every score in the rubric have a written meaning (5 = ..., 3 = ..., 1 = ...)?**
-- 
+- Without it, one person's "4" is another person's "3", and even I would score differently on
+  different days. Written anchors make the scores consistent and comparable.
+- It also makes the evaluation repeatable: someone else can read the rubric and rate the same way.
 
 **Why rate one SUPPORTED sentence per script (the "control") when we only doubt the weak ones?**
-- 
+- To test the checker on the sentences it TRUSTS. If I only looked at doubted sentences, I could
+  find out whether doubts were right, but never whether "supported" can be believed.
+- Result: 0 of 13 controls were wrong, but 31% were partly right / hype. So "supported" is a good
+  sign that a sentence is not wrong, but not proof that it is exactly right.
+- One per script keeps it short (13 extra sentences, not ~100).
 
 **What does a Spearman correlation between a human score and a metric tell you? Why is n = 15 a problem?**
-- 
+- Spearman compares RANKINGS: do the scripts the human scores higher also get a higher metric?
+  +1 = same order, 0 = unrelated, -1 = opposite order.
+- With only 15 scripts, a correlation can easily appear by chance, so only a big one (about 0.5+)
+  means something. My best was ROUGE-L with helpfulness: +0.46, p = 0.08, so not significant.
+- Another problem: I only gave 4s and 5s for factuality. When nearly every score is the same,
+  there is almost nothing to rank, so the correlation stays weak (a "ceiling effect").
 
 **Why would you want 2-3 raters instead of 1? What does "rater agreement" measure?**
-- 
+- One rater's opinion can be biased or inconsistent. I built the system, so I may be too kind, and
+  some of my labels contradict each other ("The results are striking" marked true; on Day 9 I
+  called it hype).
+- Rater agreement measures how often two raters give the same answer for the same item. High
+  agreement = the rubric is clear and the ratings are reliable. Low agreement = the question is
+  unclear or subjective.
+- With 2+ raters, the majority label is used, and a tie goes to the stricter label.
 
 **Explain the architecture diagram in 30 seconds: what happens from a message to the reply?**
-- 
+- Once per paper: the PDF is split into text blocks with page numbers, cut into ~250-word chunks
+  with IDs, embedded, and saved in a FAISS + BM25 index.
+- For every message: the input guard checks it (too long, injection, offensive). ChatSession
+  works out what I want. Hybrid search finds the best chunks. Gemini writes the script or slides
+  using only those chunks and cites their IDs. Provenance checks every sentence against its source.
+  The safety checks block harmful text and warn about hard-to-read text. Then the new version is
+  saved with a diff and logged, and the reply is shown.
+- The same generator feeds the evaluation: the cached scripts are scored automatically
+  (evaluate.py) and by humans (rate.py), and the two are compared.
 
-**My results (fill in after rating):**
-- How many claims were really true, compared with supported / grounded?
-- Did any automatic metric agree with my scores? Which one did not?
-- What surprised me?
+**My results:**
+- How many claims were really true? About 50-60% exactly true (it depends on the audience); most of
+  the rest were "partly right / hype", and only 6 of 63 labelled sentences were wrong. So
+  "supported" (39-87%) and "grounded" (86-100%) both miss: the truth is in between, and the real
+  problem is overstatement, not invented facts.
+- Did any automatic metric agree with my scores? Not clearly. ROUGE-L (+0.46) and "supported"
+  (+0.38) went in the right direction but weren't significant. BERTScore and "grounded" were ≈ 0.
+- What surprised me: the checker caught ALL 6 wrong sentences (all were flagged weak or
+  unsupported), and 4 of them were in press releases. Also that "supported" sentences can still
+  be exaggerated, because embeddings see the topic, not the tone. And that I wasn't consistent
+  myself, which is why the task asks for more than one rater.
 
 **What went wrong & how I fixed it:**
 - While building the rating items, I looked at the sentences the checker doubted and found a type I

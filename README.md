@@ -268,7 +268,39 @@ The report ([eval/human/results.md](eval/human/results.md)) answers:
 - Do the automatic metrics rank the scripts the way a human does (Spearman correlation)?
 - Do the raters agree with each other?
 
-_Results: to be added after the ratings._
+**Results** (1 rater, 15 scripts, 69 sentences: 63 labelled, 6 skipped)
+
+| audience | factuality | audience fit | helpfulness |
+|---|---|---|---|
+| grad students | 5.0 | 4.7 | 4.3 |
+| policymakers | 4.3 | 4.7 | 4.7 |
+| press | 4.3 | 4.0 | 5.0 |
+
+| checker verdict | n | true | partly / hype | wrong | not a claim |
+|---|---|---|---|---|---|
+| supported (control) | 13 | 54% | 31% | **0%** | 15% |
+| weak | 36 | 56% | 28% | 11% | 6% |
+| unsupported | 6 | 50% | 17% | 33% | 0% |
+| uncited | 8 | 100% | 0% | 0% | 0% |
+
+- **The scripts were rated highly:** every script scored 4 or 5 for factuality, and 14 of 15 scored 4+
+  for helpfulness.
+- **The checker caught every wrong sentence.** All 6 sentences rated wrong had been flagged as weak or
+  unsupported, and none of the supported controls was wrong. 4 of the 6 were in press releases
+  ("shrink massive models without losing their smarts"), which confirms the Day 9 suspicion.
+- **But "supported" ≠ "exactly right":** 31% of the supported controls were rated partly right or
+  hype. Embedding similarity sees the topic, not the tone or a small overstatement.
+- **The "weak" band is mostly fine:** 56% were true and only 11% wrong. So "supported" (strict) is
+  too harsh and "grounded" (lenient) is too kind; the truth is in between.
+- **No automatic metric clearly agreed with the human scores** (Spearman: ROUGE-L +0.46 with
+  helpfulness, p = 0.08; supported +0.38 with factuality; BERTScore ≈ 0). The factuality scores were
+  only 4s and 5s, so there was little to rank, and n = 15.
+
+**Limits:** one rater (the task asks for more; agreement could not be measured), who also built the
+system, so the ratings may be biased. Some labels are inconsistent (e.g. "The results are striking"
+rated true; "The sources do not mention…" rated true instead of "not a claim"), which is exactly
+what a second rater and a calibration round would catch. Full report:
+[eval/human/results.md](eval/human/results.md).
 
 ## References
 

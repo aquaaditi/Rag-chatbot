@@ -109,6 +109,9 @@ def test_majority_label_and_a_tie_goes_to_the_worse_label(tmp_path):
     assert agreement([a, b])["sentence labels"].exact == pytest.approx(2 / 3)
     assert agreement([a]) == {}  # 1 rater: nothing to compare
 
+    c = rater("c", tmp_path, ["unsure", "unsure", "unsure"])  # skipped everything: no votes
+    assert claim_labels([a, c]) == claim_labels([a])
+
 
 def test_human_truth_combines_controls_with_rated_doubtful_claims(tmp_path, items):
     labels = claim_labels([rater("a", tmp_path, ["true", "true", "wrong"])])

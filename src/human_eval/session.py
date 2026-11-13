@@ -19,7 +19,7 @@ from collections.abc import Callable
 from src.chunking import Chunk
 from src.human_eval.items import ClaimItem, Items, ScriptItem
 from src.human_eval.ratings import RaterFile
-from src.human_eval.rubric import CLAIM_LABELS, CRITERIA, claim_help_text, rubric_text
+from src.human_eval.rubric import CLAIM_LABELS, CRITERIA, SKIP, claim_help_text, rubric_text
 
 AUDIENCE_NAMES = {"grad_students": "graduate students", "policymakers": "policymakers", "press": "the press / public"}
 WIDTH = 90
@@ -99,15 +99,17 @@ class RatingSession:
 
     def _ask_label(self, item: ClaimItem) -> str:
         while True:
-            answer = self._ask("  t / h / w / n: ").strip().lower()
+            answer = self._ask("  t / h / w / n / s: ").strip().lower()
             if answer == "q":
                 raise Quit
+            if answer == "s":
+                return SKIP
             if answer == "m":
                 self._show(_source(self._chunks.get(item.chunk_id), item.chunk_id))
             elif answer in CLAIM_LABELS:
                 return CLAIM_LABELS[answer]
             else:
-                self._show("  please type t, h, w or n (or m / q)")
+                self._show("  please type t, h, w, n or s (or m / q)")
 
     def _shuffled(self, items: list) -> list:
         items = list(items)

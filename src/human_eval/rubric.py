@@ -57,5 +57,9 @@ def rubric_text() -> str:
     return "\n".join(lines)
 
 
+SKIP = "unsure"  # the rater could not judge it (key "s") - saved, but not counted
+
+
 def claim_help_text() -> str:
-    return "\n".join(f"  {key} = {label}: {CLAIM_HELP[label]}" for key, label in CLAIM_LABELS.items())
+    return "\n".join([f"  {key} = {label}: {CLAIM_HELP[label]}" for key, label in CLAIM_LABELS.items()]
+                     + ["  s = skip: I can't judge this one (not counted)"])

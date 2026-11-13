@@ -22,7 +22,7 @@ from scipy.stats import spearmanr
 
 from src.human_eval.items import ClaimItem, Items, ScriptItem
 from src.human_eval.ratings import RaterFile
-from src.human_eval.rubric import CLAIM_LABELS, CRITERIA
+from src.human_eval.rubric import CLAIM_LABELS, CRITERIA, SKIP
 
 CRITERION_NAMES = [c.name for c in CRITERIA]
 LABELS = list(CLAIM_LABELS.values())  # true, hype, wrong, no_claim
@@ -61,11 +61,13 @@ def group_means(scripts: list[ScriptItem], means: Means, key: Callable[[ScriptIt
 
 
 def claim_labels(raters: list[RaterFile]) -> dict[str, str]:
-    """Majority label per sentence. A tie goes to the WORSE label (wrong > hype > true): be strict."""
+    """Majority label per sentence. A tie goes to the WORSE label (wrong > hype > true): be strict.
+    Skipped sentences ("unsure") are not votes."""
     votes: dict[str, list[str]] = {}
     for rater in raters:
         for key, answer in rater.claims.items():
-            votes.setdefault(key, []).append(answer["label"])
+            if answer["label"] != SKIP:
+                votes.setdefault(key, []).append(answer["label"])
     return {key: max(Counter(v).items(), key=lambda kv: (kv[1], STRICTNESS.index(kv[0])))[0]
             for key, v in votes.items()}
 
@@ -133,7 +135,8 @@ def agreement(raters: list[RaterFile]) -> dict[str, Agreement]:
         if diffs:
             result[name] = Agreement(len(diffs), diffs.count(0) / len(diffs), sum(d <= 1 for d in diffs) / len(diffs))
     same = [a.claims[k]["label"] == b.claims[k]["label"]
-            for a, b in combinations(raters, 2) for k in a.claims.keys() & b.claims.keys()]
+            for a, b in combinations(raters, 2) for k in a.claims.keys() & b.claims.keys()
+            if SKIP not in (a.claims[k]["label"], b.claims[k]["label"])]
     if same:
         result["sentence labels"] = Agreement(len(same), sum(same) / len(same), None)
     return result

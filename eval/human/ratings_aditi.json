@@ -1,0 +1,373 @@
+{
+  "rater": "aditi",
+  "scripts": {
+    "P1_press_press_release_hybrid_90s": {
+      "factuality": 4,
+      "audience_fit": 4,
+      "helpfulness": 5,
+      "comment": ""
+    },
+    "P1_grad_students_technical_hybrid_90s": {
+      "factuality": 5,
+      "audience_fit": 4,
+      "helpfulness": 4,
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_dense_90s": {
+      "factuality": 5,
+      "audience_fit": 2,
+      "helpfulness": 3,
+      "comment": "1"
+    },
+    "P1_policymakers_plain_english_hybrid_90s": {
+      "factuality": 4,
+      "audience_fit": 4,
+      "helpfulness": 5,
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_bm25_90s": {
+      "factuality": 5,
+      "audience_fit": 4,
+      "helpfulness": 5,
+      "comment": ""
+    },
+    "P3_press_press_release_hybrid_90s": {
+      "factuality": 5,
+      "audience_fit": 4,
+      "helpfulness": 5,
+      "comment": ""
+    },
+    "P2_press_press_release_hybrid_90s": {
+      "factuality": 4,
+      "audience_fit": 4,
+      "helpfulness": 5,
+      "comment": ""
+    },
+    "P2_grad_students_technical_hybrid_90s": {
+      "factuality": 5,
+      "audience_fit": 5,
+      "helpfulness": 4,
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_bm25_90s": {
+      "factuality": 5,
+      "audience_fit": 5,
+      "helpfulness": 4,
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_hybrid_90s": {
+      "factuality": 5,
+      "audience_fit": 5,
+      "helpfulness": 4,
+      "comment": ""
+    },
+    "P3_grad_students_technical_hybrid_90s": {
+      "factuality": 5,
+      "audience_fit": 5,
+      "helpfulness": 5,
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_dense_90s": {
+      "factuality": 5,
+      "audience_fit": 5,
+      "helpfulness": 5,
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_dense_90s": {
+      "factuality": 5,
+      "audience_fit": 4,
+      "helpfulness": 4,
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_hybrid_90s": {
+      "factuality": 4,
+      "audience_fit": 5,
+      "helpfulness": 5,
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_bm25_90s": {
+      "factuality": 4,
+      "audience_fit": 5,
+      "helpfulness": 5,
+      "comment": ""
+    }
+  },
+  "claims": {
+    "P3_press_press_release_hybrid_90s#2": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_bm25_90s#7": {
+      "label": "wrong",
+      "comment": ""
+    },
+    "P2_grad_students_technical_hybrid_90s#10": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P2_press_press_release_hybrid_90s#7": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_hybrid_90s#6": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_press_press_release_hybrid_90s#5": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_dense_90s#6": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_bm25_90s#5": {
+      "label": "true",
+      "comment": ""
+    },
+    "P2_grad_students_technical_hybrid_90s#2": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P2_grad_students_technical_hybrid_90s#5": {
+      "label": "true",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_bm25_90s#4": {
+      "label": "true",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_hybrid_90s#7": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_press_press_release_hybrid_90s#7": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_bm25_90s#3": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P2_press_press_release_hybrid_90s#9": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_grad_students_technical_hybrid_90s#2": {
+      "label": "no_claim",
+      "comment": ""
+    },
+    "P3_press_press_release_hybrid_90s#1": {
+      "label": "wrong",
+      "comment": ""
+    },
+    "P3_grad_students_technical_hybrid_90s#3": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_press_press_release_hybrid_90s#6": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_dense_90s#4": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P3_press_press_release_hybrid_90s#8": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_press_press_release_hybrid_90s#9": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_bm25_90s#12": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_bm25_90s#4": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_hybrid_90s#11": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_press_press_release_hybrid_90s#6": {
+      "label": "true",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_hybrid_90s#5": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_grad_students_technical_hybrid_90s#8": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_bm25_90s#5": {
+      "label": "no_claim",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_dense_90s#5": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_dense_90s#8": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_dense_90s#9": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_press_press_release_hybrid_90s#3": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P1_grad_students_technical_hybrid_90s#3": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_dense_90s#5": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_hybrid_90s#9": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_hybrid_90s#4": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_bm25_90s#6": {
+      "label": "true",
+      "comment": ""
+    },
+    "P2_press_press_release_hybrid_90s#2": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_press_press_release_hybrid_90s#7": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_press_press_release_hybrid_90s#5": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_hybrid_90s#4": {
+      "label": "true",
+      "comment": ""
+    },
+    "P2_press_press_release_hybrid_90s#8": {
+      "label": "wrong",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_dense_90s#7": {
+      "label": "wrong",
+      "comment": ""
+    },
+    "P3_press_press_release_hybrid_90s#10": {
+      "label": "wrong",
+      "comment": ""
+    },
+    "P2_press_press_release_hybrid_90s#5": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_dense_90s#5": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_bm25_90s#6": {
+      "label": "unsure",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_hybrid_90s#3": {
+      "label": "unsure",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_dense_90s#4": {
+      "label": "unsure",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_dense_90s#10": {
+      "label": "unsure",
+      "comment": ""
+    },
+    "P3_press_press_release_hybrid_90s#4": {
+      "label": "true",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_dense_90s#6": {
+      "label": "true",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_bm25_90s#1": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_hybrid_90s#8": {
+      "label": "true",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_hybrid_90s#12": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_dense_90s#11": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_bm25_90s#3": {
+      "label": "no_claim",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_dense_90s#10": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_policymakers_plain_english_dense_90s#1": {
+      "label": "true",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_bm25_90s#11": {
+      "label": "true",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_bm25_90s#10": {
+      "label": "hype",
+      "comment": ""
+    },
+    "P2_press_press_release_hybrid_90s#1": {
+      "label": "unsure",
+      "comment": ""
+    },
+    "P2_policymakers_plain_english_bm25_90s#11": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_press_press_release_hybrid_90s#3": {
+      "label": "wrong",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_bm25_90s#8": {
+      "label": "true",
+      "comment": ""
+    },
+    "P1_press_press_release_hybrid_90s#2": {
+      "label": "no_claim",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_hybrid_90s#7": {
+      "label": "unsure",
+      "comment": ""
+    },
+    "P3_policymakers_plain_english_hybrid_90s#11": {
+      "label": "true",
+      "comment": ""
+    }
+  }
+}
