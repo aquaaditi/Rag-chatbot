@@ -6,7 +6,7 @@ The generator sends these problems back to the LLM for one retry.
 """
 
 from src.chunking.sentences import split_sentences
-from src.generation.citations import find_citations, unknown_citations
+from src.generation.citations import find_citations, spoken_words, unknown_citations
 from src.talks.request import TalkRequest
 from src.talks.schema import Talk
 
@@ -41,9 +41,9 @@ def check_talk(talk: Talk, request: TalkRequest, source_ids: list[str]) -> list[
     if request.preserve_equations and not any(slide.equations for slide in talk.slides):
         problems.append("No slide contains an equation, but key equations must be preserved.")
 
-    n_words, target = len(talk.script.split()), request.target_words
+    n_words, target = spoken_words(talk.script), request.target_words
     if abs(n_words - target) > SCRIPT_LENGTH_TOLERANCE * target:
-        problems.append(f"The script has {n_words} words; it should have about {target}.")
+        problems.append(f"The script has {n_words} spoken words (citations not counted); it should have about {target}.")
 
     cited_share = share_of_sentences_cited(talk.script)
     if cited_share < MIN_SCRIPT_CITED_SHARE:

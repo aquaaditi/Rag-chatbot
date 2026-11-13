@@ -8,7 +8,7 @@ The grounding rules (only use sources, cite every fact...) are shared.
 """
 
 from src.generation.options import AUDIENCES, STYLES
-from src.generation.prompts import GROUNDING_RULES, change_block
+from src.generation.prompts import GROUNDING_RULES, change_block, length_instruction
 from src.talks.request import TalkRequest
 
 TALK_SYSTEM_PROMPT = f"""You turn research papers into slide talks for a specific audience.
@@ -27,8 +27,8 @@ STRUCTURE:
 - {equation_rule}
 - Speaker notes ADD to the bullets (an example, an explanation, a "why it matters") - never
   just repeat a bullet.
-- "script": the full spoken talk covering all slides in order, about {target_words} words
-  ({length} when read aloud at 150 words per minute). Write it as natural speech for this
+- "script": the full spoken talk covering all slides in order: {script_length}
+  Write it as natural speech for this
   audience, with transitions between slides ("Now let's look at..."). Do NOT paste the bullets
   and notes together, and never say the same sentence twice.
 - Cite chunk IDs in square brackets after every bullet, speaker note and script sentence that
@@ -59,8 +59,7 @@ def build_talk_prompt(request: TalkRequest, sources: str) -> str:
         style=STYLES[request.style],
         notes_per_slide=request.notes_per_slide,
         equation_rule=PRESERVE_EQUATIONS if request.preserve_equations else NO_EQUATIONS,
-        target_words=request.target_words,
-        length=request.length,
+        script_length=length_instruction(request.target_words, request.length),
         change_block=change_block(request.change_instruction),
         sources=sources,
     )

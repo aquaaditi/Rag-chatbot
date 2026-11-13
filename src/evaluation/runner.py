@@ -73,7 +73,7 @@ class Evaluator:
         self.n_generated += 1
         path.parent.mkdir(parents=True, exist_ok=True)
         run = {"case_id": case.case_id, "model": config.LLM_MODEL, "generated": f"{datetime.now():%Y-%m-%d %H:%M}",
-               "source_ids": result.source_ids, "text": result.text}
+               "source_ids": result.source_ids, "length_retry": result.length_retry, "text": result.text}
         path.write_text(json.dumps(run, indent=2, ensure_ascii=False), encoding="utf-8")
         return result.text, result.sources
 

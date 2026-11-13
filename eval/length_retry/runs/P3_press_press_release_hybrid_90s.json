@@ -1,0 +1,16 @@
+{
+  "case_id": "P3_press_press_release_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:37",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p2_c04",
+    "P3_p1_c03",
+    "P3_p6_c03",
+    "P3_p5_c02",
+    "P3_p8_c02"
+  ],
+  "length_retry": true,
+  "text": "New research reveals we can squeeze giant artificial intelligence systems into small models without losing their smarts. \n\nTraining huge computer models works great for learning complex patterns from massive data [P3_p1_c03]. But running these giant systems for everyday users is often too slow and expensive [P3_p1_c02, P3_p1_c03]. \n\nTo solve this, scientists use a new technique called distillation [P3_p1_c03, P3_p2_c04]. Think of it like insects that have a larval form optimized for extracting energy and nutrients from the environment, and a completely different adult form optimized for travel and reproduction [P3_p1_c03]. We train a big, cumbersome model to extract knowledge [P3_p1_c03]. Then, we transfer that learned knowledge into a smaller, lean model that is more suitable for deployment and ready for public use [P3_p1_c02, P3_p1_c03]. \n\nInstead of just looking at final right or wrong answers, the small model learns from rich hints about subtle probabilities [P3_p2_c04, P3_p5_c02]. For instance, it learns the valuable information defined by ratios of very small probabilities, such as how often a handwritten two might slightly resemble a three or a seven [P3_p2_c04]. \n\nThis matters because it makes top-tier technology fast and cheap enough for a large number of users [P3_p1_c02, P3_p1_c03]. The results are striking. More than 80% of the accuracy gains achieved by a massive group of ten separate models successfully transfer into a single, streamlined distilled model [P3_p5_c02]. Researchers also significantly improved the acoustic model of a heavily used commercial system using this exact approach [P3_p1_c02]."
+}

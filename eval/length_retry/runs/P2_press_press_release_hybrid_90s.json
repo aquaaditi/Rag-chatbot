@@ -1,0 +1,15 @@
+{
+  "case_id": "P2_press_press_release_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:35",
+  "source_ids": [
+    "P2_p1_c02",
+    "P2_p1_c04",
+    "P2_p2_c04",
+    "P2_p3_c02",
+    "P2_p2_c03",
+    "P2_p4_c02"
+  ],
+  "length_retry": true,
+  "text": "A new text classifier called fastText matches deep learning accuracy while running many orders of magnitude faster [P2_p1_c02]. \n\nSorting text data is often slow and difficult. Researchers solve this by building a simple and efficient baseline tool [P2_p1_c02]. A simple and efficient baseline for sentence classification is to represent sentences as bags of words and train a linear classifier [P2_p1_c04]. However, linear classifiers do not share parameters among features and classes [P2_p1_c04]. This possibly limits their generalization in the context of large output spaces where some classes have very few examples [P2_p1_c04]. To capture local word order, the system uses additional features [P2_p2_c03]. \n\nThis matters because speed is crucial for handling massive amounts of data today. Users can train fastText on more than one billion words in less than ten minutes using a standard multicore computer [P2_p1_c02]. It can also classify half a million sentences among 312K classes in less than a minute [P2_p1_c02]. \n\nIn tests, the authors evaluate fastText on sentiment analysis and large scale tag prediction tasks [P2_p2_c04]. Its accuracy is often on par with deep learning classifiers [P2_p1_c02]. It achieves this while being much faster for training and evaluation [P2_p1_c02]. On sentiment analysis, adding bigram information improves performance by 1-4% [P2_p3_c02]. Overall, accuracy is slightly better than some models and a bit worse than others [P2_p3_c02]."
+}

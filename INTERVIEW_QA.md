@@ -996,3 +996,375 @@ script got longer, despite the model saying the opposite. After adding measurabl
 goals and a retry, the second demo met both goals. Measuring turned a convincing
 claim into a checkable fact."
 One line: measure every claim, including the model's claims about itself.
+# Day 8 — Safety + the chat UI (Streamlit)
+
+## 🟢 Basic
+
+**Q1. What does Day 8 add?**
+"Safety layers around the LLM, and a chat UI in the browser. The user can upload a paper,
+chat, see the diffs, citations and warnings, and download the result."
+One line: safety around the model, and a real UI on top.
+
+**Q2. What are your safety layers?**
+"Four. An input guard checks the message before any LLM call: too long, prompt injection,
+offensive words. The prompt rules say the sources are data, not instructions. Gemini's own
+safety filter is set explicitly. And output checks inspect the final text."
+One line: input guard, prompt rules, Gemini's filter, output checks.
+
+**Q3. What blocks an answer, and what only warns?**
+"Harm blocks: Gemini's filter refusing, offensive words in the output, or a message the
+input guard refuses. Quality only warns: sentences over 35 words, acronyms never spelled
+out for lay audiences, readability below the audience's floor, non-inclusive wording."
+One line: harm blocks, quality warns.
+
+**Q4. Why does the UI run on localhost only?**
+"Anyone who can open the app can spend my Gemini key and upload files. So
+.streamlit/config.toml sets address = localhost, turns off usage statistics, keeps XSRF
+protection on, and limits uploads to 20 MB. I never click 'Deploy'."
+One line: the app spends my key, so only I can reach it.
+
+## 🟡 Intermediate
+
+**Q5. What is prompt injection, and where can it enter your system?**
+"Text that tries to give the model new orders, like 'ignore your rules'. It can come from
+the chat message, or hidden inside an uploaded paper, for example white text in a PDF,
+which then becomes a source chunk. The upload step drops chunks that look like injection,
+and rule 6 says the sources are text from a paper, not instructions."
+One line: from the message or from the paper itself.
+
+**Q6. Why is a word list not enough to stop offensive content?**
+"It doesn't understand context. Mine flagged the author surnames 'Wang' and 'Dong', and
+research phrases like 'kill the process'. Blocking those would block the paper and
+people's names. It also misses hostile text that uses no listed word. My fix: always allow
+research words, and allow words that appear in the sources."
+One line: false alarms on names, and blind to context.
+
+**Q7. Frontend vs backend: what does the UI do?**
+"It only shows things: chat, uploads, buttons, diffs, warnings. All logic is in the
+backend, behind ChatSession.handle(message). So the terminal chat and the browser behave
+the same, the logic is tested without a browser, and the UI could be replaced."
+One line: the UI displays; the backend decides.
+
+**Q8. Why the retriever in st.cache_resource but the ChatSession in st.session_state?**
+"Streamlit re-runs the script on every click. cache_resource is created once and shared by
+everyone: right for the slow, read-only retriever. session_state is per browser tab: right
+for one person's conversation. In cache_resource, all users would share one chat."
+One line: shared and expensive vs personal.
+
+## 🔴 Advanced
+
+**Q9. Why set Gemini's safety settings explicitly?**
+"Google's docs say the filter is off by default for newer models. And before I handled it,
+a blocked answer looked like 'invalid JSON', which is confusing. Now blocked_reason()
+checks the block reason and the finish reasons, and the user gets a clear message."
+One line: don't rely on defaults, and make a block visible.
+
+**Q10. What are the limits of your safety layers?**
+"The injection filter is a regex heuristic: it can miss clever injections and could drop a
+real paper about prompt injection. The offensive check is a word list. A context-aware
+classifier or an LLM judge would be the next step."
+One line: heuristics catch the obvious, not the clever.
+
+## Your bug stories
+
+**Q11. Tell me about the formatting bug you only saw in the browser.**
+"The version header, the reason and the metrics ran together into one paragraph. Markdown
+ignores a single line break, but the terminal doesn't, so my terminal tests never showed
+it. Fix: blank lines between paragraphs, and a test for it."
+One line: test in the real UI, not only in the terminal.
+
+**Q12. The app showed ERR_CONNECTION_REFUSED. Why?**
+"Streamlit's first run waits in the terminal for an email address, so the server hadn't
+started. Pressing Enter fixed it."
+One line: the server was waiting for input.
+
+# Day 9 — Automatic evaluation
+
+## 🟢 Basic
+
+**Q1. What does Day 9 add?**
+"A way to measure the chatbot. It generates 15 scripts (3 papers × 5 settings), scores
+each one on 11 metrics, and writes two experiment tables: retrieval ablation and
+audience adaptation."
+One line: many scripts, many settings, numbers.
+
+**Q2. What's the difference between ROUGE and BERTScore?**
+"ROUGE counts shared words with a human reference. BERTScore compares meaning using
+contextual embeddings, so a good paraphrase still scores high. 'Cheap' vs 'inexpensive'
+gets 0 in ROUGE but is close in BERTScore. Both can miss a contradiction: 'sharper' vs
+'softer'."
+One line: words vs meaning.
+
+**Q3. What is your factuality proxy?**
+"The share of claims whose cited chunk really says it, measured by embedding similarity
+of 0.80 or higher, plus an exact check that every number is in the source. It's a proxy:
+it measures closeness of wording, not truth."
+One line: claim-to-source similarity, plus exact numbers.
+
+## 🟡 Intermediate
+
+**Q4. What is an ablation study, and what did yours show?**
+"Change one component, keep everything else the same, and measure. I compared dense, BM25
+and hybrid search. Hybrid had the most strictly supported claims, 73% vs 65% and 64%, but
+the lenient 'grounded' share was the same. With 3 papers and 1 run each, that's a hint,
+not proof."
+One line: one change at a time; hybrid looked best but not provably.
+
+**Q5. Why cache the generated scripts?**
+"Generating is slow, costs API calls and changes between runs. With a cache, every metric
+is computed on exactly the same scripts, re-scoring is free, and a crash loses nothing. One
+Gemini call hung for 50 minutes and nothing was lost."
+One line: same scripts, free re-scoring, crash-safe.
+
+**Q6. Why did grad-student scripts score lowest against the human references?**
+"My references were written for a general audience. Technical scripts use equations and
+precise terms, so they overlap less. That shows adaptation, not a mistake. Similarity to
+one reference is not quality."
+One line: different from my reference, not worse.
+
+## 🔴 Advanced
+
+**Q7. What bug did the evaluation find?**
+"Press releases were the hardest scripts to read: Flesch 28, below the grad-student
+scripts at 32, with 1.94 syllables per word. The style asked for 'newsworthy' but never
+for plain words. After the fix: 41."
+One line: averages found a bug no single example showed.
+
+**Q8. The fix lowered 'supported' from 74% to 39%. Did the scripts get less true?**
+"Mostly no. I read the flagged claims: most were true paraphrases scoring 0.75–0.79, just
+under my 0.80 threshold. Some were real hype, like 'without losing their smarts'. So I
+added a lenient 'grounded' column, because one number was hiding two problems."
+One line: partly the checker's limit, partly real hype.
+
+**Q9. What are the limits of your evaluation?**
+"3 papers, 1 run each, one LLM, one human reference per paper written by me, an
+embedding-based truth proxy, and readability formulas that only count length. Stronger:
+more papers, repeated runs with spread, several references, human raters, an NLI model or
+LLM judge for the weak band."
+One line: small, single-reference, proxy-based.
+
+## Your bug stories
+
+**Q10. Tell me about your wrong tests.**
+"Two of my tests had the wrong expected value. In one, the code was right: an invented
+citation ID shouldn't count as a valid citation, so coverage was 0.5, not 1.0. A failing
+test means 'look closer', not 'the code is wrong'."
+One line: sometimes the test is the bug.
+
+# Day 10 — Human evaluation + architecture
+
+## 🟢 Basic
+
+**Q1. What does Day 10 add?**
+"Human evaluation. A rater scores the same 15 cached scripts from 1 to 5 on factuality,
+audience fit and helpfulness, and labels every sentence the checker doubted as true, hype,
+wrong, or not a claim. The report compares that with the automatic metrics."
+One line: a human checks the scripts and the checker.
+
+**Q2. Why do you need humans if you have metrics?**
+"The metrics are proxies. ROUGE counts words, BERTScore compares to one reference, and
+'supported' measures wording similarity. Only a human judges truth, audience fit and
+usefulness, and human ratings are how you check whether a metric can be trusted."
+One line: to measure what matters, and to test the metrics.
+
+**Q3. What does 'blind' rating mean here?**
+"The rater sees the audience, but not the search mode, the metrics or the checker's
+verdict. Otherwise I might favour hybrid because I chose it, or just agree with the
+checker."
+One line: hide what could bias the judgment.
+
+## 🟡 Intermediate
+
+**Q4. Why a written rubric?**
+"Without anchors, one person's 4 is another's 3. Writing what 5, 3 and 1 mean makes the
+scores consistent and repeatable."
+One line: so a score means the same thing every time.
+
+**Q5. What is the 'control' sentence?**
+"One sentence per script that the checker called supported. Rating only doubted sentences
+tells you if the doubts were right, but never whether 'supported' can be trusted."
+One line: test the checker where it is confident too.
+
+**Q6. Why more than one rater?**
+"One person can be biased or inconsistent. I built the system, so I may be too kind, and
+some of my labels contradicted each other. With 2+ raters you measure agreement, and a
+majority label replaces one opinion."
+One line: one opinion isn't a measurement.
+
+## 🔴 Advanced
+
+**Q7. What did the human evaluation find?**
+"The scripts were rated highly: every one got 4 or 5 for factuality. The checker caught
+every wrong sentence: all 6 had been flagged, and none of the 13 'supported' controls was
+wrong. But 31% of the supported ones were only partly right or hyped, because embeddings
+see the topic, not the tone. And 4 of the 6 wrong sentences were in press releases."
+One line: the checker catches errors, but not overstatement.
+
+**Q8. Did any automatic metric agree with the human scores?**
+"Not clearly. ROUGE-L went in the right direction (+0.46, p = 0.08), BERTScore was about
+0. Two reasons: n = 15, and I only gave 4s and 5s for factuality, a ceiling effect, so there
+was almost nothing to rank."
+One line: no clear agreement; too few scripts and too little spread.
+
+**Q9. What would you change in the human evaluation?**
+"3 raters who didn't build the system, a short calibration round on 5 examples first, and
+more scripts with a wider quality range. I'd also add a skip option from the start; I
+added it when I couldn't judge some sentences."
+One line: independent raters, calibration, more spread.
+
+**Q10. Explain your architecture in 30 seconds.**
+"Once per paper: the PDF becomes blocks with page numbers, then ~250-word chunks with IDs,
+then embeddings in FAISS plus a BM25 index. Per message: the input guard checks it,
+ChatSession works out the request, hybrid search finds chunks, Gemini writes using only
+those and cites their IDs, provenance checks every sentence, safety blocks or warns, and
+the new version is saved with a diff and logged. The same generator feeds the automatic
+and human evaluation."
+One line: index once; per message: guard, retrieve, generate, check, version.
+
+## Your bug stories
+
+**Q11. What did you find in the data before rating?**
+"Several doubted sentences weren't claims at all: 'The sources do not mention cost.' The
+policymaker style asks about cost, and the model honestly says the paper doesn't cover it.
+'True / hype / wrong' didn't fit, so I added 'not a claim'. Lesson: look at the real data
+before fixing the labels."
+One line: the data showed a category I hadn't planned.
+
+
+# Day 11 — Polish (length fix, README, final review)
+
+## 🟢 Basic
+
+**Q1. What did you do on Day 11?**
+"Polished the project for submission: fixed scripts being 10–20% too short,
+wrote the README with setup steps, example runs and evaluation results, and
+prepared my interview answers."
+One line: fixed length, documented everything, prepared to explain it.
+
+**Q2. Why does script length matter?**
+"The user asks for a 30-second, 90-second or 5-minute script. If a '90-second'
+script takes 70 seconds to read, the system didn't do what was asked. Length is
+part of the requirement, not a detail."
+One line: length is part of what the user asked for.
+
+**Q3. How do you measure length?**
+"Spoken words at about 150 words per minute, so 90 seconds is about 225 words.
+Citation IDs are excluded, because they aren't spoken."
+One line: count spoken words, not citation IDs.
+
+**Q4. What's in your README?**
+"What the project does, the architecture diagram, setup steps, how to run it,
+example inputs and outputs, evaluation results, known limitations, and the
+external resources I used, which the assignment requires me to cite."
+One line: what, how to run, results, limits and sources.
+
+## 🟡 Intermediate
+
+**Q5. Why were the scripts too short?**
+"LLMs don't count words, and they tend to undershoot a target. And the grounding
+rules stop the model from padding with general knowledge, so with limited chunks
+it runs out of supported content early."
+One line: models undershoot, and grounding limits what they can add.
+
+**Q6. Giving a word range in the prompt helped. Why wasn't it enough?**
+"It moved the in-range count from 4 to 9 out of 15, but 6 were still outside.
+A prompt improves the average; it can't guarantee each script. So I added a
+check in code that measures each script and retries if it's out of range."
+One line: prompts improve averages; code checks catch each failure.
+
+**Q7. How does the length retry work?**
+"If a script is outside the range, the bot sends back the actual count, like
+'you wrote 183 words, the target is about 225', and asks once more. Then it keeps
+whichever version is closer to the target."
+One line: measure, give the real number as feedback, keep the closer one.
+
+**Q8. Why keep the closer version instead of always taking the retry?**
+"A retry can be worse: it may overshoot or land further away. Keeping the closer
+one means the retry can only help or do nothing."
+One line: the retry can never make length worse.
+
+**Q9. Why test the fix in a separate folder?**
+"eval/runs/ is my baseline. Testing in eval/length_retry/ lets me compare before
+and after on the same cases, keeps my earlier results reproducible, and loses
+nothing if the fix doesn't work."
+One line: never overwrite your baseline.
+
+## 🔴 Advanced
+
+**Q10. Can fixing length hurt something else?**
+"Yes. A longer retry can add filler or weaker claims, so grounding could drop.
+'Closer' only compares length. A stronger rule would accept the retry only if
+its length is closer AND its grounding didn't fall."
+One line: fixing one metric can quietly hurt another.
+
+**Q11. You saw this pattern before. Where?**
+"Day 9: making press releases easier to read raised readability but lowered
+'supported'. Day 7: simplifying slides lowered grounding. Every fix improved one
+number and risked another, so I measure both before accepting a change."
+One line: every fix is a trade-off, so measure both sides.
+
+**Q12. Why does the retry use the actual number, not just 'make it longer'?**
+"A vague instruction gives a vague result. A specific number tells the model
+exactly how far off it is. It's the same idea as my Day 7 edits: retry with
+measured feedback."
+One line: specific feedback gives a better second attempt.
+
+**Q13. How many extra API calls does the length fix cost?**
+"Only for scripts outside the range, and at most one retry each. Scripts already
+in range cost nothing extra. So the cost is limited and predictable."
+One line: at most one extra call, only when needed.
+
+**Q14. Why put limitations in your README?**
+"Because they're real, and hiding them would mislead anyone using or judging the
+project. Stating them, like the small evaluation set and embeddings not catching
+contradictions, shows I understand where the system can fail."
+One line: honest limits build more trust than hidden ones.
+
+## Looking back at the whole project
+
+**Q15. Walk me through your system in 2 minutes.**
+"A user uploads a paper. Ingestion splits it into page-located, math-safe chunks
+with stable IDs. Retrieval combines embeddings and BM25 with RRF. Gemini writes
+scripts or slide talks as structured JSON, using only the retrieved chunks and
+citing them. A provenance checker verifies every claim against its source and
+checks numbers exactly. Users can edit by chat, and each edit is measured and
+versioned. Safety checks run on input and output, and an evaluation measures
+grounding, closeness to human scripts and audience fit."
+One line: ingest → retrieve → generate with citations → verify → edit → evaluate.
+
+**Q16. What was the most important thing you learned?**
+"That an LLM's output, including its own explanations, is a claim to be checked,
+not a fact. A valid citation didn't prove a sentence was true, the model said
+it simplified text when it hadn't, and my own prompt caused a hallucination. So
+I built checks and measured everything."
+One line: verify the model; don't trust it.
+
+**Q17. What would you change if you started again?**
+"Claim-level checking with an NLI model or LLM judge from the start, since
+embeddings can't catch contradictions. Chunks that keep an equation with its
+explanation across page breaks. And a bigger evaluation set with repeated runs,
+earlier."
+One line: a stronger checker, better chunk boundaries, more evaluation.
+
+**Q18. How does your prototype differ from a production SARAL?**
+"I used FAISS and JSON files instead of PostgreSQL with pgvector, Streamlit
+instead of a React frontend with a FastAPI backend, and no background job queue.
+Those are fine for 3 papers, but production would need a database with
+transactions, an API, streaming, and background ingestion for many users."
+One line: right for a prototype; production needs a database, an API and queues.
+
+**Q19. How did you use AI tools while building this?**
+"I used AI assistants as a tutor and pair programmer, to explain concepts,
+suggest approaches and help debug. I checked outputs against the papers, ran
+every test myself, investigated failures, and made the design decisions. My
+reference scripts were written by me, because they're the human baseline for
+evaluation."
+(Answer this honestly in your own words, describing what YOU actually did.)
+One line: AI helped me learn and build; I verified, tested and decided.
+
+**Q20. What are you most proud of?**
+"Finding problems the system hid: a hallucination my own prompt caused, a
+'simplified' edit that wasn't simpler, and a readability bug that only appeared
+in the averages. Each one led to a check that now catches it automatically."
+(Pick the one YOU care about most.)
+One line: finding hidden problems and turning them into automatic checks.

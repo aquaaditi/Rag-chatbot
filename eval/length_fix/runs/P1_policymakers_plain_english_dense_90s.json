@@ -1,0 +1,14 @@
+{
+  "case_id": "P1_policymakers_plain_english_dense_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:23",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p1_c05",
+    "P1_p1_c01",
+    "P1_p2_c02",
+    "P1_p1_c03",
+    "P1_p4_c03"
+  ],
+  "text": "This paper looks at how computer models process human language [P1_p1_c03]. While deep learning works very well for images and speech, natural language processing traditionally relies on learning word vector representations, which turn words into numbers that capture their meanings [P1_p1_c03]. \n\nThe main idea is to use a simple convolutional neural network, a type of model originally built for computer vision, trained on top of pre-trained word vectors to classify entire sentences [P1_p1_c02, P1_p1_c03]. The research tests a model where word vectors stay static, as well as a model that fine-tunes these vectors for specific tasks, and a multichannel architecture that combines both approaches [P1_p1_c02, P1_p4_c03].\n\nRegarding key results, a baseline model starting with random words does not perform well on its own [P1_p4_c03]. However, using pre-trained vectors brings surprisingly large performance gains [P1_p4_c03]. A simple model with static pre-trained vectors performs remarkably well, matching more complex models that require prior parse trees or intricate pooling [P1_p4_c03]. Furthermore, fine-tuning the pre-trained vectors for each specific task leads to even higher performance [P1_p1_c02, P1_p4_c03]. Overall, the tested models improve upon the previous state of the art on 4 out of 7 tasks, which include sentiment analysis and question classification [P1_p1_c02]. The sources do not provide information on cost or speed limitations [P1_p1_c02, P1_p1_c03, P1_p4_c03]."
+}

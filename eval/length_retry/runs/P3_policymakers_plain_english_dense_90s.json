@@ -1,0 +1,16 @@
+{
+  "case_id": "P3_policymakers_plain_english_dense_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:35",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p1_c01",
+    "P3_p2_c05",
+    "P3_p6_c03",
+    "P3_p2_c04",
+    "P3_p2_c01"
+  ],
+  "length_retry": false,
+  "text": "Training many different machine learning models and averaging their predictions is a very simple way to improve performance [P3_p1_c02]. However, making predictions using a whole ensemble of models is cumbersome and may be too computationally expensive to allow deployment to a large number of users, especially if the individual models are large neural networks [P3_p1_c02]. \n\nThis paper shows that it is possible to compress the knowledge in an ensemble into a single model that is much easier to deploy [P3_p1_c02]. The paper develops this approach further using a different compression technique called distillation [P3_p1_c02][P3_p2_c04]. \n\nWhen models discriminate between a large number of classes, they assign probabilities to all incorrect answers [P3_p2_c01]. The relative probabilities of these incorrect answers tell us a lot about how the model generalizes [P3_p2_c01]. For example, a BMW may have a very small chance of being mistaken for a garbage truck, but that mistake is much more probable than mistaking it for a carrot [P3_p2_c01]. \n\nThe paper achieves surprising results on MNIST and significantly improves the acoustic model of a heavily used commercial system by distilling knowledge into a single model [P3_p1_c02]. The research also introduces a new type of ensemble composed of full models and specialist models [P3_p1_c02]. These specialist models learn to distinguish fine-grained classes that the full models confuse, and they can be trained rapidly and in parallel [P3_p1_c02]."
+}

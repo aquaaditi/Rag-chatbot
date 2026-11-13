@@ -1,0 +1,15 @@
+{
+  "case_id": "P1_policymakers_plain_english_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:33",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p2_c01",
+    "P1_p4_c03",
+    "P1_p2_c02",
+    "P1_p1_c03",
+    "P1_p5_c04"
+  ],
+  "length_retry": true,
+  "text": "This research looks at sentence-level classification tasks, including sentiment analysis and question classification [P1_p1_c02]. The problem involves teaching computer systems to categorize sentences accurately [P1_p1_c02]. \n\nThe main idea is using a simple type of artificial neural network called a convolutional neural network, which was originally invented for computer vision [P1_p1_c02][P1_p1_c03]. These models are built on top of pre-trained word vectors, which are mathematical representations that project words onto a lower-dimensional space to encode semantic features so that semantically close words are grouped closely together [P1_p1_c02][P1_p1_c03]. \n\nThe research tested models with little tuning of hyperparameters and a simple layer of convolution [P1_p1_c02][P1_p5_c04]. A baseline model with all randomly initialized words does not perform well on its own [P1_p4_c03]. However, the experiments show that even a simple model using static, pre-trained vectors achieves excellent results across multiple benchmarks, giving competitive results against more sophisticated deep learning models that use complex pooling schemes or require parse trees to be computed beforehand [P1_p1_c02][P1_p4_c03]. \n\nThe paper demonstrates further performance gains when learning task-specific vectors through fine-tuning, and when using a simple modification to the architecture that allows for the use of both task-specific and static vectors [P1_p1_c02][P1_p4_c03]. Overall, the tested models improve upon the state of the art on four out of seven tasks [P1_p1_c02]. The sources do not contain information about cost, speed, or limitations beyond what is stated regarding model performance and design [P1_p1_c02][P1_p2_c01][P1_p4_c03][P1_p2_c02][P1_p1_c03][P1_p5_c04]."
+}

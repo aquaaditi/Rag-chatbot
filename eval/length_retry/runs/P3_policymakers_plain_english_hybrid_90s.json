@@ -1,0 +1,16 @@
+{
+  "case_id": "P3_policymakers_plain_english_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:36",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p2_c04",
+    "P3_p1_c03",
+    "P3_p6_c03",
+    "P3_p5_c02",
+    "P3_p8_c02"
+  ],
+  "length_retry": true,
+  "text": "Training many different machine learning models and averaging their predictions can improve performance, but using a whole group of models together is cumbersome and computationally expensive for deployment [P3_p1_c02]. Training needs to extract structure from large datasets and can use huge amounts of computation without operating in real time [P3_p1_c03]. In contrast, deployment to a large number of users has much stricter requirements on latency and computational resources [P3_p1_c03]. \n\nThe main idea is a process called distillation [P3_p1_c03]. This transfers the knowledge from a large group of models into a single, smaller model that is much easier to deploy [P3_p1_c02][P3_p1_c03]. Distillation raises the temperature of the final layer until the large model produces a soft set of targets, which are then used to train the small model [P3_p2_c04]. The paper also introduces a new type of ensemble made of one or more full models and many specialist models that learn to distinguish fine-grained classes that the full models confuse [P3_p1_c02]. These specialist models can be trained rapidly and in parallel [P3_p1_c02]. \n\nRegarding key results, distillation successfully extracts more useful information from the training set than simply using hard labels [P3_p5_c02]. More than 80% of the accuracy improvement achieved by a group of 10 models is successfully transferred to the single distilled model [P3_p5_c02]. \n\nAs for limitations, the paper notes that specialist models have a strong tendency to overfit on their special classes because their effective training set size is much smaller [P3_p8_c02]."
+}

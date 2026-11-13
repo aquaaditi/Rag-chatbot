@@ -70,7 +70,7 @@ def test_evaluator_measures_and_caches_scripts(tmp_path, references):
                           references_dir=references)
     rows = evaluator.evaluate(cases)
 
-    assert llm.calls == 3 and evaluator.n_generated == 3
+    assert llm.calls == 6 and evaluator.n_generated == 3  # each fake script is too short -> 1 length retry
     row = rows[0]
     assert row.words == 11 and row.target_words == 225  # citations are not words
     assert row.invented_citations == 1  # P9_p1_c01 was never given to the model
@@ -82,7 +82,7 @@ def test_evaluator_measures_and_caches_scripts(tmp_path, references):
 
     # 2nd evaluation: same scripts from the cache, no LLM calls
     again = Evaluator(FakeRetriever(), tmp_path / "runs", llm=llm, references_dir=references).evaluate(cases)
-    assert llm.calls == 3 and again[0].rouge1 == row.rouge1
+    assert llm.calls == 6 and again[0].rouge1 == row.rouge1
 
 
 # ---------------------------------------------------------------- summary.py / export.py

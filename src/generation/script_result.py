@@ -7,6 +7,7 @@ prompt, the chunks that were used and the citations found in the text.
 from dataclasses import dataclass
 
 from src.chunking import Chunk
+from src.generation.citations import spoken_words
 from src.generation.options import ScriptRequest
 
 
@@ -18,10 +19,11 @@ class GeneratedScript:
     prompt: str  # the exact prompt sent to the LLM (for debugging / the report)
     cited_ids: list[str]  # chunk IDs found in the text
     unknown_ids: list[str]  # cited IDs that were not in the sources (should be empty!)
+    length_retry: bool = False  # True if the first answer was outside the length range and was retried
 
     @property
     def n_words(self) -> int:
-        return len(self.text.split())
+        return spoken_words(self.text)
 
     @property
     def source_ids(self) -> list[str]:

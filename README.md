@@ -1,21 +1,26 @@
 # "RAG Chatbot: Research Paper to Slides, Scripts & Summaries" 
 
 A RAG (Retrieval-Augmented Generation) chatbot that takes a research paper (PDF/LaTeX) and generates
-audience-adaptive slide bullets, speaker scripts, speaker notes, and tweet-sized abstracts — with
-source citations and conversational editing.
+audience-adaptive slide bullets, speaker scripts and speaker notes, with a source citation on every
+sentence and conversational editing ("make #2 less technical").
 
-> Status: 🚧 Work in progress
+## Features
 
-## Features (planned)
-
-- **Ingest papers** — PDF/LaTeX parsing with page numbers; chunking that keeps LaTeX math blocks intact
-- **Retrieval** — sentence-BERT embeddings + vector store (FAISS/Chroma)
-- **Generation** — slide bullets, full speaker scripts, speaker notes, tweets
-- **Audience / length / style control** — policymakers, grad students, press · 30s / 90s / 5min · technical, plain-English, press release
-- **Provenance** — every generated sentence links back to its source chunk and page number
-- **Change tracking** — edits like "make #2 less technical" show old vs. new and why it changed
-- **Safety** — no offensive content, accessible language
-- **Evaluation** — factuality proxy, citation coverage, ROUGE / BERTScore, human ratings
+- **Ingest papers:** PDF/LaTeX parsing with page numbers; chunking that keeps LaTeX math blocks intact
+- **Retrieval:** hybrid search, bge-small embeddings in FAISS + BM25 keywords, merged with Reciprocal Rank Fusion
+- **Generation:** spoken scripts and slide talks (bullets, speaker notes, key equations in LaTeX), as
+  validated JSON with automatic self-correction
+- **Audience / length / style control:** policymakers, grad students, press · 30s / 90s / 5min / 7min ·
+  technical, plain-English, press release
+- **Provenance:** every generated sentence is linked to the source sentence, chunk and page that
+  support it; numbers are checked exactly
+- **Change tracking:** edits like "make #2 less technical" show old vs. new, why it changed, and
+  whether the goal was met; undo; every turn is logged
+- **Safety:** input guard (prompt injection, offensive words), Gemini's safety filter, offensive-output
+  blocking, and accessibility warnings (long sentences, undefined acronyms, readability per audience)
+- **Evaluation:** automatic (factuality proxy, citation coverage, ROUGE, BERTScore, retrieval
+  ablation, audience adaptation) and human (blind ratings with a rubric)
+- **Chat UI:** Streamlit, runs on localhost only, with paper upload
 
 ## Architecture
 
@@ -193,18 +198,21 @@ venv\Scripts\activate          # Windows
 pip install -r requirements.txt
 ```
 
-Add your LLM API key to a `.env` file:
+Copy `.env.example` to `.env` and paste your Gemini API key (free at https://aistudio.google.com/apikey).
+`.env` is git-ignored, so the key never reaches GitHub:
 
 ```
 GEMINI_API_KEY=your_key_here
 ```
+
+Then build the search index once (`python build_index.py`) and run the tests (`pytest`, offline, no key needed).
 
 ## Usage
 
 ```bash
 python build_index.py          # once: build the search index for data/papers/
 streamlit run app.py           # chat UI at http://localhost:8501
-python evaluate.py             # automatic evaluation -> eval/results.md
+python evaluate.py             # automatic evaluation -> eval/results.md (--out NAME: separate experiment)
 python rate.py --rater <name>  # human evaluation (blind, resumable) -> eval/human/results.md
 python chat.py                 # or chat in the terminal
 ```
@@ -248,7 +256,21 @@ the meaning of each column are in [eval/results.md](eval/results.md).
   (74% → 39%; grounded 96% → 86%). Checking those claims by hand showed most were true paraphrases
   scoring just below the 0.80 threshold, but some were real press-release hype ("without losing their
   smarts"). Before/after: [eval/results_before_press_fix.md](eval/results_before_press_fix.md).
-- All scripts come out 10–20% **shorter** than the 225-word target.
+- All scripts came out 10–20% **shorter** than the 225-word target. **Fixed later (Day 11)**, see below.
+
+**Length fix** (same 15 cases; `python evaluate.py --out length_retry`, results in
+[eval/length_retry/results.md](eval/length_retry/results.md)):
+
+| prompt | avg words (target 225) | in range 203–248 | length error | supported | grounded |
+|---|---|---|---|---|---|
+| "about 225 words" (Day 9) | 200 | 4 / 15 | 12.4% | 66% | 91% |
+| range + "citations don't count as words" | 215 | 9 / 15 | 10.5% | 66% | 87% |
+| **+ word count in code, 1 retry if outside** (used) | **229** | **13 / 15** | **6.5%** | 68% | 88% |
+
+The model seemed to count `[P1_p2_c01]` citations as words, but nobody reads them aloud. Prompt
+wording alone only half-fixed it, so the generator now counts the spoken words itself and retries
+once with the real count (6 of 15 scripts needed it). Grounding did not drop. The other tables above
+and the human ratings use the Day 9 scripts.
 
 **Limits:** 3 papers, one run per setting, and one LLM, so small differences are noise. "Supported" is
 an embedding-similarity *proxy* for truth (it measures closeness of wording, not correctness), and the
@@ -304,5 +326,23 @@ what a second rater and a calibration round would catch. Full report:
 
 ## References
 
+**Method**
 - Lewis et al., *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*, NeurIPS 2020. https://arxiv.org/abs/2005.11401
-- _Add every library, model, and paper used._
+- Robertson & Zaragoza, *The Probabilistic Relevance Framework: BM25 and Beyond*, 2009 (BM25)
+- Cormack, Clarke & Büttcher, *Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods*, SIGIR 2009 (RRF)
+- Lin, *ROUGE: A Package for Automatic Evaluation of Summaries*, 2004
+- Zhang et al., *BERTScore: Evaluating Text Generation with BERT*, ICLR 2020
+- Flesch, *A New Readability Yardstick*, 1948 (reading ease)
+
+**Test papers** (in `data/papers/`)
+- P1: Kim, *Convolutional Neural Networks for Sentence Classification*, EMNLP 2014
+- P2: Joulin et al., *Bag of Tricks for Efficient Text Classification*, EACL 2017
+- P3: Hinton, Vinyals & Dean, *Distilling the Knowledge in a Neural Network*, 2015
+
+**Models**
+- Gemini `gemini-flash-lite-latest` (Google), via the `google-genai` SDK: generation
+- `BAAI/bge-small-en-v1.5`: embeddings for retrieval and provenance
+- `distilbert-base-uncased`: BERTScore
+
+**Libraries:** PyMuPDF (PDF parsing), sentence-transformers, FAISS, rank-bm25, Pydantic, textstat,
+better-profanity, rouge-score, bert-score, SciPy, Streamlit, python-dotenv, pytest. See `requirements.txt`.

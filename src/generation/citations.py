@@ -9,6 +9,8 @@ import re
 
 CITATION_GROUP = re.compile(r"\[([^\[\]]+)\]")  # anything inside [...]
 CHUNK_ID = re.compile(r"P\d+_[ps]\d+_c\d+")  # e.g. P3_p2_c06
+# A [...] group that contains at least one chunk ID, e.g. [P3_p2_c06] or [P1_p2_c01, P3_p2_c06]
+CITED_GROUP = re.compile(r"\s*\[[^\[\]]*P\d+_[ps]\d+_c\d+[^\[\]]*\]")
 
 
 def find_citations(text: str) -> list[str]:
@@ -25,3 +27,13 @@ def find_citations(text: str) -> list[str]:
 def unknown_citations(cited: list[str], allowed: list[str]) -> list[str]:
     """Cited IDs that were NOT in the sources - a sign the LLM invented a citation."""
     return [c for c in cited if c not in allowed]
+
+
+def strip_citations(text: str) -> str:
+    """The text without its [chunk ID] groups ("See Table [2]" keeps its brackets)."""
+    return CITED_GROUP.sub("", text).strip()
+
+
+def spoken_words(text: str) -> int:
+    """Words a speaker would say: citations are not read aloud, so they don't count."""
+    return len(strip_citations(text).split())

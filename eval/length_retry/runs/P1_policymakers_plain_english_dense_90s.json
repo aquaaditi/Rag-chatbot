@@ -1,0 +1,15 @@
+{
+  "case_id": "P1_policymakers_plain_english_dense_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:32",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p1_c05",
+    "P1_p1_c01",
+    "P1_p2_c02",
+    "P1_p1_c03",
+    "P1_p4_c03"
+  ],
+  "length_retry": false,
+  "text": "We examine a research paper that looks at sentence-level classification tasks [P1_p1_c02]. While deep learning methods achieved remarkable results in computer vision and speech recognition, work in natural language processing often involves learning word vector representations and performing composition over them for classification [P1_p1_c03]. Word vectors are dense representations that project words onto a lower dimensional vector space, encoding semantic features so that semantically close words are close in that space [P1_p1_c03]. \n\nThe main idea is using a simple convolutional neural network trained on top of pre-trained word vectors [P1_p1_c02]. The model uses multiple filters with varying window sizes to obtain multiple features, which are passed to a fully connected softmax layer to output a probability distribution over labels [P1_p2_c02]. The paper also tests learning task-specific vectors through fine-tuning, and proposes a multichannel architecture where one channel of word vectors is kept static and another is fine-tuned [P1_p1_c02][P1_p2_c02]. \n\nRegarding key results, a baseline model with randomly initialized words does not perform well on its own [P1_p4_c03]. However, a simple model with static pre-trained vectors performs remarkably well, giving competitive results against more sophisticated deep learning models that use complex pooling schemes or require pre-computed parse trees [P1_p4_c03]. Fine-tuning the pre-trained vectors for each specific task provides still further performance gains [P1_p4_c03]. Overall, the tested models improve upon the state of the art on 4 out of 7 tasks, including sentiment analysis and question classification [P1_p1_c02]. The sources do not mention cost or speed limitations [P1_p1_c02][P1_p1_c05][P1_p1_c01][P1_p2_c02][P1_p1_c03][P1_p4_c03]."
+}

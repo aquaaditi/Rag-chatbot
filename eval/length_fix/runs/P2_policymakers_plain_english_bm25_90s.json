@@ -1,0 +1,14 @@
+{
+  "case_id": "P2_policymakers_plain_english_bm25_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:24",
+  "source_ids": [
+    "P2_p1_c02",
+    "P2_p2_c04",
+    "P2_p3_c02",
+    "P2_p1_c04",
+    "P2_p2_c03",
+    "P2_p4_c02"
+  ],
+  "text": "Today we look at a research paper that tackles the challenge of text classification [P2_p1_c02]. Text classification means sorting or labeling text automatically. \n\nThe main problem the paper solves is that existing deep learning methods can be very slow to train and evaluate [P2_p1_c02]. To fix this, the authors introduce a fast text classifier called fastText [P2_p1_c02]. \n\nThe main idea behind fastText is a simple model architecture [P2_p1_c04]. It treats sentences as collections of words, averages those word representations, and feeds them to a linear classifier [P2_p1_c04]. Because word order is normally ignored this way, the method uses extra features called n-grams to capture local word order efficiently without high computing costs [P2_p2_c03]. \n\nRegarding cost and speed, the results show massive improvements. The system can train on more than one billion words in less than ten minutes using a standard multicore computer central processing unit [P2_p1_c02]. It can also classify half a million sentences across 312K classes in under a minute [P2_p1_c02]. \n\nIn terms of accuracy, fastText is often on par with deep learning classifiers [P2_p1_c02]. On sentiment analysis tasks, its accuracy is slightly better than some deep learning models like char-CNN and char-CRNN, though a bit worse than VDCNN [P2_p3_c02]. Adding bigram information improves performance by 1% to 4% [P2_p3_c02]. \n\nHowever, the paper also notes limitations. Unlike some other models, fastText does not use pre-trained word embeddings, which can explain small accuracy differences [P2_p3_c02]."
+}

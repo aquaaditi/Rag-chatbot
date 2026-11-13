@@ -10,3 +10,6 @@ streamlit>=1.66
 better-profanity>=0.7
 rouge-score>=0.1.2
 bert-score>=0.3.13
+pydantic>=2.0
+numpy>=1.26
+scipy>=1.11

@@ -1,0 +1,16 @@
+{
+  "case_id": "P1_policymakers_plain_english_bm25_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:32",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p2_c01",
+    "P1_p4_c03",
+    "P1_p5_c04",
+    "P1_p1_c04",
+    "P1_p4_c04",
+    "P1_p1_c03"
+  ],
+  "length_retry": false,
+  "text": "Today we look at a research paper that tackles sentence-level classification tasks [P1_p1_c02], such as sentiment analysis and question classification [P1_p1_c02]. \n\nThe main idea is to use a simple convolutional neural network [P1_p1_c04]—a type of computer model [P1_p1_c03]—built on top of pre-trained word vectors [P1_p1_c04]. These word vectors capture the meanings of words [P1_p1_c03]. They were trained on 100 billion words of Google News [P1_p1_c04]. \n\nRegarding results and accuracy, the paper shows that even a simple model with static vectors performs remarkably well [P1_p4_c03]. It gives competitive results against more sophisticated deep learning models that use complex pooling schemes or require parse trees to be computed beforehand [P1_p4_c03]. The research shows that pre-trained vectors act as good universal feature extractors that can be used across datasets [P1_p4_c03]. Furthermore, learning task-specific vectors through fine-tuning offers further gains in performance [P1_p1_c02] and additional improvements [P1_p1_c04]. Overall, the models improve upon the state of the art on 4 out of 7 tasks [P1_p1_c02]. \n\nRegarding speed and cost, the paper highlights that this strong performance is achieved with little tuning of hyperparameters [P1_p1_c02][P1_p5_c04]—meaning the settings that guide the model do not need extensive adjustment. \n\nAs for limitations, the results for the multichannel architecture were mixed [P1_p4_c04]. The authors note that further work on regularizing the fine-tuning process is warranted [P1_p4_c04]. The sources do not provide data on financial costs or processing speeds in seconds or minutes."
+}

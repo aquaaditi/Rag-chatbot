@@ -1,0 +1,15 @@
+{
+  "case_id": "P2_grad_students_technical_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:35",
+  "source_ids": [
+    "P2_p1_c02",
+    "P2_p1_c04",
+    "P2_p2_c04",
+    "P2_p3_c02",
+    "P2_p2_c03",
+    "P2_p4_c02"
+  ],
+  "length_retry": false,
+  "text": "This paper introduces fastText, a simple and efficient baseline for text classification that solves the limitation of standard linear classifiers which fail to share parameters among features and classes [P2_p1_c02][P2_p1_c04]. While linear models can be limited in large output spaces, common solutions factorize the classifier into low-rank matrices or use multilayer neural networks [P2_p1_c04]. \n\nThe main idea of fastText is a linear model with a rank constraint [P2_p1_c04]. The first weight matrix $A$ acts as a look-up table over the words [P2_p1_c04]. These word representations are averaged into a text representation, which is then fed to a linear classifier [P2_p1_c04]. To capture local word order without high computational costs, the model uses a bag of n-grams as additional features [P2_p2_c03]. It maintains a fast and memory-efficient mapping of these n-grams using the hashing trick with 10M bins for bigrams, and 100M bins otherwise [P2_p2_c03].\n\nFor experimental evidence, sentiment analysis results show that adding bigram information improves performance by 1% to 4% [P2_p3_c02]. FastText achieves an accuracy slightly better than char-CNN and char-CRNN, and slightly worse than VDCNN, without using pre-trained word embeddings [P2_p3_c02]. When scaling to large output spaces on the YFCC100M dataset with over 91M training examples and 312K classes, fastText demonstrates massive efficiency [P2_p1_c02][P2_p4_c02]. It can be trained on more than one billion words in less than ten minutes using a standard multicore CPU, and can classify half a million sentences among 312K classes in less than a minute [P2_p1_c02]."
+}

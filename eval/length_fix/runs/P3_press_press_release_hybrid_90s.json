@@ -1,0 +1,15 @@
+{
+  "case_id": "P3_press_press_release_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:25",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p2_c04",
+    "P3_p1_c03",
+    "P3_p6_c03",
+    "P3_p5_c02",
+    "P3_p8_c02"
+  ],
+  "text": "Researchers have successfully transferred the knowledge of a large, complex group of machine learning models into a single, compact model [P3_p1_c03]. \n\nTraining many different models together creates great results, but running them all at once is too expensive for everyday users [P3_p1_c02]. To solve this problem, scientists use a new technique called distillation [P3_p1_c03]. Distillation transfers the hidden knowledge from a cumbersome group of models into one small model that is much easier to deploy [P3_p1_c03]. \n\nFor example, when recognizing handwritten digits, a large model might assign tiny probabilities showing how a specific two might slightly resemble a three or a seven [P3_p2_c04]. This rich similarity information is normally lost, but distillation captures it by raising the temperature of the model to produce soft targets [P3_p2_c04]. \n\nThis method achieves surprising results on image tasks and significantly improves the acoustic model of a heavily used commercial system [P3_p1_c02]. More than 80% of the accuracy improvement gained by using an ensemble of 10 models is successfully transferred to the single distilled model [P3_p5_c02]. \n\nThis breakthrough matters because it bridges the gap between heavy training needs and the strict speed requirements of real-world users [P3_p1_c03]."
+}

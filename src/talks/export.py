@@ -7,6 +7,7 @@ the checks and the sources.
 from datetime import datetime
 from pathlib import Path
 
+from src.generation.citations import spoken_words
 from src.talks.result import GeneratedTalk
 
 
@@ -38,7 +39,7 @@ def talk_to_markdown(result: GeneratedTalk, include_prompt: bool = False) -> str
         "", "## Full speaker script", "", talk.script, "",
         "## Checks",
         f"- Attempts: {result.attempts} ({'right first time' if result.attempts == 1 else 'self-corrected once'})",
-        f"- Script words: {len(talk.script.split())} (target ~{r.target_words})",
+        f"- Script words: {spoken_words(talk.script)} (target ~{r.target_words})",
         f"- Remaining problems: {'none' if not result.problems else ''}",
     ]
     lines += [f"  - {p}" for p in result.problems]

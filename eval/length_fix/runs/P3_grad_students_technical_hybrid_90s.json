@@ -1,0 +1,15 @@
+{
+  "case_id": "P3_grad_students_technical_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:25",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p2_c04",
+    "P3_p1_c03",
+    "P3_p6_c03",
+    "P3_p5_c02",
+    "P3_p8_c02"
+  ],
+  "text": "Ensembling machine learning models improves performance, but deploying heavy ensembles is computationally expensive [P3_p1_c02]. This paper solves the deployment problem by transferring knowledge from a cumbersome model or ensemble into a single, compact model suitable for deployment, using a process called distillation [P3_p1_c03]. \n\nWhile training requires heavy computation to extract structure from large datasets, deployment has strict latency and resource constraints [P3_p1_c03]. A conceptual block in knowledge transfer is identifying knowledge strictly with learned parameter values [P3_p1_c04]. Distillation instead treats knowledge more abstractly [P3_p1_c04]. For tasks like MNIST, soft targets contain valuable information in the ratios of small probabilities, defining a rich similarity structure over the data [P3_p2_c04]. Caruana and collaborators used logits by minimizing the squared difference between cumbersome and small models [P3_p2_c04]. The authors' more general distillation solution raises the temperature of the final softmax to produce soft targets, and uses that same high temperature when training the small model [P3_p2_c04]. Matching logits is a special case of this approach [P3_p2_c04].\n\nThe authors also introduce ensembles composed of full models and specialist models targeting fine-grained classes [P3_p1_c02]. Specialists are clustered using an on-line K-means algorithm applied to the covariance matrix of generalist predictions [P3_p6_c03]. In acoustic model experiments, training 10 separate models with different random initializations created sufficient diversity [P3_p5_c02]. Distillation used temperatures of [1, 2, 5, 10] and a relative weight of 0.5 on the cross-entropy for hard targets [P3_p5_c02]. More than 80% of the accuracy improvement from the 10-model ensemble transferred to the distilled model [P3_p5_c02]."
+}

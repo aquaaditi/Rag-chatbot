@@ -1,5 +1,5 @@
 """
-generator.py - RAG in one function: retrieve -> build prompt -> ask the LLM -> check citations.
+generator.py - RAG in one function: retrieve -> build prompt -> ask the LLM -> fix the length -> check citations.
 
     generator = ScriptGenerator(Retriever.load())
     script = generator.generate(ScriptRequest("the main idea and results", audience="policymakers",
@@ -12,10 +12,10 @@ can swap in fakes and run without the network or the embedding model.
 
 from collections.abc import Callable
 
-from src.generation.citations import find_citations, unknown_citations
+from src.generation.citations import find_citations, spoken_words, unknown_citations
 from src.generation.context import format_sources
 from src.generation.options import ScriptRequest
-from src.generation.prompts import SYSTEM_PROMPT, build_script_prompt
+from src.generation.prompts import SYSTEM_PROMPT, build_length_fix_prompt, build_script_prompt, length_range
 from src.generation.script_result import GeneratedScript
 from src.generation.source_selection import select_sources
 from src.llm import ask_llm
@@ -32,6 +32,7 @@ class ScriptGenerator:
                                  mode=request.retrieval_mode)
         prompt = build_script_prompt(request, format_sources(sources))
         text = self._llm(prompt, system_prompt=SYSTEM_PROMPT).strip()
+        text, retried = self._fix_length(text, prompt, request.target_words)
 
         cited = find_citations(text)
         return GeneratedScript(
@@ -41,4 +42,14 @@ class ScriptGenerator:
             prompt=prompt,
             cited_ids=cited,
             unknown_ids=unknown_citations(cited, [c.chunk_id for c in sources]),
+            length_retry=retried,
         )
+
+    def _fix_length(self, text: str, prompt: str, target: int) -> tuple[str, bool]:
+        """Outside the asked range -> ONE retry with the real word count; keep whichever is closer."""
+        low, high = length_range(target)
+        n_words = spoken_words(text)
+        if low <= n_words <= high:
+            return text, False
+        retry = self._llm(build_length_fix_prompt(prompt, text, n_words, target), system_prompt=SYSTEM_PROMPT).strip()
+        return (retry if abs(spoken_words(retry) - target) < abs(n_words - target) else text), True

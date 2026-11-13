@@ -1,0 +1,14 @@
+{
+  "case_id": "P1_press_press_release_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:23",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p2_c01",
+    "P1_p4_c03",
+    "P1_p2_c02",
+    "P1_p1_c03",
+    "P1_p5_c04"
+  ],
+  "text": "A new computer system built on top of pre-trained word vectors achieves excellent results on multiple sentence classification tasks. [P1_p1_c02] \nComputers struggle to understand the meaning of human language. [P1_p1_c03] \nResearchers tested a simple computer vision approach called a convolutional neural network on text tasks like sentiment analysis and question classification. [P1_p1_c02][P1_p1_c03] \nThey used pre-trained word vectors, which are dense representations that place words with similar meanings close together in a vector space. [P1_p1_c03] \nThis matters because language technology touches our daily lives through search queries and automated text analysis. [P1_p1_c03] \nThe study shows that a simple computer model with little tuning performs remarkably well across different benchmarks. [P1_p1_c02][P1_p5_c04] \nEven a simple model using static vectors competes well against much more complex deep learning methods that require extra tools like parse trees. [P1_p4_c03] \nPre-trained vectors act as good universal feature extractors that work well across different datasets. [P1_p4_c03] \nFurthermore, learning task-specific vectors through fine-tuning gives even better performance gains. [P1_p1_c02][P1_p4_c03] \nThe researchers also proposed a simple modification to use both task-specific and static vectors at the same time. [P1_p1_c02] \nOverall, these models improved upon the previous state of the art on four out of seven tasks. [P1_p1_c02] \nThese findings prove that unsupervised pre-training of word vectors is an important ingredient for teaching computers to process human language. [P1_p5_c04]"
+}

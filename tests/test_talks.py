@@ -7,6 +7,7 @@ Run:  pytest -v
 import pytest
 
 from src.chunking import Chunk
+from src.generation.citations import spoken_words
 from src.generation.source_selection import select_sources
 from src.retrieval import RetrievedChunk
 from src.talks import Slide, Talk, TalkGenerator, TalkRequest
@@ -72,7 +73,7 @@ def test_checks_catch_every_kind_of_problem():
     assert "3 slides; exactly 2" in problems
     assert "2 speaker notes; exactly 3" in problems
     assert "No slide contains an equation" in problems
-    assert f"{len(bad.script.split())} words" in problems  # script far too short
+    assert f"{spoken_words(bad.script)} spoken words" in problems  # script far too short
     assert "P9_p9_c99" in problems
 
 

@@ -13,24 +13,16 @@ import re
 from dataclasses import dataclass
 
 from src.chunking.sentences import split_sentences
-from src.generation.citations import find_citations
+from src.generation.citations import find_citations, strip_citations  # noqa: F401 (re-exported)
 from src.generation.script_result import GeneratedScript
 from src.talks.result import GeneratedTalk
 from src.talks.schema import Slide
-
-# A [...] group that contains at least one chunk ID, e.g. [P3_p2_c06] or [P1_p2_c01, P3_p2_c06]
-CITATION_GROUP = re.compile(r"\s*\[[^\[\]]*P\d+_[ps]\d+_c\d+[^\[\]]*\]")
-
 
 @dataclass
 class Claim:
     text: str  # the sentence without its citations
     cited_ids: list[str]
     location: str  # where it is: "script", "slide 2 · bullet 1", "slide 2 · note 3"
-
-
-def strip_citations(text: str) -> str:
-    return CITATION_GROUP.sub("", text).strip()
 
 
 def extract_claims(text: str, location: str) -> list[Claim]:

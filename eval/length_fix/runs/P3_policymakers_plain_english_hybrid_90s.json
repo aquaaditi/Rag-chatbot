@@ -1,0 +1,15 @@
+{
+  "case_id": "P3_policymakers_plain_english_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:25",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p2_c04",
+    "P3_p1_c03",
+    "P3_p6_c03",
+    "P3_p5_c02",
+    "P3_p8_c02"
+  ],
+  "text": "Training many machine learning models together and averaging their predictions can greatly improve accuracy [P3_p1_c02]. However, using such a large group of models at the same time is cumbersome and requires too much computing power for large-scale deployment [P3_p1_c02]. \n\nTraining large models is great for extracting structure from massive datasets, but deploying systems to many users demands speed and low resource use [P3_p1_c03]. This creates a gap between training needs and deployment limits [P3_p1_c03]. \n\nThe paper solves this by using a transfer method called distillation [P3_p1_c03]. Distillation transfers the knowledge from a large, cumbersome model or group of models into a single, smaller model that is much easier to deploy [P3_p1_c02][P3_p1_c03]. \n\nRegarding accuracy, more than 80% of the accuracy improvement gained by a group of 10 models can be successfully transferred to a single distilled model [P3_p5_c02]. \n\nAs for limitations, specialists that focus on specific fine-grained classes can tend to overfit because their effective training set is much smaller [P3_p1_c02][P3_p8_c02]. Also, a group of models gives a smaller improvement on the ultimate objective of word error rate due to a mismatch in the target function [P3_p5_c02]."
+}

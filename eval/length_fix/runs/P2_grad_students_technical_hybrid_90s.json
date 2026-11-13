@@ -1,0 +1,14 @@
+{
+  "case_id": "P2_grad_students_technical_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:24",
+  "source_ids": [
+    "P2_p1_c02",
+    "P2_p1_c04",
+    "P2_p2_c04",
+    "P2_p3_c02",
+    "P2_p2_c03",
+    "P2_p4_c02"
+  ],
+  "text": "Linear classifiers like logistic regression or SVMs are efficient text classification baselines, but they lack parameter sharing between features and classes, which limits generalization in large output spaces [P2_p1_c04]. \n\nTo solve this, the paper proposes fastText, a simple neural model with a rank constraint [P2_p1_c02][P2_p1_c04]. The architecture uses a first weight matrix $A$ as a look-up table over the words [P2_p1_c04]. These word representations are averaged into a text representation, which is then fed to a linear classifier [P2_p1_c04]. \n\nBecause bag of words models are invariant to word order, fastText incorporates a bag of n-grams as additional features to capture local word order [P2_p2_c03]. It maintains a fast and memory-efficient mapping using the hashing trick with 10M bins for bigrams, and 100M otherwise [P2_p2_c03]. \n\nIn experiments on sentiment analysis, fastText achieves accuracy competitive with character-level CNNs and recurrent models, while running much faster [P2_p3_c02]. On sentiment analysis, fastText scores 64.2 on Yelp'13, 66.2 on Yelp'14, 66.6 on Yelp'15, and 45.2 on IMDB [P2_p3_c02]. Using trigrams on Sogou pushes performance up to 97.1% [P2_p3_c02]. \n\nFor scalability evaluation on the YFCC100M dataset with over 91M training examples and 312,116 unique tags, fastText trains on more than one billion words in less than ten minutes using a standard multicore CPU [P2_p1_c02][P2_p4_c02]. It can also classify half a million sentences among 312K classes in less than a minute [P2_p1_c02]."
+}

@@ -53,7 +53,7 @@ def test_prompt_contains_every_parameter():
                             change_instruction="make it more visual")
     prompt = build_script_prompt(request, "[P3_p2_c06] some source")
     assert "policymakers" in prompt
-    assert "about 75 words" in prompt
+    assert "68-82 words, aim for 75" in prompt and "citations do NOT count" in prompt
     assert "press release" in prompt
     assert "CHANGE REQUEST: make it more visual" in prompt
     assert "[P3_p2_c06] some source" in prompt
@@ -93,3 +93,24 @@ def test_generator_puts_abstract_first_and_checks_citations():
     assert "[P1_p1_c02]" in sent["prompt"]  # sources really were sent to the LLM
     assert result.cited_ids == ["P1_p2_c01", "P7_p1_c01"]
     assert result.unknown_ids == ["P7_p1_c01"]  # the invented citation is caught
+
+
+def test_a_script_outside_the_length_range_gets_one_retry_with_the_real_count():
+    chunks = [make_chunk("P1_p2_c01")]
+    short = "The model works [P1_p2_c01]. " * 20  # 60 spoken words; 30s needs 68-82
+    right = "The model works well [P1_p2_c01]. " * 19  # 76 spoken words
+    prompts = []
+
+    def fake_llm(prompt, system_prompt=""):
+        prompts.append(prompt)
+        return short if len(prompts) == 1 else right
+
+    result = ScriptGenerator(FakeRetriever(chunks), llm=fake_llm).generate(ScriptRequest("x", length="30s"))
+    assert len(prompts) == 2 and result.length_retry and result.n_words == 76
+    assert "It has 60 spoken words (citations not counted), but it needs 68-82" in prompts[1]
+
+    # already in range -> no retry
+    prompts.clear()
+    prompts.append("skip the short answer")
+    result = ScriptGenerator(FakeRetriever(chunks), llm=fake_llm).generate(ScriptRequest("x", length="30s"))
+    assert len(prompts) == 2 and not result.length_retry

@@ -1,0 +1,15 @@
+{
+  "case_id": "P1_policymakers_plain_english_bm25_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:23",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p2_c01",
+    "P1_p4_c03",
+    "P1_p5_c04",
+    "P1_p1_c04",
+    "P1_p4_c04",
+    "P1_p1_c03"
+  ],
+  "text": "This research addresses sentence-level classification tasks, such as sentiment analysis and question classification [P1_p1_c02]. The main idea is to test a simple convolutional neural network built on top of pre-trained word vectors [P1_p1_c04]. These word vectors project words onto a lower dimensional space to encode semantic features [P1_p1_c03]. The researchers kept these pre-trained word vectors static and only learned other parameters [P1_p1_c04]. They also tested fine-tuning the vectors for specific tasks and using a multichannel architecture [P1_p1_c02][P1_p1_c04]. \n\nRegarding the key results, the simple model with static vectors performed remarkably well and gave competitive results against more complex deep learning models [P1_p4_c03]. The pre-trained vectors acted as good universal feature extractors across datasets [P1_p4_c03]. Fine-tuning the pre-trained vectors for each task gave still further improvements in performance [P1_p1_c02][P1_p4_c03]. Ultimately, the models improved upon the state of the art on 4 out of 7 tasks [P1_p1_c02]. \n\nAs for limitations, the results for the multichannel architecture were mixed [P1_p4_c04]. The authors noted that further work on regularizing the fine-tuning process is warranted [P1_p4_c04]. Additionally, a baseline model that used only randomly initialized words did not perform well on its own [P1_p4_c03]. The paper does not provide specific data regarding financial costs or processing speed."
+}

@@ -1,0 +1,15 @@
+{
+  "case_id": "P3_policymakers_plain_english_dense_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:25",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p1_c01",
+    "P3_p2_c05",
+    "P3_p6_c03",
+    "P3_p2_c04",
+    "P3_p2_c01"
+  ],
+  "text": "Training many different computer models on the same data and averaging their predictions is a very simple way to improve performance [3]. However, making predictions using a whole ensemble of models is cumbersome and may be too computationally expensive to allow deployment to a large number of users [3]. This problem is especially true if the individual models are large neural nets [3]. \n\nTo solve this, researchers can compress the knowledge in an ensemble into a single model that is much easier to deploy [3]. The paper develops this approach further using a different compression technique called distillation [3][P3_p2_c04]. \n\nRegarding accuracy, the paper achieves surprising results on MNIST and significantly improves the acoustic model of a heavily used commercial system [3]. The method transfers knowledge by training a small model using the original training set, alongside a small term that encourages it to predict true targets while matching soft targets from the cumbersome model [P3_p2_c05]. \n\nThe paper also introduces a new type of ensemble composed of full models and specialist models [3]. These specialist models learn to distinguish fine-grained classes that full models confuse [3]. Unlike a mixture of experts, specialist models can be trained rapidly and in parallel [3]. \n\nLimitations include the fact that small models typically cannot exactly match the soft targets provided by the cumbersome model [P3_p2_c05]. Also, much information resides in very small probabilities that have little influence on the standard cost function, requiring adjustments like raising the temperature during training [P3_p2_c04]."
+}

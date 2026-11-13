@@ -1,0 +1,15 @@
+{
+  "case_id": "P1_press_press_release_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:33",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p2_c01",
+    "P1_p4_c03",
+    "P1_p2_c02",
+    "P1_p1_c03",
+    "P1_p5_c04"
+  ],
+  "length_retry": true,
+  "text": "New research shows that a simple computer model can master sentence tasks like guessing the mood of a text. [P1_p1_c02] \n\nScientists used a type of computer system built on top of pre-trained word lists. [P1_p1_c02][P1_p5_c04] These lists place words with similar meanings close to each other in a mathematical space. [P1_p1_c03] \n\nThe system solves the problem of understanding text by scanning sentences for local patterns. [P1_p1_c03] It uses simple convolutional layers and keeps things straightforward. [P1_p5_c04] \n\nThe key result is that this basic model beats the current state of the art on four out of seven tasks. [P1_p1_c02] These tasks include analyzing customer feelings and sorting questions into categories. [P1_p1_c02] \n\nThe tests reveal that pre-made word lists act as powerful, universal feature extractors. [P1_p4_c03] When researchers fine-tune these lists for specific jobs, performance gets even better. [P1_p1_c02][P1_p4_c03] They also tested a smart modification that uses two channels to combine different word lists at the exact same time. [P1_p1_c02][P1_p2_c02] \n\nThis matters because it proves that strong text understanding does not require overly complex designs or parse trees computed beforehand. [P1_p1_c02][P1_p4_c03] Even with very little tuning, a simple model delivers remarkable results. [P1_p1_c02][P1_p5_c04] This highlights that pre-training is a crucial ingredient for computers to understand human language. [P1_p5_c04]"
+}

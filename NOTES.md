@@ -654,3 +654,62 @@ The policymaker script ended with an UNCITED conclusion of its own.
   none). Fix: store the score of the best match among all sources.
 - My first rate.py had a --report flag that did nothing (the report is always written). Removed it:
   `python rate.py` without a rater only updates the report.
+
+## Day 11 — Polish (length fix, README, interview Q&A)
+
+**Why were the scripts 10-20% too short? (two reasons)**
+-  LLMs don't count words. A target like "about 225 words" is treated as a rough
+   hint, and models tend to undershoot it, writing concisely and stopping early.
+2. The grounding rules limit what can be said. "Use ONLY the sources" plus
+   "cite every fact" means the model can't pad with general knowledge. With a
+   handful of chunks, it runs out of supported things to say before reaching
+   the target. (Citation IDs inside the text also make the script LOOK longer
+   to the model than the spoken words really are.)
+- (Check against my eval: replace these with the two causes I actually found.)
+
+**The range in the prompt only half-fixed it (4 -> 9 of 15 in range). Why add a check in code?**
+-  A prompt is a request, not a guarantee. Same lesson as Day 5 (schemas) and
+  Day 7 (measurable goals): if something matters, measure it in code.
+- The code check counts the spoken words; if the script is outside the range,
+  it retries once with the actual number as feedback
+  ("You wrote 183 words; the target is 200-250").
+- 9 of 15 still left 6 scripts out of range. Prompting improves the AVERAGE;
+  a check catches each INDIVIDUAL failure.
+
+
+**Why test the fix in a separate folder (eval/length_retry/) instead of overwriting eval/runs/?**
+-  eval/runs/ holds the original cached scripts = my baseline. Keeping it lets me
+  compare before vs after on the same papers and settings (a fair comparison).
+- Overwriting would destroy the evidence behind my Day 9 results, and I couldn't
+  reproduce them.
+- If the fix made things worse, nothing is lost: I just don't adopt it.
+- One line: never overwrite your baseline; test changes side by side.
+
+**The retry keeps "whichever is closer" to the target. Why not always take the retry?**
+- LLM output varies, so a retry can be WORSE: it can overshoot the range, or
+  land even further from the target.
+- Keeping the closer one means the retry can never make the length worse than
+  the first attempt. It can only help or do nothing.
+- Limitation: "closer" only compares LENGTH. A longer retry could be less
+  grounded (more filler, more weak claims). A stronger rule would keep the
+  retry only if it's closer in length AND its grounding didn't drop.
+
+**What went wrong & how I fixed it:**
+- The prompt said "about 225 words", and scripts averaged 200. One likely cause: we count words
+  WITHOUT the [P1_p2_c01] citations (nobody reads them aloud), but the model seems to count them,
+  and a script has ~15 of them. Fix 1: a range (203-248) + "citations do NOT count as words".
+  Result: 200 -> 215 words, 4 -> 9 of 15 in range. Better, but not enough.
+- Fix 2: the generator counts the spoken words itself and, if outside the range, retries ONCE with the
+  real count ("It has 177 spoken words, but it needs 203-248"). Result: 229 words, 13 of 15 in range,
+  length error 12.4% -> 6.5%, grounding unchanged. 6 of 15 scripts needed the retry.
+  Lesson: same as Day 7 - don't trust the model to follow a number; measure it and give feedback.
+- The slide-talk length check counted citations as words too (len(script.split())), so a talk could
+  pass the check while being too short when spoken. Now everything uses one spoken_words() helper.
+- strip_citations() lived in the provenance stage, but the generation stage needed it too. Moved it
+  to generation/citations.py (generation comes first in the pipeline), provenance re-exports it.
+- requirements.txt was missing pydantic, numpy and scipy: I import them directly, but they were only
+  installed because other packages pull them in. Added them.
+- The README promised "tweet-sized abstracts", but nothing in the code makes tweets. Removed the claim
+  until it exists.
+- One new script had a number error: "91M training examples" is in the paper, but NOT in the chunks it
+  cited. The checker was right to flag it - a citation must point to a chunk that says it.

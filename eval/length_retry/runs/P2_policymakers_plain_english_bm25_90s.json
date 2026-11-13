@@ -1,0 +1,15 @@
+{
+  "case_id": "P2_policymakers_plain_english_bm25_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:34",
+  "source_ids": [
+    "P2_p1_c02",
+    "P2_p2_c04",
+    "P2_p3_c02",
+    "P2_p1_c04",
+    "P2_p2_c03",
+    "P2_p4_c02"
+  ],
+  "length_retry": false,
+  "text": "This paper looks at a simple and efficient baseline method for text classification called fastText [P2_p1_c02]. Text classification systems often struggle to balance high accuracy with fast processing speeds. The main idea behind this approach is to treat text as a simple collection of words, while also adding features that capture local word order to improve performance without heavy computing costs [P2_p1_c04][P2_p2_c03]. \n\nRegarding speed, the experiments show that fastText is many orders of magnitude faster for training and evaluation than complex deep learning classifiers [P2_p1_c02]. Researchers can train the model on more than one billion words in less than ten minutes using a standard multi-core central processing unit [P2_p1_c02]. It can also classify half a million sentences across 312K classes in less than a minute [P2_p1_c02]. \n\nIn terms of accuracy, the experiments show that fastText is often on par with deep learning classifiers [P2_p1_c02]. On sentiment analysis tasks, adding word-pair information improves performance by 1% to 4% [P2_p3_c02]. Its overall accuracy is slightly better than some deep models like character-level convolutional networks, and slightly worse than others like very deep convolutional networks [P2_p3_c02]. \n\nHowever, the paper also points out limitations. Unlike some other models, fastText does not use pre-trained word representations, which can explain small differences in accuracy [P2_p3_c02]. Additionally, linear classifiers do not share parameters among features and classes, which can possibly limit how well they generalize when dealing with large output spaces where some classes have very few examples [P2_p1_c04]."
+}

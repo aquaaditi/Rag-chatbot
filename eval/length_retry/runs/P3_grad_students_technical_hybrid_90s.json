@@ -1,0 +1,16 @@
+{
+  "case_id": "P3_grad_students_technical_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:36",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p1_c04",
+    "P3_p2_c04",
+    "P3_p1_c03",
+    "P3_p6_c03",
+    "P3_p5_c02",
+    "P3_p8_c02"
+  ],
+  "length_retry": true,
+  "text": "Ensembling machine learning models improves performance, but deploying an ensemble of large neural nets is often too computationally expensive [P3_p1_c02]. This paper solves the problem of deploying cumbersome models—such as ensembles or models trained with dropout—by transferring their knowledge into a single, smaller model suitable for deployment, using a process called distillation [P3_p1_c03]. \n\nWhile training requires extracting structure from large datasets without real-time constraints, deployment demands low latency and computational resources [P3_p1_c03]. A conceptual block in knowledge transfer is identifying knowledge exclusively with learned parameter values [P3_p1_c04]. Instead, the paper views knowledge more abstractly, freeing it from a particular instantiation [P3_p1_c04]. \n\nFor tasks like MNIST, much information resides in the ratios of very small probabilities in the soft targets, which define a rich similarity structure over the data [P3_p2_c04]. Caruana and collaborators addressed this by using the logits as targets and minimizing the squared difference between the cumbersome and small models [P3_p2_c04]. Distillation generalizes this by raising the temperature of the final softmax until the cumbersome model produces a soft set of targets, and using that same high temperature when training the small model [P3_p2_c04]. \n\nAdditionally, the paper introduces ensembles composed of full models and specialist models designed to learn fine-grained classes that the full models confuse [P3_p1_c02]. Specialists are assigned to classes by applying an on-line version of the K-means clustering algorithm to the columns of the covariance matrix of the generalist model's predictions [P3_p6_c03]. \n\nIn experiments, training 10 separate models with different random initializations created sufficient diversity for the ensemble to outperform individual models [P3_p5_c02]. For distillation, temperatures of [1, 2, 5, 10] were tried and a relative weight of 0.5 was used on the cross-entropy for the hard targets [P3_p5_c02]. More than 80% of the improvement in frame classification accuracy from the 10-model ensemble was successfully transferred to the distilled model [P3_p5_c02]."
+}

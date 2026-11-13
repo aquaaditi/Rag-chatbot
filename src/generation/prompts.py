@@ -49,11 +49,46 @@ def change_block(change_instruction: str) -> str:
     return CHANGE_BLOCK.format(change_instruction=change_instruction) if change_instruction else ""
 
 
+LENGTH_RANGE = 0.10  # ask for the target +-10%: "about 225 words" alone came out ~11% short (Day 9)
+
+
+def length_range(target_words: int) -> tuple[int, int]:
+    return round(target_words * (1 - LENGTH_RANGE)), round(target_words * (1 + LENGTH_RANGE))
+
+
+def length_instruction(target_words: int, length: str) -> str:
+    """'203-248 words, aim for 225 ...' - a range and the reminder that citations are not words
+    (we count words without them; the model seems to count them)."""
+    low, high = length_range(target_words)
+    return (f"{low}-{high} words, aim for {target_words} ({length} when read aloud at 150 words per minute). "
+            "The [chunk ID] citations do NOT count as words. Too short is a problem: the talk ends early.")
+
+
+# Day 11: the range in the prompt helped (4 -> 9 of 15 scripts in range), but not enough - so the
+# length is COUNTED in code, and a script outside the range gets one retry with the real count.
+LENGTH_FIX_TEMPLATE = """{original_prompt}
+
+YOUR PREVIOUS SCRIPT:
+{previous}
+
+It has {n_words} spoken words (citations not counted), but it needs {low}-{high}.
+Rewrite it to about {target_words} words: {direction}
+Keep every rule above: only facts from the SOURCES, cite every fact."""
+
+
+def build_length_fix_prompt(original_prompt: str, previous: str, n_words: int, target_words: int) -> str:
+    low, high = length_range(target_words)
+    direction = ("explain the existing points more fully, or add points from the SOURCES (never from memory)."
+                 if n_words < low else "cut the least important sentences.")
+    return LENGTH_FIX_TEMPLATE.format(original_prompt=original_prompt, previous=previous, n_words=n_words,
+                                      low=low, high=high, target_words=target_words, direction=direction)
+
+
 SCRIPT_TEMPLATE = """TASK: Write a spoken script about: {topic}
 
 AUDIENCE: {audience}
 STYLE: {style}
-LENGTH: about {target_words} words ({length} when read aloud at 150 words per minute).
+LENGTH: {length_instruction}
 {change_block}
 SOURCES:
 {sources}"""
@@ -65,8 +100,7 @@ def build_script_prompt(request: ScriptRequest, sources: str) -> str:
         topic=request.topic,
         audience=AUDIENCES[request.audience],
         style=STYLES[request.style],
-        target_words=request.target_words,
-        length=request.length,
+        length_instruction=length_instruction(request.target_words, request.length),
         change_block=change_block(request.change_instruction),
         sources=sources,
     )

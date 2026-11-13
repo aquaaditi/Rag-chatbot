@@ -1,0 +1,16 @@
+{
+  "case_id": "P3_policymakers_plain_english_bm25_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:36",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p5_c04",
+    "P3_p1_c04",
+    "P3_p7_c03",
+    "P3_p8_c02",
+    "P3_p4_c03",
+    "P3_p1_c03"
+  ],
+  "length_retry": false,
+  "text": "Training many different machine learning models and averaging their predictions can improve performance [P3_p1_c02]. However, using a whole ensemble of models is cumbersome and computationally expensive, making it hard to deploy to many users, especially when the individual models are large neural networks [P3_p1_c02]. \n\nTraining sets can also be very large, leading to excessive computation during training even when parallelized [P3_p5_c04]. Meanwhile, deploying systems to many users has strict requirements on speed and computational resources [P3_p1_c03]. \n\nThe paper solves this by using a technique called distillation to transfer the knowledge from a large ensemble of models into a single, smaller model [P3_p1_c02][P3_p1_c03]. This approach frees knowledge from a specific model instance by viewing it more abstractly [P3_p1_c04]. It also introduces a new type of ensemble made of full models and specialist models that learn to separate fine-grained classes [P3_p1_c02]. These specialist models can be trained rapidly and in parallel [P3_p1_c02].\n\nRegarding results, the paper shows surprising outcomes on the MNIST dataset and significantly improves the acoustic model of a heavily used commercial system by distilling an ensemble into a single model [P3_p1_c02]. The single model works significantly better than a same-sized model learned directly from the same training data [P3_p4_c03]. Furthermore, using soft targets allows a baseline speech model to recover almost all information in the full training set using only 3 percent of the data, which is about 20M examples, avoiding severe overfitting [P3_p7_c03]. The sources do not state limitations beyond noting that specialist models tend to overfit easily unless prevented [P3_p5_c04]."
+}

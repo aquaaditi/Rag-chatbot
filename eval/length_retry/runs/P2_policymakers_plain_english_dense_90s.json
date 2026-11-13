@@ -1,0 +1,16 @@
+{
+  "case_id": "P2_policymakers_plain_english_dense_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:34",
+  "source_ids": [
+    "P2_p1_c02",
+    "P2_p1_c01",
+    "P2_p5_c01",
+    "P2_p1_c04",
+    "P2_p1_c03",
+    "P2_p2_c01",
+    "P2_p2_c02"
+  ],
+  "length_retry": false,
+  "text": "Text classification is an important task in natural language processing [P2_p1_c03]. While modern neural network models achieve very good performance, they tend to be relatively slow during training and testing [P2_p1_c03]. This slowness limits their use on very large datasets [P2_p1_c03]. Meanwhile, simpler linear classifiers can scale to large text collections, but they face limitations when dealing with massive numbers of categories because they do not share parameters among features and classes [P2_p1_c03][P2_p1_c04]. \n\nThis paper explores a fast text classifier called fastText, which is a simple and efficient baseline [P2_p1_c02]. The main idea uses linear models with a rank constraint and a fast loss approximation [P2_p1_c03]. Word representations are averaged into a text representation, which is then fed to a linear classifier [P2_p1_c04]. When the number of categories is large, the system uses a hierarchical softmax based on a Huffman coding tree to improve running time [P2_p2_c02]. \n\nRegarding key results, fastText achieves accuracy that is often on par with deep learning classifiers [P2_p1_c02]. At the same time, it is many orders of magnitude faster for training and evaluation [P2_p1_c02]. The system can be trained on more than one billion words in less than ten minutes using a standard multicore processor [P2_p1_c02]. It can also classify half a million sentences among 312K categories in less than a minute [P2_p1_c02]. Regarding limitations, the authors note that while deep neural networks have higher representational power in theory, it remains unclear if simple text classification problems are the right ones to evaluate them [P2_p5_c01]."
+}

@@ -1,0 +1,15 @@
+{
+  "case_id": "P3_policymakers_plain_english_bm25_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:25",
+  "source_ids": [
+    "P3_p1_c02",
+    "P3_p5_c04",
+    "P3_p1_c04",
+    "P3_p7_c03",
+    "P3_p8_c02",
+    "P3_p4_c03",
+    "P3_p1_c03"
+  ],
+  "text": "Training many machine learning models and averaging their predictions can improve performance, but using a whole ensemble of models is cumbersome and computationally expensive for deployment to a large number of users [P3_p1_c02]. Training large neural networks on very big datasets also requires excessive computation at training time [P3_p5_c04]. \n\nTo solve this, the paper uses a transfer training method called distillation [P3_p1_c03]. The main idea is to compress the knowledge from a large ensemble of models into a single, smaller model that is much easier to deploy [P3_p1_c02]. This separates the heavy computation needed during training from the strict speed and resource limits needed when deploying to users [P3_p1_c03]. \n\nThe paper also introduces a new type of ensemble made of full models and specialist models [P3_p1_c02]. These specialist models learn to distinguish fine-grained classes that the full models confuse, and they can be trained rapidly and in parallel [P3_p1_c02]. \n\nRegarding key results, the authors achieve surprising results on MNIST and significantly improve the acoustic model of a heavily used commercial system by distilling an ensemble into a single model [P3_p1_c02]. A single model trained this way works significantly better than a model of the same size learned directly from the same training data [P3_p4_c03]. Furthermore, using soft targets allows a speech model with 85M parameters to be trained with only 3% of the data, which is about 20M examples [P3_p7_c03]. While hard targets lead to severe overfitting with this small amount of data, training with soft targets recovers almost all the information in the full training set, ending up about 2% shy without needing early stopping [P3_p7_c03]. The sources do not mention other limitations beyond the high computation requirements of standard ensembles during training and testing [P3_p1_c02][P3_p5_c04]."
+}

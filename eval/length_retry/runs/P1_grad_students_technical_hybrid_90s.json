@@ -1,0 +1,15 @@
+{
+  "case_id": "P1_grad_students_technical_hybrid_90s",
+  "model": "gemini-flash-lite-latest",
+  "generated": "2026-11-13 14:33",
+  "source_ids": [
+    "P1_p1_c02",
+    "P1_p2_c01",
+    "P1_p4_c03",
+    "P1_p2_c02",
+    "P1_p1_c03",
+    "P1_p5_c04"
+  ],
+  "length_retry": false,
+  "text": "Welcome, machine learning researchers. Today we examine sentence-level classification using convolutional neural networks built on top of pre-trained word vectors [P1_p1_c02][P1_p5_c04]. \n\nTo solve sentence classification, words are projected from a sparse encoding onto a lower-dimensional vector space where semantically close words are close in distance [P1_p1_c03]. A sentence of length $n$ is represented as $x_{1:n} = x_1 \\oplus x_2 \\oplus . . . \\oplus x_n$, where $\\oplus$ is concatenation [P1_p2_c01]. A convolution filter $w \\in \\mathbb{R}^{hk}$ is applied to a window of $h$ words to produce feature $c_i = f(w \\cdot x_{i:i+h-1} + b)$, with bias $b \\in \\mathbb{R}$ and non-linear function $f$ [P1_p2_c01]. This filter slides over windows $\\{x_{1:h}, x_{2:h+1}, . . . , x_{n-h+1:n}\\}$ to produce a feature map $c = [c_1, c_2, . . . , c_{n-h+1}]$ [P1_p2_c01]. A max-over-time pooling operation takes the maximum value $\\hat{c} = \\max\\{c\\}$ to handle variable sentence lengths [P1_p2_c01][P1_p2_c02]. Multiple filters with varying window sizes form the penultimate layer, feeding a fully connected softmax layer [P1_p2_c02]. We also test a multichannel architecture where static and fine-tuned word vector channels are both used and added during convolution [P1_p2_c02].\n\nRegarding experimental evidence, a baseline with randomly initialized words, CNN-rand, performs poorly [P1_p4_c03]. However, CNN-static with pre-trained vectors performs remarkably well, competing with complex deep learning models using intricate pooling or parse trees [P1_p4_c03]. Fine-tuning vectors, CNN-non-static, yields further gains [P1_p4_c03]. Overall, these CNN models improve upon the state of the art on 4 out of 7 tasks, including sentiment analysis and question classification [P1_p1_c02]."
+}
